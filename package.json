@@ -5,10 +5,9 @@
   "description": "ANMOL STORE — Premium Local Business Marketplace",
   "main": "backend/src/server.js",
   "scripts": {
-    "start": "npm start --prefix backend",
-    "build": "npm install --prefix backend",
-    "seed": "npm run seed --prefix backend",
-    "test": "npm test --prefix backend"
+    "start": "node backend/src/server.js",
+    "seed": "node backend/scripts/seed.js",
+    "test": "node --test backend/tests/*.test.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
