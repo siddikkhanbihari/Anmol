@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123B70">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ANMOL STORE">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <title>Services & Bookings — ANMOL SELLER HUB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    .seller-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: var(--space-8);
+      align-items: start;
+    }
+    .seller-sidebar {
+      background: #FFF;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      position: sticky;
+      top: calc(var(--header-height) + 20px);
+    }
+    @media (max-width: 900px) {
+      .seller-layout { grid-template-columns: 1fr; }
+      .seller-sidebar { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="main-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="seller-dashboard.html" class="brand-logo">
+          <div class="brand-icon-wrap" style="background: linear-gradient(135deg, var(--accent-orange) 0%, #EA580C 100%);">
+            <i class="fas fa-tools"></i>
+          </div>
+          <div class="brand-text-wrap">
+            <div class="brand-title">ANMOL <span>SELLER HUB</span></div>
+            <div class="brand-tagline">Services & Bookings</div>
+          </div>
+        </a>
+
+        <div style="display: flex; align-items: center; gap: var(--space-4); margin-left: auto;">
+          <a href="seller-dashboard.html" class="btn btn-outline btn-sm"><i class="fas fa-arrow-left"></i> Dashboard</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding: var(--space-8) var(--space-4);">
+    <div class="seller-layout">
+      <!-- Sidebar -->
+      <aside class="seller-sidebar">
+        <nav>
+          <a href="seller-dashboard.html" class="dash-nav-item"><i class="fas fa-tachometer-alt"></i> Overview</a>
+          <a href="seller-products.html" class="dash-nav-item"><i class="fas fa-boxes"></i> My Products</a>
+          <a href="seller-orders.html" class="dash-nav-item"><i class="fas fa-truck-loading"></i> Customer Orders</a>
+          <a href="seller-services.html" class="dash-nav-item active"><i class="fas fa-tools"></i> Services & Bookings</a>
+          <a href="seller-profile.html" class="dash-nav-item"><i class="fas fa-cog"></i> Shop Settings</a>
+        </nav>
+      </aside>
+
+      <!-- Main Panel -->
+      <section>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-6); flex-wrap: wrap; gap: var(--space-3);">
+          <div>
+            <h1 style="font-size: var(--font-size-2xl); color: var(--primary-navy); margin: 0;">Service Requests & Bookings</h1>
+            <p style="color: var(--color-text-muted); font-size: var(--font-size-sm); margin: 2px 0 0 0;">
+              Manage appointments requested by neighbourhood clients for repairs and technicians.
+            </p>
+          </div>
+          <button id="btn-add-service" class="btn btn-primary">
+            <i class="fas fa-plus"></i> List New Service
+          </button>
+        </div>
+
+        <!-- Bookings Container -->
+        <div id="provider-bookings-container">
+          <div class="skeleton skeleton-card"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Add Service Modal -->
+  <div class="modal-backdrop" id="service-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">List a New Local Service</h3>
+        <button class="modal-close" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="service-form">
+          <div class="form-group">
+            <label class="form-label required" for="srv-title">Service Title</label>
+            <input type="text" id="srv-title" class="form-control" placeholder="e.g. AC Deep Jet Pump Service & Gas Check" required>
+          </div>
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label required" for="srv-type">Service Type</label>
+              <select id="srv-type" class="form-select" required>
+                <option value="Electrician">Electrician</option>
+                <option value="Plumber">Plumber</option>
+                <option value="AC & Appliance Repair">AC & Appliance Repair</option>
+                <option value="Garage & Vehicle Repair">Garage & Vehicle Repair</option>
+                <option value="Machinery & Equipment Repair">Machinery & Equipment</option>
+                <option value="Spare Parts Installation">Spare Parts Installation</option>
+                <option value="Labour & Loading Service">Labour & Loading</option>
+                <option value="Other Service">Other Service</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label required" for="srv-price">Standard Visiting / Starting Fee (₹)</label>
+              <input type="number" id="srv-price" class="form-control" placeholder="e.g. 299" min="0" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label required" for="srv-description">Service Description</label>
+            <textarea id="srv-description" class="form-control" rows="3" placeholder="Explain what is included in the service visit..." required></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost modal-close-btn">Cancel</button>
+        <button type="button" id="btn-save-service" class="btn btn-primary">Create Service</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-bottom">
+      <div class="container">
+        <div class="footer-bottom-inner">
+          <div>&copy; 2026 ANMOL STORE Seller Hub.</div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="js/config.js"></script>
+  <script type="module" src="js/notifications.js"></script>
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script type="module">
+    import { api } from './js/api.js';
+    import { auth } from './js/auth.js';
+    import { notify } from './js/notifications.js';
+    import { formatCurrency, formatDate } from './js/config.js';
+
+    auth.requireAuth(['seller', 'admin']);
+
+    async function loadBookings() {
+      const container = document.getElementById('provider-bookings-container');
+      try {
+        const res = await api.get('/services/bookings/provider');
+        if (res.success && res.data) {
+          const bookings = res.data;
+
+          if (!bookings.length) {
+            container.innerHTML = `
+              <div class="empty-state">
+                <div class="empty-state-icon"><i class="fas fa-calendar-check"></i></div>
+                <h3 class="empty-state-title">No Booking Requests</h3>
+                <p class="empty-state-text">You currently have no incoming service appointments.</p>
+              </div>
+            `;
+            return;
+          }
+
+          container.innerHTML = bookings.map(b => `
+            <div style="background: #FFF; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-4); margin-bottom: var(--space-3);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <div>
+                  <strong style="color: var(--primary-navy); font-size: var(--font-size-md);">#${b.bookingReference}</strong>
+                  <h4 style="font-size: var(--font-size-sm); margin: 2px 0;">${b.service?.title || 'Service'}</h4>
+                </div>
+                <span class="badge ${b.status === 'completed' ? 'badge-success' : 'badge-primary'}">${b.status.toUpperCase()}</span>
+              </div>
+              <div style="font-size: var(--font-size-xs); color: var(--color-text-muted); margin-bottom: 8px;">
+                <span>Client: <strong>${b.customer?.name}</strong> (${b.customerPhone || b.customer?.phone})</span> &bull;
+                <span>Date: <strong>${formatDate(b.bookingDate)}</strong> (${b.timeSlot})</span>
+              </div>
+              <div style="background: var(--color-surface-alt); padding: var(--space-3); border-radius: var(--radius-sm); font-size: var(--font-size-xs); margin-bottom: var(--space-3);">
+                <strong>Client Address:</strong> ${b.serviceAddress?.street}, ${b.serviceAddress?.city} (${b.serviceAddress?.pincode})<br>
+                <strong>Problem:</strong> ${b.problemDescription}
+              </div>
+              <div style="display: flex; gap: var(--space-2); justify-content: flex-end;">
+                ${b.status === 'pending' ? `
+                  <button class="btn btn-primary btn-sm btn-update-booking" data-id="${b._id}" data-status="confirmed">
+                    Confirm Appointment
+                  </button>
+                ` : ''}
+                ${b.status === 'confirmed' ? `
+                  <button class="btn btn-primary btn-sm btn-update-booking" data-id="${b._id}" data-status="completed">
+                    Mark Completed
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+          `).join('');
+
+          container.querySelectorAll('.btn-update-booking').forEach(btn => {
+            btn.addEventListener('click', async () => {
+              const status = btn.dataset.status;
+              try {
+                const res = await api.patch(`/services/bookings/${btn.dataset.id}/status`, { status });
+                if (res.success) {
+                  notify.success(`Booking ${status}`);
+                  loadBookings();
+                }
+              } catch (err) {
+                notify.error(err.message);
+              }
+            });
+          });
+        }
+      } catch (err) {
+        container.innerHTML = `<p style="color: var(--color-danger);">${err.message}</p>`;
+      }
+    }
+
+    const srvModal = document.getElementById('service-modal');
+    document.getElementById('btn-add-service').addEventListener('click', () => srvModal.classList.add('active'));
+    srvModal.querySelectorAll('.modal-close, .modal-close-btn').forEach(b => b.addEventListener('click', () => srvModal.classList.remove('active')));
+
+    document.getElementById('btn-save-service').addEventListener('click', async () => {
+      const title = document.getElementById('srv-title').value.trim();
+      const serviceType = document.getElementById('srv-type').value;
+      const price = document.getElementById('srv-price').value;
+      const description = document.getElementById('srv-description').value.trim();
+
+      if (!title || !price || !description) {
+        notify.warning('Please enter all service fields');
+        return;
+      }
+
+      try {
+        const res = await api.post('/services', {
+          title,
+          serviceType,
+          price: Number(price),
+          description
+        });
+
+        if (res.success) {
+          notify.success('Service offering created!');
+          srvModal.classList.remove('active');
+          loadBookings();
+        }
+      } catch (err) {
+        notify.error(err.message || 'Error listing service');
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', loadBookings);
+  </script>
+  <script type="module" src="js/pwa.js"></script>
+</body>
+</html>

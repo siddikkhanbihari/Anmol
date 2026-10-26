@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123B70">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ANMOL STORE">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <title>Shopping Cart — ANMOL STORE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    .cart-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: var(--space-8);
+      align-items: start;
+    }
+    .seller-cart-group {
+      background: #FFF;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-6);
+      overflow: hidden;
+    }
+    .seller-cart-header {
+      background: var(--color-surface-alt);
+      padding: var(--space-3) var(--space-5);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cart-item-row {
+      display: grid;
+      grid-template-columns: 80px 1fr 140px 110px 40px;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .cart-item-row:last-child {
+      border-bottom: none;
+    }
+    .cart-item-thumb {
+      width: 70px;
+      height: 70px;
+      border-radius: var(--radius-md);
+      object-fit: cover;
+      background: #f8fafc;
+    }
+    .order-summary-card {
+      background: #FFF;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: calc(var(--header-height) + 20px);
+    }
+    .summary-line {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: var(--space-3);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-muted);
+    }
+    .summary-line.total {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-bold);
+      color: var(--primary-navy);
+      border-top: 1px solid var(--color-border);
+      padding-top: var(--space-3);
+      margin-top: var(--space-3);
+    }
+    @media (max-width: 900px) {
+      .cart-layout {
+        grid-template-columns: 1fr;
+      }
+      .cart-item-row {
+        grid-template-columns: 70px 1fr;
+        gap: var(--space-3);
+      }
+      .cart-item-actions {
+        grid-column: span 2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Announcement Bar -->
+  <div class="announcement-bar">
+    <div class="container">
+      <div class="announcement-text">
+        <span class="announcement-badge">Multi-Seller Basket</span>
+        <span>Products are grouped by each seller for transparent delivery charges and direct fulfillment</span>
+      </div>
+      <div class="announcement-links">
+        <a href="shops.html"><i class="fas fa-store"></i> Continue Shopping</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="main-header">
+    <div class="container">
+      <div class="header-inner">
+        <button class="mobile-menu-btn mobile-menu-toggle" aria-label="Open menu"><i class="fas fa-bars"></i></button>
+
+        <a href="index.html" class="brand-logo">
+          <div class="brand-icon-wrap"><i class="fas fa-store-alt"></i></div>
+          <div class="brand-text-wrap">
+            <div class="brand-title">ANMOL <span>STORE</span></div>
+            <div class="brand-tagline">Local Business, Digital Future</div>
+          </div>
+        </a>
+
+        <div class="header-actions" style="margin-left: auto;">
+          <a href="login.html" class="header-action-item user-account-link">
+            <i class="far fa-user action-icon"></i>
+            <span class="header-action-text">Sign In</span>
+          </a>
+          <a href="cart.html" class="header-action-item" title="Cart">
+            <i class="fas fa-shopping-bag action-icon">
+              <span class="badge-count cart-badge-count" style="display: none;">0</span>
+            </i>
+            <span class="header-action-text">Cart</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top: var(--space-8); padding-bottom: var(--space-16);">
+    <div style="margin-bottom: var(--space-6);">
+      <h1 style="font-size: var(--font-size-2xl);">Your Shopping Cart</h1>
+      <p style="color: var(--color-text-muted); font-size: var(--font-size-sm); margin: 0;">
+        Review your items and fulfillment details before proceeding to checkout.
+      </p>
+    </div>
+
+    <div class="cart-layout" id="cart-main-layout">
+      <!-- Left: Grouped Cart Items -->
+      <div id="cart-groups-container">
+        <!-- Rendered via JS -->
+      </div>
+
+      <!-- Right: Summary Card -->
+      <aside class="order-summary-card">
+        <h3 style="font-size: var(--font-size-base); color: var(--primary-navy); margin-bottom: var(--space-4); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-2);">
+          Order Summary
+        </h3>
+
+        <div class="summary-line">
+          <span>Items Subtotal:</span>
+          <span id="summary-subtotal">₹0</span>
+        </div>
+
+        <div class="summary-line">
+          <span>Seller Delivery Charges:</span>
+          <span id="summary-delivery">₹0</span>
+        </div>
+
+        <div class="summary-line total">
+          <span>Grand Total:</span>
+          <span id="summary-grand-total">₹0</span>
+        </div>
+
+        <div style="margin: var(--space-4) 0;">
+          <a href="checkout.html" id="btn-proceed-checkout" class="btn btn-primary btn-block btn-lg">
+            Proceed to Checkout &rarr;
+          </a>
+        </div>
+
+        <div style="background: var(--color-surface-alt); padding: var(--space-3); border-radius: var(--radius-md); font-size: 0.75rem; color: var(--color-text-muted); line-height: 1.4;">
+          <i class="fas fa-info-circle" style="color: var(--brand-blue);"></i> Cash on Delivery and Online Payments available at the next step.
+        </div>
+      </aside>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="cart-empty-view" style="display: none;">
+      <div class="empty-state-icon"><i class="fas fa-shopping-basket"></i></div>
+      <h2 class="empty-state-title">Your Cart is Empty</h2>
+      <p class="empty-state-text">
+        You haven't added any products to your cart yet. Explore our local kirana stores, electronics, and daily essentials!
+      </p>
+      <a href="products.html" class="btn btn-primary btn-lg">Start Shopping Now</a>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-bottom">
+      <div class="container">
+        <div class="footer-bottom-inner">
+          <div>&copy; 2026 ANMOL STORE. All rights reserved.</div>
+          <div class="footer-bottom-links">
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
+            <a href="contact.html">Support</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="js/config.js"></script>
+  <script type="module" src="js/notifications.js"></script>
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/cart.js"></script>
+  <script type="module" src="js/navigation.js"></script>
+  <script type="module">
+    import { cart } from './js/cart.js';
+    import { formatCurrency, getFallbackImage } from './js/config.js';
+
+    function renderCart() {
+      const groups = cart.getSellerGroups();
+      const mainLayout = document.getElementById('cart-main-layout');
+      const emptyView = document.getElementById('cart-empty-view');
+      const container = document.getElementById('cart-groups-container');
+
+      if (!groups.length) {
+        mainLayout.style.display = 'none';
+        emptyView.style.display = 'block';
+        return;
+      }
+
+      mainLayout.style.display = 'grid';
+      emptyView.style.display = 'none';
+
+      container.innerHTML = groups.map(group => {
+        const shop = group.shop || { name: 'Local Store' };
+        return `
+          <div class="seller-cart-group">
+            <div class="seller-cart-header">
+              <div>
+                <strong style="color: var(--primary-navy); font-size: var(--font-size-sm); display: flex; align-items: center; gap: 6px;">
+                  <i class="fas fa-store" style="color: var(--accent-orange);"></i> Fulfilled by: ${shop.name}
+                </strong>
+                <span style="font-size: var(--font-size-xs); color: var(--color-text-muted);">
+                  Standard Local Delivery: ${group.deliveryFee ? formatCurrency(group.deliveryFee) : 'Free'}
+                </span>
+              </div>
+              <span class="badge badge-primary">${group.items.length} ${group.items.length === 1 ? 'item' : 'items'}</span>
+            </div>
+
+            <div class="seller-cart-items">
+              ${group.items.map(item => {
+                const p = item.product || {};
+                const img = p.images?.[0] || getFallbackImage('product');
+                const price = item.priceSnapshot || p.price || 0;
+                const totalItem = price * item.quantity;
+                const pId = item._id || p._id;
+
+                return `
+                  <div class="cart-item-row" data-id="${pId}">
+                    <img src="${img}" class="cart-item-thumb" alt="${p.name}">
+                    <div>
+                      <h4 style="font-size: var(--font-size-sm); margin-bottom: 4px;">
+                        <a href="product-details.html?id=${p._id || p.id}">${p.name}</a>
+                      </h4>
+                      <div style="font-size: var(--font-size-xs); color: var(--color-text-muted);">
+                        ${formatCurrency(price)} each
+                      </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                      <button type="button" class="btn btn-sm btn-outline btn-item-minus" data-id="${pId}">-</button>
+                      <span style="font-weight: 700; width: 24px; text-align: center;">${item.quantity}</span>
+                      <button type="button" class="btn btn-sm btn-outline btn-item-plus" data-id="${pId}">+</button>
+                    </div>
+                    <div style="font-weight: 700; color: var(--primary-navy); text-align: right;">
+                      ${formatCurrency(totalItem)}
+                    </div>
+                    <button type="button" class="btn btn-ghost btn-sm btn-item-remove" data-id="${pId}" title="Remove" style="color: var(--color-danger);">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Update Summary
+      const totals = cart.getTotals();
+      document.getElementById('summary-subtotal').textContent = formatCurrency(totals.subtotal);
+      document.getElementById('summary-delivery').textContent = formatCurrency(totals.deliveryFee);
+      document.getElementById('summary-grand-total').textContent = formatCurrency(totals.grandTotal);
+
+      // Bind increment, decrement, remove
+      container.querySelectorAll('.btn-item-plus').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.id;
+          const currentItem = (cart.cart.items || []).find(i => i._id === id || i.product?._id === id);
+          if (currentItem) {
+            cart.updateQuantity(id, currentItem.quantity + 1);
+          }
+        });
+      });
+
+      container.querySelectorAll('.btn-item-minus').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.id;
+          const currentItem = (cart.cart.items || []).find(i => i._id === id || i.product?._id === id);
+          if (currentItem) {
+            cart.updateQuantity(id, currentItem.quantity - 1);
+          }
+        });
+      });
+
+      container.querySelectorAll('.btn-item-remove').forEach(btn => {
+        btn.addEventListener('click', () => {
+          cart.removeItem(btn.dataset.id);
+        });
+      });
+    }
+
+    cart.subscribe(renderCart);
+    document.addEventListener('DOMContentLoaded', () => {
+      cart.fetchCart().then(renderCart);
+    });
+  </script>
+</body>
+</html>

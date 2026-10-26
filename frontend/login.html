@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123B70">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ANMOL STORE">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <title>Sign In — ANMOL STORE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    .auth-page-wrap {
+      min-height: calc(100vh - 120px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-8) var(--space-4);
+      background-color: var(--color-bg);
+    }
+    .auth-card {
+      background: #FFF;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      max-width: 460px;
+      width: 100%;
+      padding: var(--space-8);
+    }
+    .auth-tabs {
+      display: flex;
+      border-bottom: 2px solid var(--color-border);
+      margin-bottom: var(--space-6);
+    }
+    .auth-tab {
+      flex: 1;
+      text-align: center;
+      padding: var(--space-3);
+      font-weight: var(--font-weight-semibold);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all var(--transition-fast);
+    }
+    .auth-tab.active {
+      color: var(--brand-blue);
+      border-bottom-color: var(--brand-blue);
+    }
+    .demo-credentials-box {
+      background: var(--brand-blue-light);
+      border: 1px dashed var(--brand-blue);
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--font-size-xs);
+      margin-bottom: var(--space-5);
+    }
+    .demo-credentials-box code {
+      font-weight: bold;
+      color: var(--primary-navy);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Minimal Header -->
+  <header style="background: #FFF; border-bottom: 1px solid var(--color-border); padding: var(--space-4) 0;">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon-wrap"><i class="fas fa-store-alt"></i></div>
+        <div class="brand-text-wrap">
+          <div class="brand-title">ANMOL <span>STORE</span></div>
+          <div class="brand-tagline">Local Business, Digital Future</div>
+        </div>
+      </a>
+      <a href="index.html" class="btn btn-ghost btn-sm"><i class="fas fa-home"></i> Back to Store</a>
+    </div>
+  </header>
+
+  <div class="auth-page-wrap">
+    <div class="auth-card">
+      <div style="text-align: center; margin-bottom: var(--space-6);">
+        <h2 style="font-size: var(--font-size-xl); margin-bottom: 4px;">Welcome Back!</h2>
+        <p style="color: var(--color-text-muted); font-size: var(--font-size-sm); margin: 0;">
+          Sign in to your ANMOL STORE account
+        </p>
+      </div>
+
+      <!-- Customer / Seller Tabs -->
+      <div class="auth-tabs">
+        <div class="auth-tab active" data-role="customer"><i class="fas fa-user"></i> Customer Login</div>
+        <div class="auth-tab" data-role="seller"><i class="fas fa-store"></i> Seller Hub</div>
+      </div>
+
+      <!-- Demo Credentials Quick-Fill helper for convenience -->
+      <div class="demo-credentials-box">
+        <strong>Demo Accounts (Click to Fill):</strong>
+        <div style="margin-top: 4px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="btn btn-sm btn-outline" id="btn-fill-customer" style="padding: 2px 6px; font-size: 0.7rem;">Customer</button>
+          <button type="button" class="btn btn-sm btn-outline" id="btn-fill-seller" style="padding: 2px 6px; font-size: 0.7rem;">Seller (Sharma Kirana)</button>
+          <button type="button" class="btn btn-sm btn-outline" id="btn-fill-admin" style="padding: 2px 6px; font-size: 0.7rem;">Admin</button>
+        </div>
+      </div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label class="form-label required" for="email">Email Address</label>
+          <input type="email" id="email" class="form-control" placeholder="name@example.com" required autocomplete="email">
+        </div>
+
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-1);">
+            <label class="form-label required" for="password" style="margin: 0;">Password</label>
+            <a href="forgot-password.html" style="font-size: var(--font-size-xs);">Forgot Password?</a>
+          </div>
+          <div class="input-group">
+            <input type="password" id="password" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
+            <button type="button" class="btn btn-ghost" id="btn-toggle-password" style="border: 1px solid var(--color-border); border-left: none;">
+              <i class="far fa-eye" id="toggle-pwd-icon"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" id="btn-login-submit" class="btn btn-primary btn-block btn-lg" style="margin-top: var(--space-4);">
+          Sign In to ANMOL STORE
+        </button>
+      </form>
+
+      <div style="text-align: center; margin-top: var(--space-6); font-size: var(--font-size-sm); color: var(--color-text-muted);">
+        Don't have an account yet?
+        <div style="margin-top: 4px;">
+          <a href="register.html" style="font-weight: 600;">Create Customer Account</a> &bull;
+          <a href="seller-register.html" style="font-weight: 600; color: var(--accent-orange);">Register Your Shop (Free)</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/config.js"></script>
+  <script type="module" src="js/notifications.js"></script>
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/cart.js"></script>
+  <script type="module">
+    import { auth } from './js/auth.js';
+    import { cart } from './js/cart.js';
+    import { notify } from './js/notifications.js';
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectUrl = urlParams.get('redirect');
+
+    // Toggle password visibility
+    const pwdInput = document.getElementById('password');
+    const toggleBtn = document.getElementById('btn-toggle-password');
+    const toggleIcon = document.getElementById('toggle-pwd-icon');
+
+    toggleBtn.addEventListener('click', () => {
+      if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        toggleIcon.className = 'far fa-eye-slash';
+      } else {
+        pwdInput.type = 'password';
+        toggleIcon.className = 'far fa-eye';
+      }
+    });
+
+    // Quick demo fills
+    document.getElementById('btn-fill-customer').addEventListener('click', () => {
+      document.getElementById('email').value = 'customer@anmolstore.in';
+      document.getElementById('password').value = 'Customer@123';
+    });
+    document.getElementById('btn-fill-seller').addEventListener('click', () => {
+      document.getElementById('email').value = 'sharma.kirana@anmolstore.in';
+      document.getElementById('password').value = 'Seller@123';
+    });
+    document.getElementById('btn-fill-admin').addEventListener('click', () => {
+      document.getElementById('email').value = 'admin@anmolstore.in';
+      document.getElementById('password').value = 'Admin@Anmol2026';
+    });
+
+    // Form submission
+    const form = document.getElementById('login-form');
+    const submitBtn = document.getElementById('btn-login-submit');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
+
+      const result = await auth.login(email, password);
+
+      if (result.success) {
+        notify.success(`Welcome back, ${result.user.name}!`);
+        // Sync cart after login
+        await cart.fetchCart();
+
+        setTimeout(() => {
+          if (redirectUrl) {
+            window.location.href = decodeURIComponent(redirectUrl);
+          } else if (result.user.role === 'admin') {
+            window.location.href = 'admin-dashboard.html';
+          } else if (result.user.role === 'seller') {
+            window.location.href = 'seller-dashboard.html';
+          } else {
+            window.location.href = 'customer-dashboard.html';
+          }
+        }, 1000);
+      } else {
+        notify.error(result.message);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Sign In to ANMOL STORE';
+      }
+    });
+  </script>
+  <script type="module" src="js/pwa.js"></script>
+</body>
+</html>

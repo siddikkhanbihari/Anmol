@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ANMOL STORE</string>
+    <string name="default_url">https://anmolstore.in</string>
+    <string name="dev_url">http://10.178.230.171:5000</string>
+</resources>

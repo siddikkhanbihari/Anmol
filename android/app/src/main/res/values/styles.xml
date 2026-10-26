@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.AnmolStore" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary_navy</item>
+        <item name="colorPrimaryVariant">@color/brand_blue</item>
+        <item name="colorSecondary">@color/accent_orange</item>
+        <item name="android:statusBarColor">@color/primary_navy</item>
+        <item name="android:navigationBarColor">@color/white</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+</resources>

@@ -1,0 +1,97 @@
+/* ANMOL STORE - Design Tokens & Variables */
+:root {
+  /* Brand Color Palette */
+  --primary-navy: #123B70;
+  --primary-navy-dark: #0A2547;
+  --primary-navy-light: #1E4E8C;
+  --brand-blue: #2563EB;
+  --brand-blue-hover: #1D4ED8;
+  --brand-blue-light: #EFF6FF;
+  --accent-orange: #F97316;
+  --accent-orange-hover: #EA580C;
+  --accent-orange-light: #FFF7ED;
+
+  /* Neutrals & Base */
+  --color-white: #FFFFFF;
+  --color-bg: #F7F9FC;
+  --color-surface: #FFFFFF;
+  --color-surface-alt: #F1F5F9;
+  --color-text: #172033;
+  --color-text-muted: #64748B;
+  --color-text-subtle: #94A3B8;
+  --color-border: #E2E8F0;
+  --color-border-dark: #CBD5E1;
+
+  /* Semantic Feedback */
+  --color-success: #10B981;
+  --color-success-bg: #ECFDF5;
+  --color-warning: #F59E0B;
+  --color-warning-bg: #FFFBEB;
+  --color-danger: #EF4444;
+  --color-danger-bg: #FEF2F2;
+  --color-info: #0284C7;
+  --color-info-bg: #F0F9FF;
+
+  /* Typography */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-md: 1.125rem;   /* 18px */
+  --font-size-lg: 1.25rem;    /* 20px */
+  --font-size-xl: 1.5rem;     /* 24px */
+  --font-size-2xl: 1.875rem;  /* 30px */
+  --font-size-3xl: 2.25rem;   /* 36px */
+  --font-size-4xl: 3rem;      /* 48px */
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.7;
+
+  /* Spacing */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+
+  /* Border Radii */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(18, 59, 112, 0.05);
+  --shadow-sm: 0 2px 4px rgba(18, 59, 112, 0.06), 0 1px 2px rgba(18, 59, 112, 0.04);
+  --shadow-md: 0 4px 12px rgba(18, 59, 112, 0.08), 0 2px 4px rgba(18, 59, 112, 0.04);
+  --shadow-lg: 0 10px 24px rgba(18, 59, 112, 0.10), 0 4px 8px rgba(18, 59, 112, 0.05);
+  --shadow-xl: 0 20px 35px rgba(18, 59, 112, 0.12), 0 8px 16px rgba(18, 59, 112, 0.06);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Layout */
+  --container-max: 1280px;
+  --header-height: 80px;
+  --announcement-height: 36px;
+  --z-sticky: 100;
+  --z-dropdown: 200;
+  --z-modal: 500;
+  --z-toast: 1000;
+}

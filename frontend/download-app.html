@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123B70">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ANMOL STORE">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <title>Download ANMOL STORE Android App (.APK) | Official Mobile App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    .download-hero {
+      background: linear-gradient(135deg, var(--primary-navy-dark) 0%, var(--primary-navy) 60%, var(--brand-blue) 100%);
+      color: var(--color-white);
+      padding: var(--space-12) 0 var(--space-8);
+      text-align: center;
+      position: relative;
+    }
+    .app-card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+      margin-top: var(--space-8);
+    }
+    @media (max-width: 768px) {
+      .app-card-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .download-box {
+      background: var(--color-white);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-8);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--color-border);
+      text-align: center;
+      transition: all var(--transition-normal);
+    }
+    .download-box:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-xl);
+    }
+    .qr-large {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto var(--space-4);
+      background: var(--color-white);
+      padding: var(--space-3);
+      border: 2px dashed var(--color-border);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="main-header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand-logo">
+        <div class="logo-icon"><i class="fas fa-store"></i></div>
+        <div class="logo-text">
+          <span class="logo-title">ANMOL STORE</span>
+          <span class="logo-tagline">LOCAL BUSINESS, DIGITAL FUTURE</span>
+        </div>
+      </a>
+      <div class="header-actions">
+        <a href="index.html" class="btn btn-outline btn-sm"><i class="fas fa-home"></i> Back to Home</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="download-hero">
+      <div class="container">
+        <div style="display: inline-block; width: 72px; height: 72px; border-radius: var(--radius-2xl); background: var(--color-white); padding: 4px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); margin-bottom: var(--space-4);">
+          <img src="assets/icons/icon-192.png" alt="ANMOL STORE App" style="width: 100%; height: 100%; object-fit: contain;">
+        </div>
+        <h1 style="font-size: var(--font-size-3xl); font-weight: 800; margin-bottom: var(--space-2);">Get ANMOL STORE on Your Phone</h1>
+        <p style="font-size: var(--font-size-base); opacity: 0.9; max-width: 600px; margin: 0 auto;">
+          Aapki Dukaan, Aapka Business, Aapki Pehchaan. Shop local products, compare prices, and book services directly from your Android phone!
+        </p>
+      </div>
+    </div>
+
+    <div class="container" style="padding: var(--space-10) var(--space-4);">
+      <div class="app-card-grid">
+        <!-- Option 1: Instant PWA Install -->
+        <div class="download-box">
+          <div style="font-size: 2.5rem; color: var(--accent-orange); margin-bottom: var(--space-3);">
+            <i class="fas fa-mobile-alt"></i>
+          </div>
+          <h3 style="font-size: var(--font-size-xl); color: var(--primary-navy); margin-bottom: var(--space-2);">1. Instant App (PWA)</h3>
+          <p style="color: var(--color-muted); font-size: var(--font-size-sm); margin-bottom: var(--space-6);">
+            No APK download or installation security prompts needed. Installs instantly onto your home screen in 2 seconds!
+          </p>
+
+          <button type="button" id="btn-pwa-install-page" class="btn btn-primary btn-lg btn-block" style="display: flex; align-items: center; justify-content: center; gap: var(--space-2); margin-bottom: var(--space-4);">
+            <i class="fas fa-download"></i> Install App on This Device
+          </button>
+
+          <div style="font-size: var(--font-size-xs); color: var(--color-muted); text-align: left; background: var(--color-bg); padding: var(--space-3); border-radius: var(--radius-md);">
+            <strong>On Android:</strong> Click "Install App" or tap <strong>⋮ -> Install App</strong> in Chrome.<br>
+            <strong>On iPhone:</strong> Tap the <strong>Share</strong> button in Safari -> <strong>Add to Home Screen</strong>.
+          </div>
+        </div>
+
+        <!-- Option 2: QR Code Scan -->
+        <div class="download-box">
+          <div class="qr-large">
+            <img id="qr-code-img" src="" alt="Scan QR Code" style="width: 100%; height: 100%; object-fit: contain;">
+          </div>
+          <h3 style="font-size: var(--font-size-lg); color: var(--primary-navy); margin-bottom: var(--space-1);">Scan with Phone Camera</h3>
+          <p style="color: var(--color-muted); font-size: var(--font-size-xs); margin-bottom: var(--space-4);">
+            Open your smartphone camera and point at this QR code to launch ANMOL STORE on your phone right now.
+          </p>
+
+          <div style="background: var(--color-bg); padding: var(--space-2) var(--space-4); border-radius: var(--radius-full); font-size: var(--font-size-xs); color: var(--brand-blue); font-family: monospace; display: inline-block;">
+            <span id="current-url-display"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Android Studio & APK Source Guide -->
+      <div style="margin-top: var(--space-10); background: var(--color-white); border-radius: var(--radius-2xl); padding: var(--space-8); border: 1px solid var(--color-border); box-shadow: var(--shadow-sm);">
+        <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4);">
+          <i class="fab fa-android" style="font-size: 2rem; color: #10B981;"></i>
+          <div>
+            <h3 style="margin: 0; color: var(--primary-navy);">Android Studio Native App Source Code</h3>
+            <span style="font-size: var(--font-size-xs); color: var(--color-muted);">Located in your project: <code>android/</code></span>
+          </div>
+        </div>
+        <p style="font-size: var(--font-size-sm); color: var(--color-text); line-height: 1.6;">
+          A full-fledged native Android Studio project with WebView, camera photo-picker, geolocation, and back navigation is already pre-configured in your repository under <code>android/</code>.
+        </p>
+        <div style="background: var(--color-bg); padding: var(--space-4); border-radius: var(--radius-lg); font-size: var(--font-size-xs); font-family: monospace; color: var(--primary-navy-dark); margin-top: var(--space-4);">
+          1. Open <strong>Android Studio</strong><br>
+          2. Click <strong>File -&gt; Open</strong> and select <code>C:\Users\HP\Desktop\anmol\android</code><br>
+          3. Click <strong>Build -&gt; Build Bundle(s) / APK(s) -&gt; Build APK(s)</strong><br>
+          4. Your compiled <code>app-debug.apk</code> is ready to install on any Android phone!
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="main-footer" style="padding: var(--space-6) 0; text-align: center; border-top: 1px solid var(--color-border); margin-top: var(--space-8);">
+    <div class="container">
+      <p style="font-size: var(--font-size-xs); color: var(--color-muted); margin: 0;">
+        &copy; 2026 ANMOL STORE. Aapki Dukaan, Aapka Business, Aapki Pehchaan. All rights reserved.
+      </p>
+    </div>
+  </footer>
+
+  <script type="module">
+    import './js/pwa.js';
+    import './js/app-download-modal.js';
+
+    const currentUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? `${window.location.protocol}//${window.location.hostname}:5000`
+      : window.location.origin;
+
+    document.getElementById('current-url-display').textContent = currentUrl;
+    document.getElementById('qr-code-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&margin=10&data=${encodeURIComponent(currentUrl)}`;
+
+    document.getElementById('btn-pwa-install-page').addEventListener('click', () => {
+      if (window.installAnmolApp) {
+        window.installAnmolApp();
+      } else {
+        alert('To install the app on your phone, tap your browser menu (⋮) and select "Install app" or "Add to Home Screen".');
+      }
+    });
+  </script>
+</body>
+</html>

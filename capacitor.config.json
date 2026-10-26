@@ -1,0 +1,15 @@
+{
+  "appId": "in.anmolstore.app",
+  "appName": "ANMOL STORE",
+  "webDir": "frontend",
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "https://anmolstore.in",
+    "cleartext": true
+  },
+  "android": {
+    "allowMixedContent": true,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": true
+  }
+}

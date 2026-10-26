@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123B70">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ANMOL STORE">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <title>Checkout — ANMOL STORE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    .checkout-layout {
+      display: grid;
+      grid-template-columns: 1.4fr 0.9fr;
+      gap: var(--space-8);
+      align-items: start;
+    }
+    .checkout-step {
+      background: #FFF;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      margin-bottom: var(--space-6);
+    }
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .step-number {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--brand-blue);
+      color: #FFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-size-xs);
+      font-weight: 700;
+    }
+    .address-card {
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      margin-bottom: var(--space-3);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      position: relative;
+    }
+    .address-card.selected {
+      border-color: var(--brand-blue);
+      background: var(--brand-blue-light);
+    }
+    .payment-option-card {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      margin-bottom: var(--space-3);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      cursor: pointer;
+    }
+    .payment-option-card.selected {
+      border-color: var(--brand-blue);
+      background: var(--brand-blue-light);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Minimal Checkout Header -->
+  <header style="background: #FFF; border-bottom: 1px solid var(--color-border); padding: var(--space-4) 0;">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon-wrap"><i class="fas fa-store-alt"></i></div>
+        <div class="brand-text-wrap">
+          <div class="brand-title">ANMOL <span>STORE</span></div>
+          <div class="brand-tagline">Secure Order Checkout</div>
+        </div>
+      </a>
+      <div style="font-size: var(--font-size-xs); color: var(--color-success); font-weight: 600; display: flex; align-items: center; gap: 6px;">
+        <i class="fas fa-lock"></i> 256-Bit SSL Encrypted
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top: var(--space-8); padding-bottom: var(--space-16);">
+    <div class="checkout-layout">
+      <!-- Left Column: Checkout Steps -->
+      <div>
+        <!-- Step 1: Delivery Address -->
+        <div class="checkout-step">
+          <div class="step-header">
+            <span class="step-number">1</span>
+            <h2 style="font-size: var(--font-size-md); margin: 0;">Select Delivery Address</h2>
+          </div>
+
+          <div id="saved-addresses-list">
+            <!-- Populated via API -->
+          </div>
+
+          <!-- Add New Address Toggle -->
+          <button type="button" id="btn-toggle-new-addr" class="btn btn-outline btn-sm" style="margin-top: var(--space-2);">
+            <i class="fas fa-plus"></i> Add New Delivery Address
+          </button>
+
+          <!-- New Address Form (Collapsible) -->
+          <form id="new-address-form" style="display: none; margin-top: var(--space-4); padding: var(--space-4); background: var(--color-surface-alt); border-radius: var(--radius-md);">
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label required" for="new-recipient-name">Full Name</label>
+                <input type="text" id="new-recipient-name" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label required" for="new-recipient-phone">Mobile Phone</label>
+                <input type="tel" id="new-recipient-phone" class="form-control" placeholder="10-digit number" maxlength="10" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label required" for="new-street">Flat / House No. & Street Name</label>
+              <input type="text" id="new-street" class="form-control" required>
+            </div>
+            <div class="grid-3">
+              <div class="form-group">
+                <label class="form-label required" for="new-city">City</label>
+                <input type="text" id="new-city" class="form-control" value="Kanpur" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label required" for="new-state">State</label>
+                <input type="text" id="new-state" class="form-control" value="Uttar Pradesh" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label required" for="new-pincode">PIN Code</label>
+                <input type="text" id="new-pincode" class="form-control" placeholder="208001" maxlength="6" required>
+              </div>
+            </div>
+            <button type="button" id="btn-save-new-addr" class="btn btn-secondary btn-sm">Save & Use This Address</button>
+          </form>
+        </div>
+
+        <!-- Step 2: Payment Method Selection -->
+        <div class="checkout-step">
+          <div class="step-header">
+            <span class="step-number">2</span>
+            <h2 style="font-size: var(--font-size-md); margin: 0;">Payment Method</h2>
+          </div>
+
+          <label class="payment-option-card selected">
+            <input type="radio" name="payment-method" value="cod" checked>
+            <div>
+              <strong style="color: var(--primary-navy); display: block; font-size: var(--font-size-sm);">
+                Cash on Delivery (COD) / Pay on Delivery
+              </strong>
+              <span style="font-size: var(--font-size-xs); color: var(--color-text-muted);">
+                Pay using Cash or UPI QR to the delivery executive at your doorstep.
+              </span>
+            </div>
+          </label>
+
+          <label class="payment-option-card">
+            <input type="radio" name="payment-method" value="online">
+            <div>
+              <strong style="color: var(--primary-navy); display: block; font-size: var(--font-size-sm);">
+                Online Payment (UPI / Debit / Credit / NetBanking)
+              </strong>
+              <span style="font-size: var(--font-size-xs); color: var(--color-text-muted);">
+                Instant verified checkout via Razorpay Gateway (Simulated in development mode).
+              </span>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Right Column: Final Order Review -->
+      <aside>
+        <div class="order-summary-card">
+          <h3 style="font-size: var(--font-size-base); color: var(--primary-navy); margin-bottom: var(--space-4); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-2);">
+            Items in Your Order
+          </h3>
+
+          <div id="checkout-items-list" style="margin-bottom: var(--space-4); max-height: 240px; overflow-y: auto;">
+            <!-- Populated via Cart -->
+          </div>
+
+          <div class="summary-line">
+            <span>Items Subtotal:</span>
+            <span id="checkout-subtotal">₹0</span>
+          </div>
+
+          <div class="summary-line">
+            <span>Delivery Charges:</span>
+            <span id="checkout-delivery">₹0</span>
+          </div>
+
+          <div class="summary-line total">
+            <span>Total Payable:</span>
+            <span id="checkout-grand-total">₹0</span>
+          </div>
+
+          <button type="button" id="btn-place-order" class="btn btn-primary btn-block btn-lg" style="margin-top: var(--space-4);">
+            Place Order Now
+          </button>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-bottom">
+      <div class="container">
+        <div class="footer-bottom-inner">
+          <div>&copy; 2026 ANMOL STORE. All rights reserved.</div>
+          <div class="footer-bottom-links">
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
+            <a href="contact.html">Support</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="js/config.js"></script>
+  <script type="module" src="js/notifications.js"></script>
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/cart.js"></script>
+  <script type="module">
+    import { api } from './js/api.js';
+    import { auth } from './js/auth.js';
+    import { cart } from './js/cart.js';
+    import { notify } from './js/notifications.js';
+    import { formatCurrency, getFallbackImage } from './js/config.js';
+
+    let selectedAddress = null;
+    let savedAddresses = [];
+
+    async function initCheckout() {
+      // Must be authenticated to checkout
+      if (!auth.isAuthenticated()) {
+        notify.warning('Please log in or register to complete your order.');
+        window.location.href = `login.html?redirect=${encodeURIComponent(window.location.pathname)}`;
+        return;
+      }
+
+      await cart.fetchCart();
+      const items = cart.cart.items || [];
+      if (!items.length) {
+        window.location.href = 'cart.html';
+        return;
+      }
+
+      renderCheckoutItems();
+      await loadAddresses();
+    }
+
+    function renderCheckoutItems() {
+      const itemsList = document.getElementById('checkout-items-list');
+      const items = cart.cart.items || [];
+
+      itemsList.innerHTML = items.map(item => {
+        const p = item.product || {};
+        const price = item.priceSnapshot || p.price || 0;
+        return `
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: var(--font-size-xs);">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <img src="${p.images?.[0] || getFallbackImage('product')}" style="width: 32px; height: 32px; border-radius: 4px; object-fit: cover;">
+              <div>
+                <strong>${p.name}</strong> &times; ${item.quantity}
+              </div>
+            </div>
+            <span>${formatCurrency(price * item.quantity)}</span>
+          </div>
+        `;
+      }).join('');
+
+      const totals = cart.getTotals();
+      document.getElementById('checkout-subtotal').textContent = formatCurrency(totals.subtotal);
+      document.getElementById('checkout-delivery').textContent = formatCurrency(totals.deliveryFee);
+      document.getElementById('checkout-grand-total').textContent = formatCurrency(totals.grandTotal);
+    }
+
+    async function loadAddresses() {
+      try {
+        const res = await api.get('/users/addresses');
+        const container = document.getElementById('saved-addresses-list');
+
+        if (res.success && res.data && res.data.length > 0) {
+          savedAddresses = res.data;
+          selectedAddress = savedAddresses.find(a => a.isDefault) || savedAddresses[0];
+
+          container.innerHTML = savedAddresses.map((addr, idx) => `
+            <div class="address-card ${addr._id === selectedAddress._id ? 'selected' : ''}" data-id="${addr._id}">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <strong>${addr.recipientName} (${addr.addressType})</strong>
+                <span style="font-size: var(--font-size-xs); color: var(--color-text-muted);"><i class="fas fa-phone"></i> ${addr.phone}</span>
+              </div>
+              <p style="margin: 4px 0 0 0; font-size: var(--font-size-xs); color: var(--color-text-muted);">
+                ${addr.street}, ${addr.city}, ${addr.state} — ${addr.pincode}
+              </p>
+            </div>
+          `).join('');
+
+          container.querySelectorAll('.address-card').forEach(card => {
+            card.addEventListener('click', () => {
+              container.querySelectorAll('.address-card').forEach(c => c.classList.remove('selected'));
+              card.classList.add('selected');
+              selectedAddress = savedAddresses.find(a => a._id === card.dataset.id);
+            });
+          });
+        } else {
+          // Open new address form by default
+          document.getElementById('new-address-form').style.display = 'block';
+        }
+      } catch (err) {
+        document.getElementById('new-address-form').style.display = 'block';
+      }
+    }
+
+    // Toggle new address form
+    document.getElementById('btn-toggle-new-addr').addEventListener('click', () => {
+      const form = document.getElementById('new-address-form');
+      form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // Save new address button
+    document.getElementById('btn-save-new-addr').addEventListener('click', async () => {
+      const recipientName = document.getElementById('new-recipient-name').value.trim();
+      const phone = document.getElementById('new-recipient-phone').value.trim();
+      const street = document.getElementById('new-street').value.trim();
+      const city = document.getElementById('new-city').value.trim();
+      const state = document.getElementById('new-state').value.trim();
+      const pincode = document.getElementById('new-pincode').value.trim();
+
+      if (!recipientName || !phone || !street || !pincode) {
+        notify.warning('Please enter recipient name, phone, street, and PIN code');
+        return;
+      }
+
+      try {
+        const res = await api.post('/users/addresses', {
+          recipientName,
+          phone,
+          street,
+          city,
+          state,
+          pincode,
+          isDefault: true
+        });
+
+        if (res.success) {
+          notify.success('Address saved!');
+          document.getElementById('new-address-form').style.display = 'none';
+          await loadAddresses();
+        }
+      } catch (err) {
+        notify.error(err.message || 'Failed to save address');
+      }
+    });
+
+    // Payment method selector highlighting
+    document.querySelectorAll('.payment-option-card').forEach(card => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.payment-option-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        card.querySelector('input[type="radio"]').checked = true;
+      });
+    });
+
+    // Place Order
+    document.getElementById('btn-place-order').addEventListener('click', async () => {
+      if (!selectedAddress) {
+        notify.warning('Please select or add a delivery address.');
+        return;
+      }
+
+      const paymentMethod = document.querySelector('input[name="payment-method"]:checked')?.value || 'cod';
+      const items = (cart.cart.items || []).map(i => ({
+        productId: i.product?._id || i.product?.id || i.productId,
+        quantity: i.quantity,
+        variant: i.variant
+      }));
+
+      const placeBtn = document.getElementById('btn-place-order');
+      placeBtn.disabled = true;
+      placeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Order...';
+
+      try {
+        const res = await api.post('/orders', {
+          items,
+          deliveryAddress: {
+            recipientName: selectedAddress.recipientName,
+            phone: selectedAddress.phone,
+            street: selectedAddress.street,
+            landmark: selectedAddress.landmark,
+            city: selectedAddress.city,
+            state: selectedAddress.state,
+            pincode: selectedAddress.pincode
+          },
+          paymentMethod
+        });
+
+        if (res.success && res.data) {
+          await cart.clearCart();
+          notify.success('Order placed successfully!');
+          window.location.href = `order-confirmation.html?id=${res.data._id}`;
+        }
+      } catch (err) {
+        notify.error(err.message || 'Failed to place order. Please review stock.');
+        placeBtn.disabled = false;
+        placeBtn.innerHTML = 'Place Order Now';
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', initCheckout);
+  </script>
+  <script type="module" src="js/pwa.js"></script>
+</body>
+</html>

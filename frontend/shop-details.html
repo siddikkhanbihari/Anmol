@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123B70">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ANMOL STORE">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <title>Shop Storefront — ANMOL STORE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    .shop-profile-header {
+      background: #FFF;
+      border-bottom: 1px solid var(--color-border);
+      margin-bottom: var(--space-8);
+    }
+    .shop-profile-cover {
+      height: 240px;
+      position: relative;
+      background: linear-gradient(135deg, var(--primary-navy) 0%, var(--brand-blue) 100%);
+    }
+    .shop-profile-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .shop-profile-bar {
+      padding: var(--space-4) 0 var(--space-6) 0;
+      position: relative;
+    }
+    .shop-profile-main {
+      display: flex;
+      align-items: flex-end;
+      gap: var(--space-6);
+      margin-top: -60px;
+    }
+    .shop-profile-logo {
+      width: 110px;
+      height: 110px;
+      background: #FFF;
+      border-radius: var(--radius-lg);
+      border: 4px solid #FFF;
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .shop-profile-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .shop-info-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      margin-top: var(--space-2);
+    }
+    .shop-info-meta span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Announcement Bar -->
+  <div class="announcement-bar">
+    <div class="container">
+      <div class="announcement-text">
+        <span class="announcement-badge">Verified Merchant</span>
+        <span id="announcement-shop-msg">Welcome to our digital storefront on ANMOL STORE</span>
+      </div>
+      <div class="announcement-links">
+        <a href="shops.html"><i class="fas fa-arrow-left"></i> All Shops</a>
+        <a href="contact.html"><i class="fas fa-headset"></i> Support</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Header -->
+  <header class="main-header">
+    <div class="container">
+      <div class="header-inner">
+        <button class="mobile-menu-btn mobile-menu-toggle" aria-label="Open menu"><i class="fas fa-bars"></i></button>
+
+        <a href="index.html" class="brand-logo">
+          <div class="brand-icon-wrap"><i class="fas fa-store-alt"></i></div>
+          <div class="brand-text-wrap">
+            <div class="brand-title">ANMOL <span>STORE</span></div>
+            <div class="brand-tagline">Local Business, Digital Future</div>
+          </div>
+        </a>
+
+        <button class="location-btn location-picker-btn" title="Choose Location">
+          <i class="fas fa-map-marker-alt"></i>
+          <span class="location-text current-location-display">Kanpur, 208001</span>
+          <i class="fas fa-chevron-down" style="font-size: 0.65rem;"></i>
+        </button>
+
+        <div class="header-search">
+          <form class="header-search-form" action="products.html" method="GET">
+            <i class="fas fa-search search-icon-left"></i>
+            <input type="text" name="q" placeholder="Search across all shops...">
+            <button type="submit">Search</button>
+          </form>
+        </div>
+
+        <div class="header-actions">
+          <a href="login.html" class="header-action-item user-account-link">
+            <i class="far fa-user action-icon"></i>
+            <span class="header-action-text">Sign In</span>
+          </a>
+          <a href="cart.html" class="header-action-item" title="Cart">
+            <i class="fas fa-shopping-bag action-icon">
+              <span class="badge-count cart-badge-count" style="display: none;">0</span>
+            </i>
+            <span class="header-action-text">Cart</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Shop Profile Header Section -->
+  <div class="shop-profile-header" id="shop-header-container">
+    <div class="shop-profile-cover">
+      <img id="shop-cover-img" src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80" alt="Shop Cover">
+    </div>
+    <div class="container shop-profile-bar">
+      <div class="shop-profile-main">
+        <div class="shop-profile-logo">
+          <img id="shop-logo-img" src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80" alt="Shop Logo">
+        </div>
+        <div style="flex: 1;">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3);">
+            <div>
+              <h1 id="shop-name" style="font-size: var(--font-size-2xl); display: flex; align-items: center; gap: 8px;">
+                Loading Shop...
+              </h1>
+              <p id="shop-description" style="color: var(--color-text-muted); font-size: var(--font-size-sm); margin: 4px 0 0 0; max-width: 750px;">
+                ...
+              </p>
+            </div>
+            <div style="display: flex; gap: var(--space-2);">
+              <a id="shop-call-btn" href="#" class="btn btn-outline btn-sm">
+                <i class="fas fa-phone-alt"></i> Call Shop
+              </a>
+              <button id="btn-open-review-modal" class="btn btn-primary btn-sm">
+                <i class="fas fa-star"></i> Rate Shop
+              </button>
+            </div>
+          </div>
+
+          <div class="shop-info-meta">
+            <span id="shop-category-badge" class="badge badge-primary">Category</span>
+            <span><i class="fas fa-map-marker-alt" style="color: var(--accent-orange);"></i> <span id="shop-address-text">...</span></span>
+            <span><i class="fas fa-clock" style="color: var(--brand-blue);"></i> <span id="shop-hours-text">...</span></span>
+            <span><i class="fas fa-truck" style="color: var(--color-success);"></i> Delivery: <span id="shop-delivery-text">₹40</span></span>
+            <span class="stars"><i class="fas fa-star"></i> <span id="shop-rating-text">4.8</span> (<span id="shop-reviews-count">0</span> reviews)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Storefront Main -->
+  <main class="container" style="padding-bottom: var(--space-12);">
+    <!-- In-Shop Search Toolbar -->
+    <div style="background: #FFF; padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--color-border); margin-bottom: var(--space-6); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4);">
+      <h3 style="font-size: var(--font-size-md);">Products from this Dukaan (<span id="shop-products-count">0</span>)</h3>
+      <div style="max-width: 380px; width: 100%;">
+        <input type="text" id="shop-products-search" class="form-control" placeholder="Search within this shop...">
+      </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="grid-4" id="shop-products-grid">
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div style="margin-top: var(--space-12); padding-top: var(--space-8); border-top: 2px solid var(--color-border);">
+      <div class="section-header">
+        <div class="section-header-title">
+          <h2><i class="fas fa-comments" style="color: var(--brand-blue);"></i> Customer Reviews</h2>
+          <p>Feedback from buyers who ordered from this shop</p>
+        </div>
+      </div>
+
+      <div id="shop-reviews-list" class="grid-2">
+        <!-- Populated via API -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Review Modal -->
+  <div class="modal-backdrop" id="review-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Write a Review for This Shop</h3>
+        <button class="modal-close" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label required">Rating</label>
+          <select id="review-rating-select" class="form-select">
+            <option value="5">5 Stars — Excellent Experience</option>
+            <option value="4">4 Stars — Very Good</option>
+            <option value="3">3 Stars — Average</option>
+            <option value="2">2 Stars — Poor</option>
+            <option value="1">1 Star — Terrible</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="review-title-input">Headline</label>
+          <input type="text" id="review-title-input" class="form-control" placeholder="e.g. Great quality and fast delivery">
+        </div>
+        <div class="form-group">
+          <label class="form-label required" for="review-comment-input">Review Details</label>
+          <textarea id="review-comment-input" class="form-control" rows="4" placeholder="Share your experience with this shop..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="btn-submit-review" class="btn btn-primary">Submit Review</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Drawer Menu -->
+  <div class="mobile-drawer-overlay">
+    <div class="mobile-drawer">
+      <div class="mobile-drawer-header">
+        <div class="brand-title" style="color: #FFF;">ANMOL <span>STORE</span></div>
+        <button class="modal-close mobile-drawer-close" style="color: #FFF;">&times;</button>
+      </div>
+      <div class="mobile-drawer-body">
+        <ul class="mobile-nav-links">
+          <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+          <li><a href="shops.html"><i class="fas fa-store"></i> Explore Shops</a></li>
+          <li><a href="products.html"><i class="fas fa-shopping-basket"></i> Products</a></li>
+          <li><a href="services.html"><i class="fas fa-tools"></i> Local Services</a></li>
+          <li><a href="vehicles.html"><i class="fas fa-car"></i> Cars & Bikes</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-bottom">
+      <div class="container">
+        <div class="footer-bottom-inner">
+          <div>&copy; 2026 ANMOL STORE. All rights reserved.</div>
+          <div class="footer-bottom-links">
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
+            <a href="contact.html">Support</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="js/config.js"></script>
+  <script type="module" src="js/notifications.js"></script>
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/cart.js"></script>
+  <script type="module" src="js/navigation.js"></script>
+  <script type="module">
+    import { api } from './js/api.js';
+    import { auth } from './js/auth.js';
+    import { cart } from './js/cart.js';
+    import { notify } from './js/notifications.js';
+    import { formatCurrency, formatDate, getFallbackImage, debounce } from './js/config.js';
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const slug = urlParams.get('slug') || 'sharma-kirana-store';
+
+    let currentShop = null;
+    let allProducts = [];
+
+    async function loadShopDetails() {
+      try {
+        const res = await api.get(`/shops/${slug}`);
+        if (res.success && res.data) {
+          const { shop, products, reviews } = res.data;
+          currentShop = shop;
+          allProducts = products;
+
+          document.title = `${shop.name} — ANMOL STORE`;
+          document.getElementById('shop-name').innerHTML = `
+            ${shop.name}
+            ${shop.isVerified ? '<i class="fas fa-check-circle verified-icon" title="Verified Store"></i>' : ''}
+          `;
+          document.getElementById('shop-description').textContent = shop.description;
+          document.getElementById('shop-category-badge').textContent = shop.category;
+          document.getElementById('shop-address-text').textContent = `${shop.address.street}, ${shop.address.city} (${shop.address.pincode})`;
+          document.getElementById('shop-hours-text').textContent = `${shop.businessHours?.days || 'Daily'}: ${shop.businessHours?.open || '09:00 AM'} - ${shop.businessHours?.close || '09:00 PM'}`;
+          document.getElementById('shop-delivery-text').textContent = shop.deliveryCharge ? formatCurrency(shop.deliveryCharge) : 'Free';
+          document.getElementById('shop-rating-text').textContent = shop.rating.toFixed(1);
+          document.getElementById('shop-reviews-count').textContent = shop.reviewCount || 0;
+          document.getElementById('shop-products-count').textContent = products.length;
+
+          document.getElementById('shop-cover-img').src = shop.coverImage || getFallbackImage('shop');
+          document.getElementById('shop-logo-img').src = shop.logo || getFallbackImage('shop');
+
+          const callBtn = document.getElementById('shop-call-btn');
+          if (shop.contactPhone) {
+            callBtn.href = `tel:${shop.contactPhone}`;
+            callBtn.style.display = 'inline-flex';
+          } else {
+            callBtn.style.display = 'none';
+          }
+
+          renderProducts(products);
+          renderReviews(reviews);
+        }
+      } catch (err) {
+        document.querySelector('main').innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <h3 class="empty-state-title">Shop Not Found</h3>
+            <p class="empty-state-text">${err.message || 'The requested shop does not exist or has been deactivated.'}</p>
+            <a href="shops.html" class="btn btn-primary">Browse All Shops</a>
+          </div>
+        `;
+      }
+    }
+
+    function renderProducts(products) {
+      const grid = document.getElementById('shop-products-grid');
+      if (!products.length) {
+        grid.innerHTML = `
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <p class="empty-state-text">No products listed by this shop currently.</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = products.map(p => `
+        <div class="product-card" data-id="${p._id}">
+          <div class="product-thumb">
+            <img src="${p.images?.[0] || getFallbackImage('product')}" alt="${p.name}" loading="lazy">
+          </div>
+          <div class="product-content">
+            <h3 class="product-title">
+              <a href="product-details.html?id=${p._id}">${p.name}</a>
+            </h3>
+            <div class="product-rating">
+              <div class="stars"><i class="fas fa-star"></i> ${p.rating.toFixed(1)}</div>
+              <span>(${p.reviewCount || 0})</span>
+            </div>
+            <div class="product-price-row">
+              <div class="price-box">
+                <span class="current-price">${formatCurrency(p.price)}</span>
+                ${p.originalPrice ? `<span class="original-price">${formatCurrency(p.originalPrice)}</span>` : ''}
+              </div>
+              <button class="btn-add-cart" data-product='${JSON.stringify({ _id: p._id, name: p.name, price: p.price, shop: currentShop, stock: p.stock })}'>
+                <i class="fas fa-plus"></i> Add
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      grid.querySelectorAll('.btn-add-cart').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const product = JSON.parse(btn.dataset.product);
+          cart.addItem(product, 1);
+        });
+      });
+    }
+
+    function renderReviews(reviews) {
+      const list = document.getElementById('shop-reviews-list');
+      if (!reviews || !reviews.length) {
+        list.innerHTML = `
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <p class="empty-state-text">No reviews yet for this shop. Be the first to share your experience!</p>
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = reviews.map(r => `
+        <div style="background: #FFF; padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2);">
+            <div style="display: flex; align-items: center; gap: var(--space-2);">
+              <img src="${r.user?.avatar || getFallbackImage('avatar')}" style="width: 32px; height: 32px; border-radius: 50%;" alt="${r.user?.name || 'Customer'}">
+              <strong style="font-size: var(--font-size-sm);">${r.user?.name || 'Customer'}</strong>
+            </div>
+            <div class="stars"><i class="fas fa-star"></i> ${r.rating}</div>
+          </div>
+          ${r.title ? `<div style="font-weight: 600; font-size: var(--font-size-sm); margin-bottom: 4px;">${r.title}</div>` : ''}
+          <p style="font-size: var(--font-size-xs); color: var(--color-text-muted); margin: 0;">${r.comment}</p>
+          <div style="font-size: 0.7rem; color: var(--color-text-subtle); margin-top: 6px;">${formatDate(r.createdAt)}</div>
+        </div>
+      `).join('');
+    }
+
+    // Filter products inside this shop
+    document.getElementById('shop-products-search').addEventListener('input', debounce((e) => {
+      const q = e.target.value.toLowerCase().trim();
+      const filtered = allProducts.filter(p => p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q));
+      renderProducts(filtered);
+    }, 250));
+
+    // Review Modal Handlers
+    const reviewModal = document.getElementById('review-modal');
+    document.getElementById('btn-open-review-modal').addEventListener('click', () => {
+      if (!auth.isAuthenticated()) {
+        notify.warning('Please log in to submit a review');
+        window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+        return;
+      }
+      reviewModal.classList.add('active');
+    });
+
+    reviewModal.querySelector('.modal-close').addEventListener('click', () => {
+      reviewModal.classList.remove('active');
+    });
+
+    document.getElementById('btn-submit-review').addEventListener('click', async () => {
+      const rating = document.getElementById('review-rating-select').value;
+      const title = document.getElementById('review-title-input').value.trim();
+      const comment = document.getElementById('review-comment-input').value.trim();
+
+      if (!comment) {
+        notify.warning('Please enter your review comment');
+        return;
+      }
+
+      try {
+        const res = await api.post('/reviews', {
+          targetType: 'shop',
+          targetId: currentShop._id,
+          rating,
+          title,
+          comment
+        });
+
+        if (res.success) {
+          notify.success('Review submitted successfully!');
+          reviewModal.classList.remove('active');
+          loadShopDetails();
+        }
+      } catch (err) {
+        notify.error(err.message || 'Failed to submit review');
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', loadShopDetails);
+  </script>
+</body>
+</html>

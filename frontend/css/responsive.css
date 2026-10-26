@@ -1,0 +1,238 @@
+/* ANMOL STORE - Responsive Breakpoints & Mobile Navigation */
+
+/* Mobile Bottom Navigation Bar */
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-white);
+  border-top: 1px solid var(--color-border);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  z-index: var(--z-sticky);
+  padding: 0.4rem 0;
+}
+
+.mobile-bottom-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: var(--color-text-muted);
+  font-size: 0.7rem;
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  position: relative;
+  padding: 4px 8px;
+}
+
+.mobile-nav-item.active,
+.mobile-nav-item:hover {
+  color: var(--brand-blue);
+}
+
+.mobile-nav-item i {
+  font-size: 1.2rem;
+}
+
+/* Mobile Drawer */
+.mobile-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(18, 59, 112, 0.5);
+  z-index: 600;
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition-normal);
+}
+
+.mobile-drawer-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.mobile-drawer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 300px;
+  max-width: 85vw;
+  background: var(--color-white);
+  z-index: 601;
+  transform: translateX(-100%);
+  transition: transform var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-xl);
+}
+
+.mobile-drawer-overlay.active .mobile-drawer {
+  transform: translateX(0);
+}
+
+.mobile-drawer-header {
+  padding: var(--space-4);
+  background: var(--primary-navy);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mobile-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-4);
+}
+
+.mobile-nav-links li {
+  border-bottom: 1px solid var(--color-surface-alt);
+}
+
+.mobile-nav-links a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-2);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.mobile-nav-links a:hover {
+  color: var(--brand-blue);
+  background: var(--color-surface-alt);
+}
+
+/* Breakpoint: Desktop / Tablet Landscape (max 1024px) */
+@media (max-width: 1024px) {
+  .footer-grid {
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+  }
+  .footer-contact-col {
+    grid-column: span 4;
+  }
+  .grid-4 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .grid-6 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .catalog-layout {
+    grid-template-columns: 240px 1fr;
+  }
+}
+
+/* Breakpoint: Tablet (max 768px) */
+@media (max-width: 768px) {
+  body {
+    padding-bottom: 60px; /* Space for mobile bottom bar */
+  }
+
+  .mobile-menu-btn {
+    display: block;
+  }
+
+  .secondary-nav {
+    display: none;
+  }
+
+  .location-btn span.location-text {
+    display: none;
+  }
+
+  .header-actions .header-action-text {
+    display: none;
+  }
+
+  .header-search {
+    max-width: none;
+  }
+
+  .catalog-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-sidebar {
+    position: static;
+    margin-bottom: var(--space-6);
+  }
+
+  .grid-4, .grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+  }
+
+  .grid-6 {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-3);
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+  }
+
+  .footer-brand {
+    grid-column: span 2;
+  }
+
+  .footer-contact-col {
+    grid-column: span 2;
+  }
+
+  .mobile-bottom-nav {
+    display: block;
+  }
+}
+
+/* Breakpoint: Small Mobile (max 480px) */
+@media (max-width: 480px) {
+  .header-inner {
+    height: 64px;
+    gap: var(--space-2);
+  }
+
+  .brand-title {
+    font-size: 1.15rem;
+  }
+
+  .brand-icon-wrap {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  .grid-2, .grid-3, .grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-6 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .product-thumb {
+    height: 160px;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-brand, .footer-contact-col {
+    grid-column: span 1;
+  }
+
+  .modal-container {
+    width: 95vw;
+    margin: var(--space-2);
+  }
+}

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123B70">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ANMOL STORE">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <title>Customer Orders — ANMOL SELLER HUB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    .seller-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: var(--space-8);
+      align-items: start;
+    }
+    .seller-sidebar {
+      background: #FFF;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      position: sticky;
+      top: calc(var(--header-height) + 20px);
+    }
+    .order-card {
+      background: #FFF;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      margin-bottom: var(--space-4);
+    }
+    .order-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--color-border);
+      padding-bottom: var(--space-3);
+      margin-bottom: var(--space-3);
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+    @media (max-width: 900px) {
+      .seller-layout { grid-template-columns: 1fr; }
+      .seller-sidebar { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="main-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="seller-dashboard.html" class="brand-logo">
+          <div class="brand-icon-wrap" style="background: linear-gradient(135deg, var(--accent-orange) 0%, #EA580C 100%);">
+            <i class="fas fa-store"></i>
+          </div>
+          <div class="brand-text-wrap">
+            <div class="brand-title">ANMOL <span>SELLER HUB</span></div>
+            <div class="brand-tagline">Order Fulfillment</div>
+          </div>
+        </a>
+
+        <div style="display: flex; align-items: center; gap: var(--space-4); margin-left: auto;">
+          <a href="seller-dashboard.html" class="btn btn-outline btn-sm"><i class="fas fa-arrow-left"></i> Dashboard</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding: var(--space-8) var(--space-4);">
+    <div class="seller-layout">
+      <!-- Sidebar -->
+      <aside class="seller-sidebar">
+        <nav>
+          <a href="seller-dashboard.html" class="dash-nav-item"><i class="fas fa-tachometer-alt"></i> Overview</a>
+          <a href="seller-products.html" class="dash-nav-item"><i class="fas fa-boxes"></i> My Products</a>
+          <a href="seller-orders.html" class="dash-nav-item active"><i class="fas fa-truck-loading"></i> Customer Orders</a>
+          <a href="seller-services.html" class="dash-nav-item"><i class="fas fa-tools"></i> Services & Bookings</a>
+          <a href="seller-profile.html" class="dash-nav-item"><i class="fas fa-cog"></i> Shop Settings</a>
+        </nav>
+      </aside>
+
+      <!-- Main Panel -->
+      <section>
+        <div style="margin-bottom: var(--space-6);">
+          <h1 style="font-size: var(--font-size-2xl); color: var(--primary-navy); margin: 0;">Customer Orders</h1>
+          <p style="color: var(--color-text-muted); font-size: var(--font-size-sm); margin: 2px 0 0 0;">
+            Accept orders, pack items, dispatch for local delivery, and update fulfillment status.
+          </p>
+        </div>
+
+        <!-- Filter tabs -->
+        <div style="display: flex; gap: var(--space-2); margin-bottom: var(--space-4); overflow-x: auto;">
+          <button class="btn btn-sm btn-outline active-filter-btn" data-status="">All Orders</button>
+          <button class="btn btn-sm btn-outline" data-status="pending">Pending</button>
+          <button class="btn btn-sm btn-outline" data-status="accepted">Accepted / Packing</button>
+          <button class="btn btn-sm btn-outline" data-status="shipped">Dispatched</button>
+          <button class="btn btn-sm btn-outline" data-status="delivered">Delivered</button>
+        </div>
+
+        <div id="seller-orders-container">
+          <div class="skeleton skeleton-card"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-bottom">
+      <div class="container">
+        <div class="footer-bottom-inner">
+          <div>&copy; 2026 ANMOL STORE Seller Hub.</div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="js/config.js"></script>
+  <script type="module" src="js/notifications.js"></script>
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script type="module">
+    import { api } from './js/api.js';
+    import { auth } from './js/auth.js';
+    import { notify } from './js/notifications.js';
+    import { formatCurrency, formatDate } from './js/config.js';
+
+    auth.requireAuth(['seller', 'admin']);
+
+    let currentFilterStatus = '';
+
+    async function loadOrders() {
+      const container = document.getElementById('seller-orders-container');
+      try {
+        const query = currentFilterStatus ? `?status=${currentFilterStatus}` : '';
+        const res = await api.get(`/orders/seller${query}`);
+
+        if (res.success && res.data) {
+          const orders = res.data.orders || [];
+
+          if (!orders.length) {
+            container.innerHTML = `
+              <div class="empty-state">
+                <div class="empty-state-icon"><i class="fas fa-clipboard-check"></i></div>
+                <h3 class="empty-state-title">No Orders Found</h3>
+                <p class="empty-state-text">There are no orders matching this status filter.</p>
+              </div>
+            `;
+            return;
+          }
+
+          container.innerHTML = orders.map(order => `
+            <div class="order-card" data-id="${order.orderId}">
+              <div class="order-card-header">
+                <div>
+                  <strong style="color: var(--primary-navy); font-size: var(--font-size-md);">Order #${order.orderNumber}</strong>
+                  <div style="font-size: var(--font-size-xs); color: var(--color-text-muted);">
+                    Received: ${formatDate(order.createdAt, true)}
+                  </div>
+                </div>
+                <div style="text-align: right;">
+                  <span class="badge ${order.sellerStatus === 'delivered' ? 'badge-success' : order.sellerStatus === 'rejected' ? 'badge-danger' : 'badge-primary'}">
+                    ${order.sellerStatus.toUpperCase()}
+                  </span>
+                  <div style="font-weight: 800; color: var(--primary-navy); margin-top: 2px;">
+                    ${formatCurrency(order.groupTotal)}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Customer & Address info -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); background: var(--color-surface-alt); padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); margin-bottom: var(--space-3); font-size: var(--font-size-xs);">
+                <div>
+                  <strong>Customer:</strong> ${order.customer?.name || 'Customer'}<br>
+                  <strong>Contact:</strong> ${order.deliveryAddress?.phone || order.customer?.phone}
+                </div>
+                <div>
+                  <strong>Delivery Address:</strong><br>
+                  ${order.deliveryAddress?.street}, ${order.deliveryAddress?.city} (${order.deliveryAddress?.pincode})
+                </div>
+              </div>
+
+              <!-- Items belonging to this shop -->
+              <div style="margin-bottom: var(--space-4);">
+                <div style="font-weight: 600; font-size: var(--font-size-xs); color: var(--primary-navy); margin-bottom: 4px;">Items in this fulfillment:</div>
+                ${order.items.map(item => `
+                  <div style="display: flex; justify-content: space-between; font-size: var(--font-size-xs); padding: 4px 0; border-bottom: 1px dashed var(--color-border);">
+                    <span>${item.name} &times; ${item.quantity}</span>
+                    <span>${formatCurrency(item.totalItemPrice)}</span>
+                  </div>
+                `).join('')}
+                <div style="display: flex; justify-content: space-between; font-size: var(--font-size-xs); padding-top: 4px; color: var(--color-text-muted);">
+                  <span>Delivery Fee Allocated:</span>
+                  <span>${formatCurrency(order.deliveryFee)}</span>
+                </div>
+              </div>
+
+              <!-- Status Action Buttons -->
+              <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--color-border); padding-top: var(--space-3); flex-wrap: wrap; gap: var(--space-2);">
+                <div style="font-size: var(--font-size-xs); color: var(--color-text-muted);">
+                  Payment: <strong>${order.paymentMethod.toUpperCase()}</strong> (${order.paymentStatus.toUpperCase()})
+                </div>
+                <div style="display: flex; gap: var(--space-2);">
+                  ${order.sellerStatus === 'pending' ? `
+                    <button class="btn btn-primary btn-sm btn-update-status" data-id="${order.orderId}" data-status="accepted">
+                      <i class="fas fa-check"></i> Accept Order
+                    </button>
+                    <button class="btn btn-outline btn-sm btn-reject-order" data-id="${order.orderId}" style="color: var(--color-danger); border-color: var(--color-danger);">
+                      Reject
+                    </button>
+                  ` : ''}
+
+                  ${order.sellerStatus === 'accepted' ? `
+                    <button class="btn btn-primary btn-sm btn-update-status" data-id="${order.orderId}" data-status="shipped">
+                      <i class="fas fa-motorcycle"></i> Dispatch / Out for Delivery
+                    </button>
+                  ` : ''}
+
+                  ${order.sellerStatus === 'shipped' ? `
+                    <button class="btn btn-primary btn-sm btn-update-status" data-id="${order.orderId}" data-status="delivered">
+                      <i class="fas fa-check-double"></i> Mark Delivered
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          `).join('');
+
+          // Bind status buttons
+          container.querySelectorAll('.btn-update-status').forEach(btn => {
+            btn.addEventListener('click', async () => {
+              const status = btn.dataset.status;
+              try {
+                const res = await api.patch(`/orders/seller/${btn.dataset.id}/status`, { status });
+                if (res.success) {
+                  notify.success(`Order status updated to ${status.toUpperCase()}`);
+                  loadOrders();
+                }
+              } catch (err) {
+                notify.error(err.message || 'Status update failed');
+              }
+            });
+          });
+
+          container.querySelectorAll('.btn-reject-order').forEach(btn => {
+            btn.addEventListener('click', async () => {
+              const reason = prompt('Please enter reason for rejection (e.g. Out of stock locally):');
+              if (reason) {
+                try {
+                  const res = await api.patch(`/orders/seller/${btn.dataset.id}/status`, { status: 'rejected', rejectionReason: reason });
+                  if (res.success) {
+                    notify.info('Order rejected');
+                    loadOrders();
+                  }
+                } catch (err) {
+                  notify.error(err.message || 'Rejection failed');
+                }
+              }
+            });
+          });
+        }
+      } catch (err) {
+        container.innerHTML = `<p style="color: var(--color-danger);">${err.message}</p>`;
+      }
+    }
+
+    // Filter Buttons
+    document.querySelectorAll('.active-filter-btn, [data-status]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-status]').forEach(b => b.classList.remove('btn-primary', 'active-filter-btn'));
+        btn.classList.add('btn-primary', 'active-filter-btn');
+        currentFilterStatus = btn.dataset.status;
+        loadOrders();
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', loadOrders);
+  </script>
+  <script type="module" src="js/pwa.js"></script>
+</body>
+</html>

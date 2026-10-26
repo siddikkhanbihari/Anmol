@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123B70">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ANMOL STORE">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <title>Customer Registration — ANMOL STORE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    .auth-page-wrap {
+      min-height: calc(100vh - 120px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-8) var(--space-4);
+      background-color: var(--color-bg);
+    }
+    .auth-card {
+      background: #FFF;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      max-width: 500px;
+      width: 100%;
+      padding: var(--space-8);
+    }
+  </style>
+</head>
+<body>
+
+  <header style="background: #FFF; border-bottom: 1px solid var(--color-border); padding: var(--space-4) 0;">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon-wrap"><i class="fas fa-store-alt"></i></div>
+        <div class="brand-text-wrap">
+          <div class="brand-title">ANMOL <span>STORE</span></div>
+          <div class="brand-tagline">Local Business, Digital Future</div>
+        </div>
+      </a>
+      <a href="login.html" class="btn btn-ghost btn-sm">Already have an account? Sign In</a>
+    </div>
+  </header>
+
+  <div class="auth-page-wrap">
+    <div class="auth-card">
+      <div style="text-align: center; margin-bottom: var(--space-6);">
+        <h2 style="font-size: var(--font-size-xl); margin-bottom: 4px;">Create Customer Account</h2>
+        <p style="color: var(--color-text-muted); font-size: var(--font-size-sm); margin: 0;">
+          Order from trusted local kirana, electronics, and service providers
+        </p>
+      </div>
+
+      <form id="register-form">
+        <div class="form-group">
+          <label class="form-label required" for="reg-name">Full Name</label>
+          <input type="text" id="reg-name" class="form-control" placeholder="e.g. Ramesh Kumar" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required" for="reg-email">Email Address</label>
+          <input type="email" id="reg-email" class="form-control" placeholder="ramesh@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required" for="reg-phone">10-Digit Mobile Number</label>
+          <div class="input-group">
+            <span style="display: flex; align-items: center; padding: 0 12px; background: var(--color-surface-alt); border: 1px solid var(--color-border); border-right: none; border-top-left-radius: var(--radius-md); border-bottom-left-radius: var(--radius-md); font-weight: 600; color: var(--color-text-muted);">+91</span>
+            <input type="tel" id="reg-phone" class="form-control" placeholder="98XXXXXXXX" maxlength="10" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required" for="reg-password">Create Password</label>
+          <input type="password" id="reg-password" class="form-control" placeholder="At least 6 characters" minlength="6" required>
+          <div class="form-hint">Must contain at least 6 characters</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required" for="reg-password-confirm">Confirm Password</label>
+          <input type="password" id="reg-password-confirm" class="form-control" placeholder="Re-enter your password" required>
+        </div>
+
+        <div class="form-group">
+          <label class="filter-option" style="font-size: var(--font-size-xs); align-items: flex-start;">
+            <input type="checkbox" id="terms-check" required style="margin-top: 3px;">
+            <span>I agree to ANMOL STORE's <a href="terms.html" target="_blank">Terms of Service</a> and <a href="privacy.html" target="_blank">Privacy Policy</a>.</span>
+          </label>
+        </div>
+
+        <button type="submit" id="btn-reg-submit" class="btn btn-primary btn-block btn-lg" style="margin-top: var(--space-4);">
+          Create Customer Account
+        </button>
+      </form>
+
+      <div style="text-align: center; margin-top: var(--space-6); font-size: var(--font-size-sm); color: var(--color-text-muted);">
+        Are you a shop owner or service provider?
+        <div style="margin-top: 4px;">
+          <a href="seller-register.html" style="font-weight: 700; color: var(--accent-orange);">Register Your Shop (100% Free) &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/config.js"></script>
+  <script type="module" src="js/notifications.js"></script>
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script type="module">
+    import { auth } from './js/auth.js';
+    import { notify } from './js/notifications.js';
+
+    const form = document.getElementById('register-form');
+    const submitBtn = document.getElementById('btn-reg-submit');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const phone = document.getElementById('reg-phone').value.trim();
+      const password = document.getElementById('reg-password').value;
+      const confirm = document.getElementById('reg-password-confirm').value;
+
+      if (password !== confirm) {
+        notify.warning('Passwords do not match. Please re-enter.');
+        return;
+      }
+
+      if (!/^[6-9]\d{9}$/.test(phone)) {
+        notify.warning('Please enter a valid 10-digit Indian phone number.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+
+      const result = await auth.register({ name, email, phone, password });
+
+      if (result.success) {
+        notify.success('Welcome to ANMOL STORE! Account created successfully.');
+        setTimeout(() => {
+          window.location.href = 'customer-dashboard.html';
+        }, 1200);
+      } else {
+        notify.error(result.message);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Create Customer Account';
+      }
+    });
+  </script>
+  <script type="module" src="js/pwa.js"></script>
+</body>
+</html>

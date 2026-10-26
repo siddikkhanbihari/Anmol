@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123B70">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ANMOL STORE">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <title>Customer Dashboard — ANMOL STORE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: var(--space-8);
+      align-items: start;
+    }
+    .dash-sidebar {
+      background: #FFF;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      position: sticky;
+      top: calc(var(--header-height) + 20px);
+    }
+    .dash-user-card {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding-bottom: var(--space-4);
+      margin-bottom: var(--space-3);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .dash-user-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .dash-nav-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-md);
+      color: var(--color-text);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      cursor: pointer;
+      margin-bottom: 2px;
+      transition: all var(--transition-fast);
+      text-decoration: none;
+    }
+    .dash-nav-item:hover, .dash-nav-item.active {
+      background: var(--brand-blue-light);
+      color: var(--brand-blue);
+      font-weight: 600;
+    }
+    .dash-content-panel {
+      background: #FFF;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+    }
+    .timeline-tracker {
+      display: flex;
+      justify-content: space-between;
+      margin: var(--space-4) 0;
+      position: relative;
+    }
+    .timeline-tracker::before {
+      content: "";
+      position: absolute;
+      top: 14px;
+      left: 20px;
+      right: 20px;
+      height: 3px;
+      background: var(--color-border);
+      z-index: 1;
+    }
+    .timeline-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+      font-size: var(--font-size-xs);
+    }
+    .timeline-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #FFF;
+      border: 3px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 4px;
+      font-size: 0.75rem;
+    }
+    .timeline-step.completed .timeline-icon {
+      border-color: var(--color-success);
+      background: var(--color-success);
+      color: #FFF;
+    }
+    .timeline-step.active .timeline-icon {
+      border-color: var(--brand-blue);
+      background: var(--brand-blue);
+      color: #FFF;
+    }
+    @media (max-width: 900px) {
+      .dashboard-layout {
+        grid-template-columns: 1fr;
+      }
+      .dash-sidebar {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="main-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="index.html" class="brand-logo">
+          <div class="brand-icon-wrap"><i class="fas fa-store-alt"></i></div>
+          <div class="brand-text-wrap">
+            <div class="brand-title">ANMOL <span>STORE</span></div>
+            <div class="brand-tagline">Customer Hub</div>
+          </div>
+        </a>
+
+        <div class="header-actions" style="margin-left: auto;">
+          <a href="cart.html" class="header-action-item" title="Cart">
+            <i class="fas fa-shopping-bag action-icon">
+              <span class="badge-count cart-badge-count" style="display: none;">0</span>
+            </i>
+            <span class="header-action-text">Cart</span>
+          </a>
+          <button id="btn-logout" class="btn btn-outline btn-sm">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding: var(--space-8) var(--space-4);">
+    <div class="dashboard-layout">
+      <!-- Sidebar Navigation -->
+      <aside class="dash-sidebar">
+        <div class="dash-user-card">
+          <img id="dash-user-avatar" class="dash-user-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80" alt="User">
+          <div>
+            <strong id="dash-user-name" style="font-size: var(--font-size-sm); color: var(--primary-navy); display: block;">Loading...</strong>
+            <span id="dash-user-email" style="font-size: var(--font-size-xs); color: var(--color-text-muted);">...</span>
+          </div>
+        </div>
+
+        <nav>
+          <div class="dash-nav-item active" data-tab="orders">
+            <i class="fas fa-box"></i> My Orders
+          </div>
+          <div class="dash-nav-item" data-tab="services">
+            <i class="fas fa-tools"></i> Service Bookings
+          </div>
+          <div class="dash-nav-item" data-tab="vehicles">
+            <i class="fas fa-car"></i> Vehicle Inquiries
+          </div>
+          <div class="dash-nav-item" data-tab="addresses">
+            <i class="fas fa-map-marked-alt"></i> Saved Addresses
+          </div>
+          <div class="dash-nav-item" data-tab="notifications">
+            <i class="fas fa-bell"></i> Notifications
+          </div>
+          <div class="dash-nav-item" data-tab="profile">
+            <i class="fas fa-user-edit"></i> Profile Settings
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Main Panels -->
+      <section class="dash-content-panel">
+        <!-- 1. Orders Panel -->
+        <div id="tab-orders" class="dash-tab-pane">
+          <h2 style="font-size: var(--font-size-xl); margin-bottom: var(--space-4); color: var(--primary-navy);">
+            My Orders
+          </h2>
+          <div id="orders-list-container">
+            <div class="skeleton skeleton-card"></div>
+          </div>
+        </div>
+
+        <!-- 2. Services Panel -->
+        <div id="tab-services" class="dash-tab-pane" style="display: none;">
+          <h2 style="font-size: var(--font-size-xl); margin-bottom: var(--space-4); color: var(--primary-navy);">
+            My Service Bookings
+          </h2>
+          <div id="services-list-container">
+            <div class="skeleton skeleton-card"></div>
+          </div>
+        </div>
+
+        <!-- 3. Vehicles Panel -->
+        <div id="tab-vehicles" class="dash-tab-pane" style="display: none;">
+          <h2 style="font-size: var(--font-size-xl); margin-bottom: var(--space-4); color: var(--primary-navy);">
+            My Vehicle Inquiries
+          </h2>
+          <div id="vehicles-list-container">
+            <div class="skeleton skeleton-card"></div>
+          </div>
+        </div>
+
+        <!-- 4. Addresses Panel -->
+        <div id="tab-addresses" class="dash-tab-pane" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+            <h2 style="font-size: var(--font-size-xl); margin: 0; color: var(--primary-navy);">
+              Saved Delivery Addresses
+            </h2>
+            <button id="btn-add-dash-addr" class="btn btn-primary btn-sm">
+              <i class="fas fa-plus"></i> Add Address
+            </button>
+          </div>
+          <div id="addresses-list-container" class="grid-2">
+            <div class="skeleton skeleton-card"></div>
+          </div>
+        </div>
+
+        <!-- 5. Notifications Panel -->
+        <div id="tab-notifications" class="dash-tab-pane" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+            <h2 style="font-size: var(--font-size-xl); margin: 0; color: var(--primary-navy);">
+              Notifications
+            </h2>
+            <button id="btn-mark-all-read" class="btn btn-outline btn-sm">Mark All as Read</button>
+          </div>
+          <div id="notifications-list-container"></div>
+        </div>
+
+        <!-- 6. Profile Panel -->
+        <div id="tab-profile" class="dash-tab-pane" style="display: none;">
+          <h2 style="font-size: var(--font-size-xl); margin-bottom: var(--space-4); color: var(--primary-navy);">
+            Account Settings
+          </h2>
+          <form id="profile-update-form" style="max-width: 500px;">
+            <div class="form-group">
+              <label class="form-label required" for="profile-name">Full Name</label>
+              <input type="text" id="profile-name" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label required" for="profile-email">Email Address</label>
+              <input type="email" id="profile-email" class="form-control" disabled>
+              <div class="form-hint">Email address cannot be changed</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label required" for="profile-phone">Mobile Phone</label>
+              <input type="tel" id="profile-phone" class="form-control" maxlength="10" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </form>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-bottom">
+      <div class="container">
+        <div class="footer-bottom-inner">
+          <div>&copy; 2026 ANMOL STORE. All rights reserved.</div>
+          <div class="footer-bottom-links">
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
+            <a href="contact.html">Support</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="js/config.js"></script>
+  <script type="module" src="js/notifications.js"></script>
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/cart.js"></script>
+  <script type="module">
+    import { api } from './js/api.js';
+    import { auth } from './js/auth.js';
+    import { notify } from './js/notifications.js';
+    import { formatCurrency, formatDate, getFallbackImage } from './js/config.js';
+
+    // Protect customer dashboard route
+    auth.requireAuth(['customer', 'admin']);
+
+    const user = auth.getUser();
+    if (user) {
+      document.getElementById('dash-user-name').textContent = user.name;
+      document.getElementById('dash-user-email').textContent = user.email;
+      document.getElementById('profile-name').value = user.name;
+      document.getElementById('profile-email').value = user.email;
+      document.getElementById('profile-phone').value = user.phone || '';
+    }
+
+    // Tabs switching
+    const navItems = document.querySelectorAll('.dash-nav-item');
+    const tabPanes = document.querySelectorAll('.dash-tab-pane');
+
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        navItems.forEach(i => i.classList.remove('active'));
+        tabPanes.forEach(p => p.style.display = 'none');
+
+        item.classList.add('active');
+        const tab = item.dataset.tab;
+        document.getElementById(`tab-${tab}`).style.display = 'block';
+
+        if (tab === 'orders') loadOrders();
+        else if (tab === 'services') loadServices();
+        else if (tab === 'vehicles') loadVehicles();
+        else if (tab === 'addresses') loadAddresses();
+        else if (tab === 'notifications') loadNotifications();
+      });
+    });
+
+    // Check query param for default tab
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialTab = urlParams.get('tab');
+    if (initialTab && document.getElementById(`tab-${initialTab}`)) {
+      document.querySelector(`[data-tab="${initialTab}"]`)?.click();
+    } else {
+      loadOrders();
+    }
+
+    // 1. Load Orders
+    async function loadOrders() {
+      const container = document.getElementById('orders-list-container');
+      try {
+        const res = await api.get('/orders/mine');
+        if (res.success && res.data) {
+          const orders = res.data;
+          if (!orders.length) {
+            container.innerHTML = `
+              <div class="empty-state">
+                <div class="empty-state-icon"><i class="fas fa-box-open"></i></div>
+                <h3 class="empty-state-title">No Orders Yet</h3>
+                <p class="empty-state-text">You haven't placed any orders yet. Discover genuine products from local shops.</p>
+                <a href="products.html" class="btn btn-primary">Start Shopping</a>
+              </div>
+            `;
+            return;
+          }
+
+          container.innerHTML = orders.map(order => `
+            <div style="border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-5); margin-bottom: var(--space-4);">
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-3); margin-bottom: var(--space-4); flex-wrap: wrap; gap: 8px;">
+                <div>
+                  <strong style="color: var(--primary-navy); font-size: var(--font-size-md);">#${order.orderNumber}</strong>
+                  <div style="font-size: var(--font-size-xs); color: var(--color-text-muted);">Placed on ${formatDate(order.createdAt, true)}</div>
+                </div>
+                <div style="text-align: right;">
+                  <span class="badge ${order.overallStatus === 'delivered' ? 'badge-success' : order.overallStatus === 'cancelled' ? 'badge-danger' : 'badge-primary'}">
+                    ${order.overallStatus.toUpperCase()}
+                  </span>
+                  <div style="font-weight: 700; color: var(--primary-navy); font-size: var(--font-size-sm); margin-top: 2px;">
+                    ${formatCurrency(order.totalAmount)}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Seller Fulfillment Groups in this order -->
+              <div style="margin-bottom: var(--space-4);">
+                ${order.sellerOrders.map(group => `
+                  <div style="background: var(--color-surface-alt); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); margin-bottom: 8px;">
+                    <div style="display: flex; justify-content: space-between; font-size: var(--font-size-xs); margin-bottom: 4px;">
+                      <strong><i class="fas fa-store"></i> ${group.shop?.name || 'Local Seller'}</strong>
+                      <span class="badge badge-primary">${group.sellerStatus.toUpperCase()}</span>
+                    </div>
+                    <div style="font-size: var(--font-size-xs); color: var(--color-text-muted);">
+                      ${group.items.map(i => `${i.name} &times; ${i.quantity} (${formatCurrency(i.price)})`).join(', ')}
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+
+              <!-- Actions -->
+              <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed var(--color-border); padding-top: var(--space-3);">
+                <div style="font-size: var(--font-size-xs); color: var(--color-text-muted);">
+                  Paid via: ${order.paymentMethod.toUpperCase()} | Status: ${order.paymentStatus.toUpperCase()}
+                </div>
+                <div>
+                  ${order.overallStatus === 'placed' || order.overallStatus === 'processing' ? `
+                    <button class="btn btn-outline btn-sm btn-cancel-order" data-id="${order._id}" style="color: var(--color-danger); border-color: var(--color-danger);">
+                      Cancel Order
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          `).join('');
+
+          // Bind cancel buttons
+          container.querySelectorAll('.btn-cancel-order').forEach(btn => {
+            btn.addEventListener('click', async () => {
+              if (confirm('Are you sure you want to cancel this order?')) {
+                try {
+                  const res = await api.patch(`/orders/${btn.dataset.id}/cancel`, { reason: 'Customer cancelled' });
+                  if (res.success) {
+                    notify.success('Order cancelled successfully');
+                    loadOrders();
+                  }
+                } catch (err) {
+                  notify.error(err.message || 'Failed to cancel order');
+                }
+              }
+            });
+          });
+        }
+      } catch (err) {
+        container.innerHTML = `<p style="color: var(--color-danger);">Failed to load orders: ${err.message}</p>`;
+      }
+    }
+
+    // 2. Load Services
+    async function loadServices() {
+      const container = document.getElementById('services-list-container');
+      try {
+        const res = await api.get('/services/bookings/mine');
+        if (res.success && res.data) {
+          const bookings = res.data;
+          if (!bookings.length) {
+            container.innerHTML = `
+              <div class="empty-state">
+                <div class="empty-state-icon"><i class="fas fa-tools"></i></div>
+                <h3 class="empty-state-title">No Service Bookings</h3>
+                <p class="empty-state-text">You haven't booked any home services or repairs yet.</p>
+                <a href="services.html" class="btn btn-primary">Book an Expert</a>
+              </div>
+            `;
+            return;
+          }
+
+          container.innerHTML = bookings.map(b => `
+            <div style="border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-4); margin-bottom: var(--space-3);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2);">
+                <div>
+                  <strong style="color: var(--primary-navy); font-size: var(--font-size-sm);">#${b.bookingReference}</strong>
+                  <h4 style="font-size: var(--font-size-sm); margin: 2px 0;">${b.service?.title || 'Service'}</h4>
+                </div>
+                <span class="badge ${b.status === 'completed' ? 'badge-success' : 'badge-primary'}">${b.status.toUpperCase()}</span>
+              </div>
+              <div style="font-size: var(--font-size-xs); color: var(--color-text-muted);">
+                <span><i class="fas fa-calendar"></i> ${formatDate(b.bookingDate)} (${b.timeSlot})</span> &bull;
+                <span><i class="fas fa-store"></i> ${b.shop?.name || 'Provider'}</span> &bull;
+                <span><i class="fas fa-tag"></i> Rate: ${formatCurrency(b.estimatedCost)}</span>
+              </div>
+              <div style="background: var(--color-surface-alt); padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); font-size: var(--font-size-xs); margin-top: 8px;">
+                <strong>Address:</strong> ${b.serviceAddress?.street}, ${b.serviceAddress?.city} (${b.serviceAddress?.pincode})<br>
+                <strong>Issue:</strong> ${b.problemDescription}
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (err) {
+        container.innerHTML = `<p style="color: var(--color-danger);">Failed to load bookings: ${err.message}</p>`;
+      }
+    }
+
+    // 3. Load Vehicles
+    async function loadVehicles() {
+      const container = document.getElementById('vehicles-list-container');
+      try {
+        const res = await api.get('/vehicles/inquiries/mine');
+        if (res.success && res.data) {
+          const inquiries = res.data;
+          if (!inquiries.length) {
+            container.innerHTML = `
+              <div class="empty-state">
+                <div class="empty-state-icon"><i class="fas fa-car"></i></div>
+                <h3 class="empty-state-title">No Vehicle Inquiries</h3>
+                <p class="empty-state-text">You haven't made any inquiries on pre-owned cars or bikes.</p>
+                <a href="vehicles.html" class="btn btn-primary">Browse Vehicles</a>
+              </div>
+            `;
+            return;
+          }
+
+          container.innerHTML = inquiries.map(inq => `
+            <div style="border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-4); margin-bottom: var(--space-3);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2);">
+                <strong style="color: var(--primary-navy); font-size: var(--font-size-sm);">${inq.vehicle?.title || 'Vehicle'}</strong>
+                <span class="badge badge-primary">${inq.status.toUpperCase()}</span>
+              </div>
+              <div style="font-size: var(--font-size-xs); color: var(--color-text-muted); margin-bottom: 6px;">
+                <span>Asking: ${formatCurrency(inq.vehicle?.askingPrice)}</span> &bull;
+                ${inq.offeredPrice ? `<span>Your Offer: ${formatCurrency(inq.offeredPrice)}</span> &bull;` : ''}
+                <span>Seller: ${inq.seller?.name || 'Seller'} (${inq.seller?.phone || ''})</span>
+              </div>
+              <div style="font-size: var(--font-size-xs); background: var(--color-surface-alt); padding: 8px; border-radius: 4px;">
+                <strong>Your Message:</strong> ${inq.message}
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (err) {
+        container.innerHTML = `<p style="color: var(--color-danger);">Failed to load inquiries: ${err.message}</p>`;
+      }
+    }
+
+    // 4. Load Addresses
+    async function loadAddresses() {
+      const container = document.getElementById('addresses-list-container');
+      try {
+        const res = await api.get('/users/addresses');
+        if (res.success && res.data) {
+          const addrs = res.data;
+          if (!addrs.length) {
+            container.innerHTML = '<p style="color: var(--color-text-muted); grid-column: 1/-1;">No saved addresses found.</p>';
+            return;
+          }
+
+          container.innerHTML = addrs.map(a => `
+            <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <strong>${a.recipientName} (${a.addressType})</strong>
+                ${a.isDefault ? '<span class="badge badge-success">Default</span>' : ''}
+              </div>
+              <p style="font-size: var(--font-size-xs); color: var(--color-text-muted); margin: 0 0 8px 0;">
+                ${a.street}, ${a.city}, ${a.state} — ${a.pincode}<br>
+                Phone: ${a.phone}
+              </p>
+              <button class="btn btn-ghost btn-sm btn-delete-addr" data-id="${a._id}" style="color: var(--color-danger); padding: 0;">
+                Delete Address
+              </button>
+            </div>
+          `).join('');
+
+          container.querySelectorAll('.btn-delete-addr').forEach(b => {
+            b.addEventListener('click', async () => {
+              if (confirm('Delete this address?')) {
+                await api.delete(`/users/addresses/${b.dataset.id}`);
+                loadAddresses();
+              }
+            });
+          });
+        }
+      } catch (err) {
+        container.innerHTML = `<p style="color: var(--color-danger);">${err.message}</p>`;
+      }
+    }
+
+    // 5. Load Notifications
+    async function loadNotifications() {
+      const container = document.getElementById('notifications-list-container');
+      try {
+        const res = await api.get('/users/notifications');
+        if (res.success && res.data) {
+          const notes = res.data.notifications;
+          if (!notes.length) {
+            container.innerHTML = '<p style="color: var(--color-text-muted);">You have no notifications right now.</p>';
+            return;
+          }
+
+          container.innerHTML = notes.map(n => `
+            <div style="border-left: 4px solid ${n.isRead ? 'var(--color-border)' : 'var(--brand-blue)'}; background: ${n.isRead ? '#FFF' : 'var(--brand-blue-light)'}; padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); margin-bottom: 8px;">
+              <strong style="color: var(--primary-navy); font-size: var(--font-size-sm); display: block;">${n.title}</strong>
+              <p style="font-size: var(--font-size-xs); color: var(--color-text); margin: 2px 0 4px 0;">${n.message}</p>
+              <span style="font-size: 0.7rem; color: var(--color-text-muted);">${formatDate(n.createdAt, true)}</span>
+            </div>
+          `).join('');
+        }
+      } catch (err) {
+        container.innerHTML = `<p style="color: var(--color-danger);">${err.message}</p>`;
+      }
+    }
+
+    document.getElementById('btn-mark-all-read').addEventListener('click', async () => {
+      await api.patch('/users/notifications/read-all');
+      loadNotifications();
+    });
+
+    // Logout
+    document.getElementById('btn-logout').addEventListener('click', () => {
+      auth.logout();
+    });
+  </script>
+  <script type="module" src="js/pwa.js"></script>
+</body>
+</html>

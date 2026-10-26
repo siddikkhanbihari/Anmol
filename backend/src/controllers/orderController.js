@@ -1,0 +1,372 @@
+// ANMOL STORE - Order Controller
+import { Order, Product, Shop, Cart, Notification, Payment } from '../models/index.js';
+import { ApiResponse } from '../utils/apiResponse.js';
+
+export async function createOrder(req, res, next) {
+  try {
+    const { items, deliveryAddress, paymentMethod = 'cod', couponCode, notes } = req.body;
+
+    if (!items || !items.length) {
+      return ApiResponse.badRequest(res, 'Order must contain at least one item');
+    }
+
+    if (!deliveryAddress || !deliveryAddress.recipientName || !deliveryAddress.phone || !deliveryAddress.street || !deliveryAddress.pincode) {
+      return ApiResponse.badRequest(res, 'Complete delivery address and phone number are required');
+    }
+
+    // Server-side validation of products and stock
+    const productIds = items.map(item => item.productId || item.product?._id || item.product);
+    const products = await Product.find({ _id: { $in: productIds } }).populate('shop');
+
+    const productMap = new Map();
+    products.forEach(p => productMap.set(p._id.toString(), p));
+
+    // Validate each item and check stock
+    const sellerGroupsMap = new Map();
+    let calculatedSubtotal = 0;
+
+    for (const item of items) {
+      const pId = (item.productId || item.product?._id || item.product).toString();
+      const product = productMap.get(pId);
+
+      if (!product || !product.isActive) {
+        return ApiResponse.badRequest(res, `Product "${item.name || 'Selected item'}" is no longer available.`);
+      }
+
+      const qty = Number(item.quantity);
+      if (product.stock < qty) {
+        return ApiResponse.badRequest(res, `Not enough stock for "${product.name}". Only ${product.stock} left.`);
+      }
+
+      const itemPrice = product.price; // Always use server price!
+      const totalItemPrice = itemPrice * qty;
+      calculatedSubtotal += totalItemPrice;
+
+      const shopId = product.shop._id.toString();
+      if (!sellerGroupsMap.has(shopId)) {
+        sellerGroupsMap.set(shopId, {
+          shop: product.shop._id,
+          seller: product.shop.user,
+          items: [],
+          subtotal: 0,
+          deliveryFee: product.shop.deliveryCharge || 40,
+          sellerStatus: 'pending',
+          statusHistory: [
+            {
+              status: 'pending',
+              timestamp: new Date(),
+              comment: 'Order placed by customer'
+            }
+          ]
+        });
+      }
+
+      const group = sellerGroupsMap.get(shopId);
+      group.items.push({
+        product: product._id,
+        name: product.name,
+        price: itemPrice,
+        quantity: qty,
+        image: product.images && product.images.length ? product.images[0] : null,
+        variant: item.variant || null,
+        totalItemPrice
+      });
+      group.subtotal += totalItemPrice;
+    }
+
+    // Build seller order groups
+    let calculatedDeliveryFee = 0;
+    const sellerOrders = [];
+
+    for (const group of sellerGroupsMap.values()) {
+      group.groupTotal = group.subtotal + group.deliveryFee;
+      calculatedDeliveryFee += group.deliveryFee;
+      sellerOrders.push(group);
+    }
+
+    const grandTotal = calculatedSubtotal + calculatedDeliveryFee;
+
+    // Generate readable order number
+    const randomDigits = Math.floor(1000 + Math.random() * 9000);
+    const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    const orderNumber = `ANM-${dateStr}-${randomDigits}`;
+
+    // Create Order
+    const order = await Order.create({
+      orderNumber,
+      customer: req.user._id,
+      sellerOrders,
+      deliveryAddress,
+      subtotal: calculatedSubtotal,
+      totalDeliveryFee: calculatedDeliveryFee,
+      totalAmount: grandTotal,
+      paymentMethod,
+      paymentStatus: paymentMethod === 'cod' ? 'pending' : 'paid',
+      overallStatus: 'placed',
+      notes
+    });
+
+    // Atomically decrement stock
+    for (const item of items) {
+      const pId = item.productId || item.product?._id || item.product;
+      await Product.findByIdAndUpdate(pId, {
+        $inc: { stock: -Number(item.quantity) }
+      });
+    }
+
+    // Clear cart if ordered from cart
+    await Cart.findOneAndUpdate({ user: req.user._id }, { items: [] });
+
+    // Create Payment record
+    await Payment.create({
+      order: order._id,
+      customer: req.user._id,
+      gateway: paymentMethod,
+      transactionId: `TXN-${orderNumber}`,
+      amount: grandTotal,
+      status: paymentMethod === 'cod' ? 'pending' : 'success'
+    });
+
+    // Notify customer
+    await Notification.create({
+      user: req.user._id,
+      title: 'Order Confirmed!',
+      message: `Your order #${orderNumber} for ₹${grandTotal} has been placed successfully.`,
+      type: 'order',
+      link: `/customer-dashboard.html?tab=orders&id=${order._id}`
+    });
+
+    // Notify each seller
+    for (const group of sellerOrders) {
+      await Notification.create({
+        user: group.seller,
+        title: 'New Customer Order Received!',
+        message: `New order #${orderNumber} received for ₹${group.groupTotal}. Please review and accept.`,
+        type: 'order',
+        link: `/seller-orders.html?id=${order._id}`
+      });
+    }
+
+    return ApiResponse.created(res, order, 'Order placed successfully');
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getMyOrders(req, res, next) {
+  try {
+    const orders = await Order.find({ customer: req.user._id })
+      .populate('sellerOrders.shop', 'name slug logo contactPhone')
+      .sort({ createdAt: -1 });
+
+    return ApiResponse.success(res, orders);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getOrderById(req, res, next) {
+  try {
+    const { id } = req.params;
+    const isId = id.match(/^[0-9a-fA-F]{24}$/);
+
+    const order = await Order.findOne(isId ? { _id: id } : { orderNumber: id })
+      .populate('customer', 'name email phone')
+      .populate('sellerOrders.shop', 'name slug logo address contactPhone');
+
+    if (!order) {
+      return ApiResponse.notFound(res, 'Order not found');
+    }
+
+    // Access control: Customer who placed it, Sellers included in the order, or Admin
+    const isCustomer = order.customer._id.toString() === req.user._id.toString();
+    const isAdmin = req.user.role === 'admin';
+    const isSeller = order.sellerOrders.some(
+      g => g.seller.toString() === req.user._id.toString()
+    );
+
+    if (!isCustomer && !isAdmin && !isSeller) {
+      return ApiResponse.forbidden(res, 'You are not authorized to view this order');
+    }
+
+    // If seller (and not admin or customer), filter sellerOrders to only show their shop
+    if (isSeller && !isAdmin && !isCustomer) {
+      const filtered = order.toObject();
+      filtered.sellerOrders = filtered.sellerOrders.filter(
+        g => g.seller.toString() === req.user._id.toString()
+      );
+      return ApiResponse.success(res, filtered);
+    }
+
+    return ApiResponse.success(res, order);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getSellerOrders(req, res, next) {
+  try {
+    const shop = await Shop.findOne({ user: req.user._id });
+    if (!shop) {
+      return ApiResponse.forbidden(res, 'No shop found for your seller account');
+    }
+
+    const { status, page = 1, limit = 20 } = req.query;
+
+    const query = { 'sellerOrders.shop': shop._id };
+
+    const orders = await Order.find(query)
+      .populate('customer', 'name phone email')
+      .populate('sellerOrders.shop', 'name slug')
+      .sort({ createdAt: -1 });
+
+    // Extract seller-specific portion of each order
+    const sellerOrdersList = [];
+    orders.forEach(order => {
+      order.sellerOrders.forEach(group => {
+        if (group.shop._id.toString() === shop._id.toString()) {
+          if (!status || group.sellerStatus === status) {
+            sellerOrdersList.push({
+              _id: group._id,
+              orderId: order._id,
+              orderNumber: order.orderNumber,
+              customer: order.customer,
+              deliveryAddress: order.deliveryAddress,
+              paymentMethod: order.paymentMethod,
+              paymentStatus: order.paymentStatus,
+              items: group.items,
+              subtotal: group.subtotal,
+              deliveryFee: group.deliveryFee,
+              groupTotal: group.groupTotal,
+              sellerStatus: group.sellerStatus,
+              rejectionReason: group.rejectionReason,
+              statusHistory: group.statusHistory,
+              createdAt: order.createdAt
+            });
+          }
+        }
+      });
+    });
+
+    return ApiResponse.success(res, {
+      orders: sellerOrdersList,
+      total: sellerOrdersList.length
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function updateSellerOrderStatus(req, res, next) {
+  try {
+    const { id } = req.params; // Order ID or group ID
+    const { status, comment, rejectionReason } = req.body;
+
+    const validStatuses = ['accepted', 'processing', 'shipped', 'delivered', 'rejected', 'cancelled'];
+    if (!validStatuses.includes(status)) {
+      return ApiResponse.badRequest(res, `Invalid status. Allowed: ${validStatuses.join(', ')}`);
+    }
+
+    const shop = await Shop.findOne({ user: req.user._id });
+    if (!shop && req.user.role !== 'admin') {
+      return ApiResponse.forbidden(res, 'Only verified sellers or admins can update order status');
+    }
+
+    const order = await Order.findOne({
+      $or: [{ _id: id }, { 'sellerOrders._id': id }]
+    });
+
+    if (!order) {
+      return ApiResponse.notFound(res, 'Order not found');
+    }
+
+    // Find the matching seller group
+    const group = order.sellerOrders.find(
+      g => (shop && g.shop.toString() === shop._id.toString()) || g._id.toString() === id
+    );
+
+    if (!group) {
+      return ApiResponse.forbidden(res, 'This order does not belong to your shop');
+    }
+
+    group.sellerStatus = status;
+    if (rejectionReason) group.rejectionReason = rejectionReason;
+    if (status === 'delivered') group.deliveredAt = new Date();
+
+    group.statusHistory.push({
+      status,
+      timestamp: new Date(),
+      comment: comment || `Status updated to ${status}`,
+      updatedBy: req.user._id
+    });
+
+    // Check if overall order status should update
+    const allStatuses = order.sellerOrders.map(g => g.sellerStatus);
+    if (allStatuses.every(s => s === 'delivered')) {
+      order.overallStatus = 'delivered';
+      if (order.paymentMethod === 'cod') order.paymentStatus = 'paid';
+    } else if (allStatuses.some(s => s === 'shipped' || s === 'delivered')) {
+      order.overallStatus = 'partially_shipped';
+    } else if (allStatuses.every(s => s === 'cancelled' || s === 'rejected')) {
+      order.overallStatus = 'cancelled';
+    }
+
+    await order.save();
+
+    // Notify customer of update
+    await Notification.create({
+      user: order.customer,
+      title: `Order Update: #${order.orderNumber}`,
+      message: `Your items from ${shop ? shop.name : 'seller'} have been updated to: ${status.toUpperCase()}.`,
+      type: 'order',
+      link: `/customer-dashboard.html?tab=orders&id=${order._id}`
+    });
+
+    return ApiResponse.success(res, order, `Order status updated to ${status}`);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function cancelOrder(req, res, next) {
+  try {
+    const { id } = req.params;
+    const { reason } = req.body;
+
+    const order = await Order.findOne({ _id: id, customer: req.user._id });
+    if (!order) {
+      return ApiResponse.notFound(res, 'Order not found');
+    }
+
+    if (order.overallStatus === 'shipped' || order.overallStatus === 'delivered') {
+      return ApiResponse.badRequest(res, 'Cannot cancel order that has already shipped or delivered.');
+    }
+
+    order.overallStatus = 'cancelled';
+    order.sellerOrders.forEach(g => {
+      if (g.sellerStatus === 'pending' || g.sellerStatus === 'accepted') {
+        g.sellerStatus = 'cancelled';
+        g.statusHistory.push({
+          status: 'cancelled',
+          timestamp: new Date(),
+          comment: `Cancelled by customer: ${reason || 'Customer request'}`
+        });
+      }
+    });
+
+    await order.save();
+
+    // Restore stock
+    for (const group of order.sellerOrders) {
+      for (const item of group.items) {
+        await Product.findByIdAndUpdate(item.product, {
+          $inc: { stock: item.quantity }
+        });
+      }
+    }
+
+    return ApiResponse.success(res, order, 'Order cancelled successfully');
+  } catch (err) {
+    next(err);
+  }
+}

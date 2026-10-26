@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123B70">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ANMOL STORE">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <title>ANMOL STORE — Aapki Dukaan, Aapka Business, Aapki Pehchaan | Local Business Digital Marketplace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    /* Home Specific Styles */
+    .hero-banner {
+      background: linear-gradient(135deg, var(--primary-navy-dark) 0%, var(--primary-navy) 60%, var(--brand-blue) 100%);
+      color: var(--color-white);
+      padding: var(--space-12) 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-banner::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(249, 115, 22, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      align-items: center;
+      gap: var(--space-8);
+      position: relative;
+      z-index: 2;
+    }
+    .hero-tagline-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-4);
+      color: #FEF08A;
+    }
+    .hero-title {
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      font-weight: var(--font-weight-extrabold);
+      line-height: 1.15;
+      color: var(--color-white);
+      margin-bottom: var(--space-4);
+    }
+    .hero-title span {
+      color: var(--accent-orange);
+    }
+    .hero-subtitle {
+      font-size: var(--font-size-base);
+      color: #CBD5E1;
+      max-width: 540px;
+      margin-bottom: var(--space-6);
+      line-height: var(--line-height-relaxed);
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+    }
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
+      margin-top: var(--space-8);
+      padding-top: var(--space-6);
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .stat-number {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-extrabold);
+      color: var(--accent-orange);
+    }
+    .stat-label {
+      font-size: var(--font-size-xs);
+      color: #94A3B8;
+    }
+    .hero-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+    .hero-feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+    }
+    .hero-feature-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(249, 115, 22, 0.2);
+      color: var(--accent-orange);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .feature-content h4 {
+      color: var(--color-white);
+      font-size: var(--font-size-sm);
+      margin-bottom: 2px;
+    }
+    .feature-content p {
+      color: #94A3B8;
+      font-size: var(--font-size-xs);
+      margin: 0;
+    }
+
+    /* Promo section */
+    .seller-promo-section {
+      background: linear-gradient(135deg, #1E3A8A 0%, var(--primary-navy) 100%);
+      color: var(--color-white);
+      padding: var(--space-12) 0;
+      border-radius: var(--radius-xl);
+      margin: var(--space-12) auto;
+    }
+    .faq-item {
+      background: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-3);
+      overflow: hidden;
+    }
+    .faq-question {
+      padding: var(--space-4);
+      font-weight: var(--font-weight-semibold);
+      color: var(--primary-navy);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+    }
+    .faq-answer {
+      padding: 0 var(--space-4) var(--space-4) var(--space-4);
+      color: var(--color-text-muted);
+      font-size: var(--font-size-sm);
+      display: none;
+    }
+    .faq-item.active .faq-answer {
+      display: block;
+    }
+    .faq-item.active .faq-toggle-icon {
+      transform: rotate(180deg);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Announcement Bar -->
+  <div class="announcement-bar">
+    <div class="container">
+      <div class="announcement-text">
+        <span class="announcement-badge">Vocal for Local</span>
+        <span>Aapki Dukaan, Aapka Business, Aapki Pehchaan | 100% Free Seller Registration</span>
+      </div>
+      <div class="announcement-links">
+        <a href="seller-register.html"><i class="fas fa-store"></i> Register Your Dukaan</a>
+        <a href="contact.html"><i class="fas fa-headset"></i> Support: +91 80099 00123</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Header -->
+  <header class="main-header">
+    <div class="container">
+      <div class="header-inner">
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-btn mobile-menu-toggle" aria-label="Open menu">
+          <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Brand Logo -->
+        <a href="index.html" class="brand-logo">
+          <div class="brand-icon-wrap">
+            <i class="fas fa-store-alt"></i>
+          </div>
+          <div class="brand-text-wrap">
+            <div class="brand-title">ANMOL <span>STORE</span></div>
+            <div class="brand-tagline">Local Business, Digital Future</div>
+          </div>
+        </a>
+
+        <!-- Location Selector Button -->
+        <button class="location-btn location-picker-btn" title="Choose Location">
+          <i class="fas fa-map-marker-alt"></i>
+          <span class="location-text current-location-display">Kanpur, 208001</span>
+          <i class="fas fa-chevron-down" style="font-size: 0.65rem; color: var(--color-text-muted);"></i>
+        </button>
+
+        <!-- Search Bar -->
+        <div class="header-search">
+          <form class="header-search-form" action="products.html" method="GET">
+            <i class="fas fa-search search-icon-left"></i>
+            <input type="text" name="q" placeholder="Search for local shops, grocery, electronics, services..." autocomplete="off">
+            <button type="submit">Search</button>
+          </form>
+        </div>
+
+        <!-- Header Actions -->
+        <div class="header-actions">
+          <a href="login.html" class="header-action-item user-account-link">
+            <i class="far fa-user action-icon"></i>
+            <span class="header-action-text">Sign In</span>
+          </a>
+
+          <a href="cart.html" class="header-action-item" title="Cart">
+            <i class="fas fa-shopping-bag action-icon">
+              <span class="badge-count cart-badge-count" style="display: none;">0</span>
+            </i>
+            <span class="header-action-text">Cart</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Secondary Navigation -->
+  <nav class="secondary-nav">
+    <div class="container">
+      <div class="nav-links-wrap">
+        <div class="main-nav-links">
+          <a href="index.html" class="active"><i class="fas fa-home"></i> Home</a>
+          <a href="shops.html"><i class="fas fa-store"></i> Explore Shops</a>
+          <a href="products.html"><i class="fas fa-shopping-basket"></i> All Products</a>
+          <a href="services.html"><i class="fas fa-tools"></i> Local Services</a>
+          <a href="vehicles.html"><i class="fas fa-motorcycle"></i> Cars & Bikes</a>
+        </div>
+        <div class="main-nav-links">
+          <a href="seller-register.html" class="seller-promo-link"><i class="fas fa-handshake"></i> Free Seller Registration</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Hero Section -->
+    <section class="hero-banner">
+      <div class="container">
+        <div class="hero-inner">
+          <div class="hero-content">
+            <div class="hero-tagline-chip">
+              <i class="fas fa-award"></i> Bharat Ka Digital Bazaar
+            </div>
+            <h1 class="hero-title">
+              Har Dukaan Ko <span>Digital Pehchaan.</span>
+            </h1>
+            <p class="hero-subtitle">
+              Discover trusted local kirana stores, electronics retailers, plumbers, garage mechanics, and certified pre-owned vehicles right in your neighbourhood.
+            </p>
+            <div class="hero-actions">
+              <a href="products.html" class="btn btn-primary btn-lg">
+                <i class="fas fa-shopping-cart"></i> Start Shopping
+              </a>
+              <a href="seller-register.html" class="btn btn-secondary btn-lg">
+                <i class="fas fa-store"></i> Register Your Shop Free
+              </a>
+            </div>
+            <div class="hero-stats">
+              <div>
+                <div class="stat-number">500+</div>
+                <div class="stat-label">Verified Local Dukaan</div>
+              </div>
+              <div>
+                <div class="stat-number">₹0</div>
+                <div class="stat-label">Registration Charge</div>
+              </div>
+              <div>
+                <div class="stat-number">45 Mins</div>
+                <div class="stat-label">Average Hyperlocal Delivery</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-card">
+            <h3 style="color: var(--color-white); margin-bottom: var(--space-4); font-size: var(--font-size-md);">
+              Why Shop on ANMOL STORE?
+            </h3>
+            <div class="hero-feature-item">
+              <div class="hero-feature-icon"><i class="fas fa-map-pin"></i></div>
+              <div class="feature-content">
+                <h4>Direct Neighbourhood Sellers</h4>
+                <p>Support your trusted local shop owners and know exactly who fulfills your order.</p>
+              </div>
+            </div>
+            <div class="hero-feature-item">
+              <div class="hero-feature-icon"><i class="fas fa-shield-alt"></i></div>
+              <div class="feature-content">
+                <h4>Genuine Products & Fair MRP</h4>
+                <p>No fake reviews, no inflated prices. Direct store pickup or fast home delivery.</p>
+              </div>
+            </div>
+            <div class="hero-feature-item">
+              <div class="hero-feature-icon"><i class="fas fa-hand-holding-heart"></i></div>
+              <div class="feature-content">
+                <h4>Separate Workflows</h4>
+                <p>Instant cart checkout for items, on-demand appointment booking for services, direct inquiries for vehicles.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Category Carousel/Grid Section -->
+    <section class="section-categories" style="padding: var(--space-10) 0 var(--space-6) 0;">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-header-title">
+            <h2><i class="fas fa-th-large" style="color: var(--brand-blue);"></i> Explore By Category</h2>
+            <p>Everything your household and business needs, straight from local experts</p>
+          </div>
+          <a href="products.html" class="btn btn-outline btn-sm">View All Categories &rarr;</a>
+        </div>
+        <div class="grid-6" id="home-categories-grid">
+          <!-- Dynamically populated from API -->
+          <div class="skeleton skeleton-card" style="height: 120px;"></div>
+          <div class="skeleton skeleton-card" style="height: 120px;"></div>
+          <div class="skeleton skeleton-card" style="height: 120px;"></div>
+          <div class="skeleton skeleton-card" style="height: 120px;"></div>
+          <div class="skeleton skeleton-card" style="height: 120px;"></div>
+          <div class="skeleton skeleton-card" style="height: 120px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Nearby Shops Section -->
+    <section class="section-shops" style="padding: var(--space-8) 0; background-color: var(--color-surface-alt);">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-header-title">
+            <h2><i class="fas fa-store" style="color: var(--accent-orange);"></i> Featured Local Shops</h2>
+            <p>Verified neighbourhood dukaans ready to fulfill your orders</p>
+          </div>
+          <a href="shops.html" class="btn btn-outline btn-sm">Explore All Shops &rarr;</a>
+        </div>
+        <div class="grid-3" id="home-shops-grid">
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Popular Products Section -->
+    <section class="section-popular-products" style="padding: var(--space-10) 0;">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-header-title">
+            <h2><i class="fas fa-fire" style="color: var(--accent-orange);"></i> Popular Products & Daily Essentials</h2>
+            <p>Most purchased items in your area today</p>
+          </div>
+          <a href="products.html" class="btn btn-outline btn-sm">See Full Catalog &rarr;</a>
+        </div>
+        <div class="grid-4" id="home-products-grid">
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Highlight Section -->
+    <section class="section-services" style="padding: var(--space-10) 0; background: #FFF;">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-header-title">
+            <h2><i class="fas fa-tools" style="color: var(--brand-blue);"></i> On-Demand Local Services</h2>
+            <p>Doorstep electricians, plumbers, garage technicians & appliance repair</p>
+          </div>
+          <a href="services.html" class="btn btn-outline btn-sm">Browse All Services &rarr;</a>
+        </div>
+        <div class="grid-4" id="home-services-grid">
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Vehicles Showcase Section -->
+    <section class="section-vehicles" style="padding: var(--space-10) 0; background-color: var(--color-surface-alt);">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-header-title">
+            <h2><i class="fas fa-car" style="color: var(--primary-navy);"></i> Pre-Owned Cars & Bikes</h2>
+            <p>Verified local vehicle listings with direct seller inquiry</p>
+          </div>
+          <a href="vehicles.html" class="btn btn-outline btn-sm">View All Vehicles &rarr;</a>
+        </div>
+        <div class="grid-3" id="home-vehicles-grid">
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seller Promotion Banner -->
+    <section class="container">
+      <div class="seller-promo-section">
+        <div style="max-width: 800px; margin: 0 auto; text-align: center; padding: 0 var(--space-4);">
+          <span class="badge badge-orange" style="margin-bottom: var(--space-3); font-size: 0.8rem;">Zero Registration Fee</span>
+          <h2 style="color: var(--color-white); font-size: clamp(1.8rem, 3vw, 2.5rem); margin-bottom: var(--space-3);">
+            Apni Dukaan Ko Aaj Hi Online Layein
+          </h2>
+          <p style="color: #CBD5E1; font-size: var(--font-size-md); margin-bottom: var(--space-6); line-height: var(--line-height-relaxed);">
+            Join hundreds of local retailers, kirana owners, and service providers growing their digital presence. Keep 100% of your prices, manage your own inventory, and deliver directly to your neighbours.
+          </p>
+          <div style="display: flex; justify-content: center; gap: var(--space-4); flex-wrap: wrap;">
+            <a href="seller-register.html" class="btn btn-primary btn-lg">
+              <i class="fas fa-store"></i> Register Your Shop Now (Free)
+            </a>
+            <a href="about.html" class="btn btn-outline" style="border-color: #FFF; color: #FFF;">
+              Learn How It Works
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Customer Testimonials -->
+    <section class="section-testimonials" style="padding: var(--space-10) 0;">
+      <div class="container">
+        <div class="section-header" style="justify-content: center; text-align: center;">
+          <div class="section-header-title">
+            <h2>Genuine Customer Stories</h2>
+            <p>What our local buyers and business owners say about ANMOL STORE</p>
+          </div>
+        </div>
+        <div class="grid-3">
+          <div class="card" style="background: #FFF; padding: var(--space-6); border-radius: var(--radius-lg); border: 1px solid var(--color-border); box-shadow: var(--shadow-xs);">
+            <div class="stars" style="margin-bottom: var(--space-3);"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+            <p style="font-style: italic; color: var(--color-text); margin-bottom: var(--space-4);">"Ordered grocery from Sharma Kirana in Arya Nagar through ANMOL STORE. Items arrived fresh in 35 minutes and I paid COD. Truly hassle-free!"</p>
+            <div style="display: flex; align-items: center; gap: var(--space-3);">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover;" alt="Priya K.">
+              <div>
+                <strong style="color: var(--primary-navy); font-size: var(--font-size-sm); display: block;">Priya Kapoor</strong>
+                <span style="font-size: var(--font-size-xs); color: var(--color-text-muted);">Customer, Swaroop Nagar</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="background: #FFF; padding: var(--space-6); border-radius: var(--radius-lg); border: 1px solid var(--color-border); box-shadow: var(--shadow-xs);">
+            <div class="stars" style="margin-bottom: var(--space-3);"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+            <p style="font-style: italic; color: var(--color-text); margin-bottom: var(--space-4);">"Booked home electrical inspection for MCB tripping. Suresh Ji from Om Sai Hardware arrived on time and fixed it cleanly for just ₹199."</p>
+            <div style="display: flex; align-items: center; gap: var(--space-3);">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&q=80" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover;" alt="Deepak S.">
+              <div>
+                <strong style="color: var(--primary-navy); font-size: var(--font-size-sm); display: block;">Deepak Shukla</strong>
+                <span style="font-size: var(--font-size-xs); color: var(--color-text-muted);">Resident, Civil Lines</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="background: #FFF; padding: var(--space-6); border-radius: var(--radius-lg); border: 1px solid var(--color-border); box-shadow: var(--shadow-xs);">
+            <div class="stars" style="margin-bottom: var(--space-3);"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+            <p style="font-style: italic; color: var(--color-text); margin-bottom: var(--space-4);">"Registering our electronics shop was 100% free and easy. We now get regular orders for earphones, cables, and chargers from nearby customers."</p>
+            <div style="display: flex; align-items: center; gap: var(--space-3);">
+              <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&q=80" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover;" alt="Rajesh V.">
+              <div>
+                <strong style="color: var(--primary-navy); font-size: var(--font-size-sm); display: block;">Rajesh Verma</strong>
+                <span style="font-size: var(--font-size-xs); color: var(--color-text-muted);">Shop Owner, Gumti No 5</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQs Section -->
+    <section class="section-faq" style="padding: var(--space-10) 0; background-color: var(--color-surface-alt);">
+      <div class="container" style="max-width: 800px;">
+        <div class="section-header" style="justify-content: center; text-align: center;">
+          <div class="section-header-title">
+            <h2>Frequently Asked Questions</h2>
+            <p>Everything you need to know about ANMOL STORE</p>
+          </div>
+        </div>
+
+        <div class="faq-accordion">
+          <div class="faq-item active">
+            <div class="faq-question">
+              <span>Is seller registration really 100% free on ANMOL STORE?</span>
+              <i class="fas fa-chevron-down faq-toggle-icon"></i>
+            </div>
+            <div class="faq-answer">
+              Yes, absolutely! Free account creation for customers and free shop registration for sellers is a core policy. We do not charge any hidden registration or subscription fees.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>How are multi-seller orders fulfilled?</span>
+              <i class="fas fa-chevron-down faq-toggle-icon"></i>
+            </div>
+            <div class="faq-answer">
+              When you add products from different local shops to your cart, they are grouped under their respective sellers. Each seller handles their item fulfillment directly, and clear delivery charges are displayed transparently.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>How do service bookings and vehicle inquiries work?</span>
+              <i class="fas fa-chevron-down faq-toggle-icon"></i>
+            </div>
+            <div class="faq-answer">
+              Services and vehicles are separate workflows! You can book home visits or repair slots with chosen date/time slots, while vehicle listings allow you to submit direct inquiries and negotiate with local sellers.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>What payment methods are supported?</span>
+              <i class="fas fa-chevron-down faq-toggle-icon"></i>
+            </div>
+            <div class="faq-answer">
+              We support Cash on Delivery (COD) as well as online UPI and card payments when configured.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Location Picker Modal -->
+  <div class="modal-backdrop" id="location-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fas fa-map-marker-alt" style="color: var(--accent-orange);"></i> Select Your Delivery Location</h3>
+        <button class="modal-close" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: var(--font-size-sm); color: var(--color-text-muted); margin-bottom: var(--space-4);">
+          Enter your city and 6-digit Indian PIN code to view nearby shops and estimated delivery times.
+        </p>
+        <div class="form-group">
+          <label class="form-label" for="location-city-input">City</label>
+          <input type="text" id="location-city-input" class="form-control" placeholder="e.g. Kanpur, Lucknow, Unnao">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="location-pincode-input">PIN Code</label>
+          <input type="text" id="location-pincode-input" class="form-control" placeholder="e.g. 208001" maxlength="6">
+        </div>
+        <button type="button" id="btn-detect-location" class="btn btn-outline btn-block" style="margin-top: var(--space-2);">
+          <i class="fas fa-location-arrow"></i> Use Current Location
+        </button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="btn-save-location" class="btn btn-primary">Save Location</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Drawer Menu -->
+  <div class="mobile-drawer-overlay">
+    <div class="mobile-drawer">
+      <div class="mobile-drawer-header">
+        <div class="brand-title" style="color: #FFF;">ANMOL <span>STORE</span></div>
+        <button class="modal-close mobile-drawer-close" style="color: #FFF;">&times;</button>
+      </div>
+      <div class="mobile-drawer-body">
+        <ul class="mobile-nav-links">
+          <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+          <li><a href="shops.html"><i class="fas fa-store"></i> Explore Shops</a></li>
+          <li><a href="products.html"><i class="fas fa-shopping-basket"></i> Products</a></li>
+          <li><a href="services.html"><i class="fas fa-tools"></i> Local Services</a></li>
+          <li><a href="vehicles.html"><i class="fas fa-car"></i> Cars & Bikes</a></li>
+          <li><a href="seller-register.html" style="color: var(--accent-orange); font-weight: 700;"><i class="fas fa-plus-circle"></i> Register Your Shop (Free)</a></li>
+          <li><a href="customer-dashboard.html"><i class="fas fa-user-circle"></i> Customer Dashboard</a></li>
+          <li><a href="seller-dashboard.html"><i class="fas fa-tachometer-alt"></i> Seller Dashboard</a></li>
+          <li><a href="admin-login.html"><i class="fas fa-user-shield"></i> Admin Portal</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-bottom-nav">
+    <div class="mobile-bottom-nav-inner">
+      <a href="index.html" class="mobile-nav-item active">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="shops.html" class="mobile-nav-item">
+        <i class="fas fa-store"></i>
+        <span>Shops</span>
+      </a>
+      <a href="products.html" class="mobile-nav-item">
+        <i class="fas fa-search"></i>
+        <span>Products</span>
+      </a>
+      <a href="cart.html" class="mobile-nav-item">
+        <i class="fas fa-shopping-bag">
+          <span class="badge-count cart-badge-count" style="display: none; top: -4px; right: -6px;">0</span>
+        </i>
+        <span>Cart</span>
+      </a>
+      <a href="login.html" class="mobile-nav-item user-account-link">
+        <i class="far fa-user"></i>
+        <span>Account</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Mobile App Download Banner Section -->
+  <section class="section" style="background: linear-gradient(135deg, var(--primary-navy-dark), var(--primary-navy)); color: var(--color-white); padding: var(--space-10) 0; margin-top: var(--space-10);">
+    <div class="container">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-8); flex-wrap: wrap;">
+        <div style="max-width: 580px;">
+          <span class="badge badge-orange" style="margin-bottom: var(--space-3);"><i class="fas fa-mobile-alt"></i> Mobile Experience</span>
+          <h2 style="font-size: var(--font-size-2xl); color: var(--color-white); margin-bottom: var(--space-2);">Get ANMOL STORE on Your Phone</h2>
+          <p style="color: rgba(255,255,255,0.85); font-size: var(--font-size-sm); margin-bottom: var(--space-4);">
+            Download the official ANMOL STORE app for faster checkout, instant shop inquiries, and real-time order tracking.
+          </p>
+          <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+            <a href="download-app.html" class="btn btn-primary btn-md">
+              <i class="fab fa-android"></i> Download Android App (.APK)
+            </a>
+            <button type="button" class="btn btn-outline-white btn-md trigger-app-modal">
+              <i class="fas fa-qrcode"></i> Scan QR Code
+            </button>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: var(--space-4); background: rgba(255,255,255,0.1); padding: var(--space-4) var(--space-6); border-radius: var(--radius-2xl); backdrop-filter: blur(8px);">
+          <img src="assets/icons/icon-192.png" alt="ANMOL App Icon" style="width: 72px; height: 72px; border-radius: var(--radius-xl); box-shadow: 0 8px 16px rgba(0,0,0,0.3);">
+          <div>
+            <div style="font-weight: 700; font-size: var(--font-size-md);">ANMOL STORE</div>
+            <div style="font-size: var(--font-size-xs); color: rgba(255,255,255,0.8);">v1.0.0 &bull; Android & iOS Ready</div>
+            <div style="margin-top: 4px; color: #10B981; font-size: var(--font-size-xs); font-weight: 600;">
+              <span class="status-indicator-dot online" style="margin-right: 4px;"></span> Verified PWA
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <div class="brand-title">ANMOL <span>STORE</span></div>
+            <p class="footer-desc">
+              Empowering local Indian businesses with a modern digital storefront. Discover trusted Kirana, electronics, hardware, mechanics, and certified vehicles directly from your neighbourhood.
+            </p>
+            <div style="display: flex; gap: var(--space-3); font-size: 1.2rem;">
+              <a href="#" style="color: #94A3B8;"><i class="fab fa-facebook"></i></a>
+              <a href="#" style="color: #94A3B8;"><i class="fab fa-instagram"></i></a>
+              <a href="#" style="color: #94A3B8;"><i class="fab fa-whatsapp"></i></a>
+              <a href="#" style="color: #94A3B8;"><i class="fab fa-twitter"></i></a>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="footer-title">Marketplace</h4>
+            <ul class="footer-links">
+              <li><a href="shops.html">All Local Shops</a></li>
+              <li><a href="products.html">Grocery & Essentials</a></li>
+              <li><a href="products.html?category=electronics-mobile">Electronics & Mobile</a></li>
+              <li><a href="services.html">Electrician & Plumbing</a></li>
+              <li><a href="vehicles.html">Used Cars & Bikes</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="footer-title">For Sellers</h4>
+            <ul class="footer-links">
+              <li><a href="seller-register.html">Register Your Dukaan</a></li>
+              <li><a href="seller-dashboard.html">Seller Hub Login</a></li>
+              <li><a href="seller-products.html">Manage Products</a></li>
+              <li><a href="seller-orders.html">Fulfill Orders</a></li>
+              <li><a href="terms.html">Seller Policies</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="footer-title">Company</h4>
+            <ul class="footer-links">
+              <li><a href="about.html">About Us</a></li>
+              <li><a href="contact.html">Contact & Support</a></li>
+              <li><a href="privacy.html">Privacy Policy</a></li>
+              <li><a href="terms.html">Terms & Conditions</a></li>
+              <li><a href="admin-login.html">Admin Portal</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-contact-col">
+            <h4 class="footer-title">Support & Office</h4>
+            <ul class="footer-contact">
+              <li>
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Mall Road, Civil Lines, Kanpur, Uttar Pradesh — 208001</span>
+              </li>
+              <li>
+                <i class="fas fa-phone-alt"></i>
+                <span>+91 80099 00123 / +91 98390 11122</span>
+              </li>
+              <li>
+                <i class="fas fa-envelope"></i>
+                <span>support@anmolstore.in</span>
+              </li>
+              <li>
+                <i class="fas fa-clock"></i>
+                <span>Mon - Sun: 08:00 AM - 10:00 PM</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container">
+        <div class="footer-bottom-inner">
+          <div>&copy; 2026 ANMOL STORE. All rights reserved. Vocal for Local India.</div>
+          <div class="footer-bottom-links">
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
+            <a href="contact.html">Support</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/config.js"></script>
+  <script type="module" src="js/notifications.js"></script>
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/cart.js"></script>
+  <script type="module" src="js/navigation.js"></script>
+  <script type="module">
+    import { api } from './js/api.js';
+    import { cart } from './js/cart.js';
+    import { formatCurrency, getFallbackImage } from './js/config.js';
+
+    // Accordion toggle
+    document.querySelectorAll('.faq-question').forEach(q => {
+      q.addEventListener('click', () => {
+        const item = q.parentElement;
+        item.classList.toggle('active');
+      });
+    });
+
+    // Load dynamic homepage data
+    async function loadHomepageData() {
+      try {
+        // 1. Categories
+        const catRes = await api.get('/categories?featured=true');
+        if (catRes.success && catRes.data) {
+          const grid = document.getElementById('home-categories-grid');
+          grid.innerHTML = catRes.data.slice(0, 6).map(c => `
+            <a href="products.html?category=${c.slug}" class="category-card">
+              <div class="category-icon-box">
+                <i class="fas ${c.icon || 'fa-store'}"></i>
+              </div>
+              <div class="category-name">${c.name}</div>
+            </a>
+          `).join('');
+        }
+
+        // 2. Featured Shops
+        const shopsRes = await api.get('/shops?limit=3');
+        if (shopsRes.success && shopsRes.data) {
+          const grid = document.getElementById('home-shops-grid');
+          grid.innerHTML = shopsRes.data.shops.map(s => `
+            <div class="shop-card">
+              <div class="shop-cover">
+                <img src="${s.coverImage || getFallbackImage('shop')}" alt="${s.name}" loading="lazy">
+                <div class="shop-logo-wrap">
+                  <img src="${s.logo || getFallbackImage('shop')}" alt="${s.name}">
+                </div>
+              </div>
+              <div class="shop-card-body">
+                <div class="shop-card-name">
+                  <a href="shop-details.html?slug=${s.slug}">${s.name}</a>
+                  ${s.isVerified ? '<i class="fas fa-check-circle verified-icon" title="Verified Local Store"></i>' : ''}
+                </div>
+                <div class="shop-category">${s.category}</div>
+                <div class="shop-location">
+                  <i class="fas fa-map-marker-alt"></i> ${s.address.street}, ${s.address.city}
+                </div>
+                <div class="shop-footer">
+                  <div class="stars"><i class="fas fa-star"></i> ${s.rating.toFixed(1)} (${s.reviewCount || 0})</div>
+                  <a href="shop-details.html?slug=${s.slug}" class="btn btn-outline btn-sm">Visit Dukaan</a>
+                </div>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        // 3. Popular Products
+        const prodRes = await api.get('/products?limit=8');
+        if (prodRes.success && prodRes.data) {
+          const grid = document.getElementById('home-products-grid');
+          grid.innerHTML = prodRes.data.products.map(p => `
+            <div class="product-card" data-id="${p._id}">
+              <div class="product-thumb">
+                <img src="${p.images?.[0] || getFallbackImage('product')}" alt="${p.name}" loading="lazy">
+              </div>
+              <div class="product-content">
+                <a href="shop-details.html?slug=${p.shop?.slug}" class="product-shop-tag">
+                  <i class="fas fa-store"></i> ${p.shop?.name || 'Local Seller'}
+                </a>
+                <h3 class="product-title">
+                  <a href="product-details.html?id=${p._id}">${p.name}</a>
+                </h3>
+                <div class="product-rating">
+                  <div class="stars"><i class="fas fa-star"></i> ${p.rating.toFixed(1)}</div>
+                  <span>(${p.reviewCount || 0})</span>
+                </div>
+                <div class="product-price-row">
+                  <div class="price-box">
+                    <span class="current-price">${formatCurrency(p.price)}</span>
+                    ${p.originalPrice ? `<span class="original-price">${formatCurrency(p.originalPrice)}</span>` : ''}
+                  </div>
+                  <button class="btn-add-cart" data-product='${JSON.stringify({ _id: p._id, name: p.name, price: p.price, shop: p.shop, stock: p.stock })}'>
+                    <i class="fas fa-plus"></i> Add
+                  </button>
+                </div>
+              </div>
+            </div>
+          `).join('');
+
+          // Bind Add-to-Cart buttons
+          grid.querySelectorAll('.btn-add-cart').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.preventDefault();
+              const product = JSON.parse(btn.dataset.product);
+              cart.addItem(product, 1);
+            });
+          });
+        }
+
+        // 4. Services
+        const servRes = await api.get('/services?limit=4');
+        if (servRes.success && servRes.data) {
+          const grid = document.getElementById('home-services-grid');
+          grid.innerHTML = servRes.data.services.map(s => `
+            <div class="service-card">
+              <div class="service-thumb">
+                <img src="${s.images?.[0] || getFallbackImage('service')}" alt="${s.title}" loading="lazy">
+              </div>
+              <div class="service-content">
+                <span class="badge badge-primary" style="align-self: flex-start; margin-bottom: 6px;">${s.serviceType}</span>
+                <h4 class="service-title">${s.title}</h4>
+                <div class="service-provider-info">
+                  <i class="fas fa-store"></i> ${s.shop?.name || 'Local Specialist'}
+                </div>
+                <div class="service-price-box">
+                  <span class="service-price-label">Visiting Charge</span>
+                  <span class="service-price-val">${formatCurrency(s.price)}</span>
+                </div>
+                <a href="services.html?id=${s._id}" class="btn btn-outline btn-block btn-sm" style="margin-top: auto;">
+                  Book Appointment
+                </a>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        // 5. Vehicles
+        const vehRes = await api.get('/vehicles?limit=3');
+        if (vehRes.success && vehRes.data) {
+          const grid = document.getElementById('home-vehicles-grid');
+          grid.innerHTML = vehRes.data.vehicles.map(v => `
+            <div class="vehicle-card">
+              <div class="vehicle-thumb">
+                <img src="${v.photos?.[0] || getFallbackImage('vehicle')}" alt="${v.title}" loading="lazy">
+                <span class="badge badge-navy vehicle-badge">${v.vehicleType.toUpperCase()}</span>
+              </div>
+              <div class="vehicle-content">
+                <h4 class="vehicle-title">${v.title}</h4>
+                <div class="vehicle-specs">
+                  <span class="spec-chip"><i class="fas fa-calendar"></i> ${v.year}</span>
+                  <span class="spec-chip"><i class="fas fa-tachometer-alt"></i> ${v.mileageKm.toLocaleString('en-IN')} km</span>
+                  <span class="spec-chip"><i class="fas fa-gas-pump"></i> ${v.fuelType}</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: var(--space-4);">
+                  <div class="vehicle-price">${formatCurrency(v.askingPrice)}</div>
+                  <a href="vehicles.html?id=${v._id}" class="btn btn-outline-orange btn-sm">Inquire / Test Drive</a>
+                </div>
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (err) {
+        console.error('Error loading homepage data:', err);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadHomepageData);
+  </script>
+</body>
+</html>

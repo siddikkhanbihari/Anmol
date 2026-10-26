@@ -1,0 +1,47 @@
+{
+  "name": "anmol-store-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "ANMOL STORE - Premium Local Business Marketplace Backend API",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed": "node scripts/seed.js",
+    "create-admin": "node scripts/create-admin.js",
+    "tunnel": "npx localtunnel --port 5000",
+    "test": "node --test tests/*.test.js"
+  },
+  "keywords": [
+    "marketplace",
+    "ecommerce",
+    "local-business",
+    "india",
+    "anmol-store",
+    "multivendor",
+    "express",
+    "mongoose"
+  ],
+  "author": "ANMOL STORE Engineering Team",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.5",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1"
+  },
+  "devDependencies": {
+    "mongodb-memory-server": "^10.1.3",
+    "supertest": "^7.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

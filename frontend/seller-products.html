@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123B70">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ANMOL STORE">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <title>Manage Products — ANMOL SELLER HUB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    .seller-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: var(--space-8);
+      align-items: start;
+    }
+    .seller-sidebar {
+      background: #FFF;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      position: sticky;
+      top: calc(var(--header-height) + 20px);
+    }
+    .product-manage-row {
+      display: grid;
+      grid-template-columns: 60px 1.5fr 100px 100px 80px 120px;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid var(--color-border);
+      font-size: var(--font-size-sm);
+    }
+    .product-manage-row:hover {
+      background: var(--color-surface-alt);
+    }
+    @media (max-width: 900px) {
+      .seller-layout { grid-template-columns: 1fr; }
+      .seller-sidebar { position: static; }
+      .product-manage-row { grid-template-columns: 50px 1fr; gap: var(--space-2); }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="main-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="seller-dashboard.html" class="brand-logo">
+          <div class="brand-icon-wrap" style="background: linear-gradient(135deg, var(--accent-orange) 0%, #EA580C 100%);">
+            <i class="fas fa-store"></i>
+          </div>
+          <div class="brand-text-wrap">
+            <div class="brand-title">ANMOL <span>SELLER HUB</span></div>
+            <div class="brand-tagline">Products & Inventory</div>
+          </div>
+        </a>
+
+        <div style="display: flex; align-items: center; gap: var(--space-4); margin-left: auto;">
+          <a href="seller-dashboard.html" class="btn btn-outline btn-sm"><i class="fas fa-arrow-left"></i> Dashboard</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding: var(--space-8) var(--space-4);">
+    <div class="seller-layout">
+      <!-- Sidebar -->
+      <aside class="seller-sidebar">
+        <nav>
+          <a href="seller-dashboard.html" class="dash-nav-item"><i class="fas fa-tachometer-alt"></i> Overview</a>
+          <a href="seller-products.html" class="dash-nav-item active"><i class="fas fa-boxes"></i> My Products</a>
+          <a href="seller-orders.html" class="dash-nav-item"><i class="fas fa-truck-loading"></i> Customer Orders</a>
+          <a href="seller-services.html" class="dash-nav-item"><i class="fas fa-tools"></i> Services & Bookings</a>
+          <a href="seller-profile.html" class="dash-nav-item"><i class="fas fa-cog"></i> Shop Settings</a>
+        </nav>
+      </aside>
+
+      <!-- Main Management Panel -->
+      <section>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-6); flex-wrap: wrap; gap: var(--space-3);">
+          <div>
+            <h1 style="font-size: var(--font-size-2xl); color: var(--primary-navy); margin: 0;">Product Inventory</h1>
+            <p style="color: var(--color-text-muted); font-size: var(--font-size-sm); margin: 2px 0 0 0;">
+              Manage prices, stock units, and digital showcase for your shop
+            </p>
+          </div>
+          <button id="btn-open-add-product" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add New Product
+          </button>
+        </div>
+
+        <!-- Filter bar -->
+        <div style="background: #FFF; padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--color-border); margin-bottom: var(--space-4); display: flex; justify-content: space-between; align-items: center;">
+          <input type="text" id="seller-product-search" class="form-control" placeholder="Search your products by name..." style="max-width: 340px;">
+          <span id="seller-products-count" style="font-size: var(--font-size-xs); color: var(--color-text-muted);">Loading...</span>
+        </div>
+
+        <!-- Products List Table -->
+        <div style="background: #FFF; border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden;">
+          <div style="background: var(--color-surface-alt); padding: var(--space-3) var(--space-4); font-weight: 700; font-size: var(--font-size-xs); color: var(--primary-navy); display: grid; grid-template-columns: 60px 1.5fr 100px 100px 80px 120px; gap: var(--space-4);">
+            <span>Image</span>
+            <span>Product Details</span>
+            <span>Price</span>
+            <span>Stock</span>
+            <span>Status</span>
+            <span style="text-align: right;">Actions</span>
+          </div>
+
+          <div id="seller-products-container">
+            <div class="skeleton skeleton-card"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Add / Edit Product Modal -->
+  <div class="modal-backdrop" id="product-modal">
+    <div class="modal-container" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="product-modal-title">Add New Product</h3>
+        <button class="modal-close" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="product-form">
+          <input type="hidden" id="edit-product-id">
+
+          <div class="form-group">
+            <label class="form-label required" for="prod-name">Product Name</label>
+            <input type="text" id="prod-name" class="form-control" placeholder="e.g. Aashirvaad Shudh Chakki Atta (5kg)" required>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label required" for="prod-category">Category</label>
+              <select id="prod-category" class="form-select" required></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label required" for="prod-unit">Unit</label>
+              <select id="prod-unit" class="form-select">
+                <option value="piece">Piece / Unit</option>
+                <option value="packet">Packet</option>
+                <option value="kg">Kilogram (kg)</option>
+                <option value="gm">Gram (gm)</option>
+                <option value="litre">Litre (L)</option>
+                <option value="box">Box</option>
+                <option value="set">Set</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div class="form-group">
+              <label class="form-label required" for="prod-price">Selling Price (₹)</label>
+              <input type="number" id="prod-price" class="form-control" placeholder="e.g. 245" min="0" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="prod-original-price">Original MRP (₹)</label>
+              <input type="number" id="prod-original-price" class="form-control" placeholder="e.g. 285" min="0">
+            </div>
+            <div class="form-group">
+              <label class="form-label required" for="prod-stock">Available Stock</label>
+              <input type="number" id="prod-stock" class="form-control" placeholder="e.g. 50" min="0" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="prod-image">Image URL</label>
+            <input type="url" id="prod-image" class="form-control" placeholder="https://images.unsplash.com/photo-...">
+            <div class="form-hint">Paste high quality image URL or leave blank to use category default.</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required" for="prod-description">Product Description</label>
+            <textarea id="prod-description" class="form-control" rows="3" placeholder="Provide details, ingredients, warranty, or brand specifications..." required></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost modal-close-btn">Cancel</button>
+        <button type="button" id="btn-save-product" class="btn btn-primary">Save Product</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-bottom">
+      <div class="container">
+        <div class="footer-bottom-inner">
+          <div>&copy; 2026 ANMOL STORE Seller Hub.</div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="js/config.js"></script>
+  <script type="module" src="js/notifications.js"></script>
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script type="module">
+    import { api } from './js/api.js';
+    import { auth } from './js/auth.js';
+    import { notify } from './js/notifications.js';
+    import { formatCurrency, getFallbackImage, debounce } from './js/config.js';
+
+    auth.requireAuth(['seller', 'admin']);
+
+    let sellerProducts = [];
+    const modal = document.getElementById('product-modal');
+
+    async function init() {
+      await loadCategories();
+      await loadProducts();
+
+      // Check if action=add in URL
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('action') === 'add') {
+        openModal();
+      }
+    }
+
+    async function loadCategories() {
+      try {
+        const res = await api.get('/categories?type=product');
+        if (res.success && res.data) {
+          const select = document.getElementById('prod-category');
+          select.innerHTML = res.data.map(c => `
+            <option value="${c._id}">${c.name}</option>
+          `).join('');
+        }
+      } catch (e) {}
+    }
+
+    async function loadProducts(search = '') {
+      const container = document.getElementById('seller-products-container');
+      const countEl = document.getElementById('seller-products-count');
+
+      try {
+        const query = search ? `?search=${encodeURIComponent(search)}` : '';
+        const res = await api.get(`/products/seller/mine${query}`);
+
+        if (res.success && res.data) {
+          sellerProducts = res.data.products || [];
+          countEl.textContent = `Total: ${sellerProducts.length} items`;
+
+          if (!sellerProducts.length) {
+            container.innerHTML = `
+              <div class="empty-state">
+                <div class="empty-state-icon"><i class="fas fa-boxes"></i></div>
+                <h3 class="empty-state-title">No Products Listed</h3>
+                <p class="empty-state-text">Start by clicking "Add New Product" to list items in your digital dukaan.</p>
+              </div>
+            `;
+            return;
+          }
+
+          container.innerHTML = sellerProducts.map(p => `
+            <div class="product-manage-row" data-id="${p._id}">
+              <img src="${p.images?.[0] || getFallbackImage('product')}" style="width: 44px; height: 44px; border-radius: 4px; object-fit: cover;">
+              <div>
+                <strong style="color: var(--primary-navy);">${p.name}</strong>
+                <div style="font-size: var(--font-size-xs); color: var(--color-text-muted);">${p.category?.name || 'Category'} &bull; ${p.unit}</div>
+              </div>
+              <div style="font-weight: 700; color: var(--primary-navy);">${formatCurrency(p.price)}</div>
+              <div>
+                <span class="badge ${p.stock > 0 ? 'badge-success' : 'badge-danger'}">
+                  ${p.stock > 0 ? `${p.stock} in stock` : 'Out of Stock'}
+                </span>
+              </div>
+              <div>
+                <span class="badge ${p.isActive ? 'badge-primary' : 'badge-navy'}">
+                  ${p.isActive ? 'Active' : 'Archived'}
+                </span>
+              </div>
+              <div style="display: flex; gap: 6px; justify-content: flex-end;">
+                <button class="btn btn-ghost btn-sm btn-edit-prod" data-id="${p._id}" title="Edit Product">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-ghost btn-sm btn-delete-prod" data-id="${p._id}" title="Delete Product" style="color: var(--color-danger);">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
+            </div>
+          `).join('');
+
+          // Bind edit & delete
+          container.querySelectorAll('.btn-edit-prod').forEach(b => {
+            b.addEventListener('click', () => openModal(b.dataset.id));
+          });
+
+          container.querySelectorAll('.btn-delete-prod').forEach(b => {
+            b.addEventListener('click', async () => {
+              if (confirm('Delete this product from your shop?')) {
+                try {
+                  await api.delete(`/products/${b.dataset.id}`);
+                  notify.success('Product deleted');
+                  loadProducts();
+                } catch (err) {
+                  notify.error(err.message || 'Failed to delete');
+                }
+              }
+            });
+          });
+        }
+      } catch (err) {
+        container.innerHTML = `<p style="color: var(--color-danger); padding: var(--space-4);">${err.message}</p>`;
+      }
+    }
+
+    function openModal(id = null) {
+      const modalTitle = document.getElementById('product-modal-title');
+      const form = document.getElementById('product-form');
+      form.reset();
+
+      if (id) {
+        modalTitle.textContent = 'Edit Product';
+        const p = sellerProducts.find(item => item._id === id);
+        if (p) {
+          document.getElementById('edit-product-id').value = p._id;
+          document.getElementById('prod-name').value = p.name;
+          document.getElementById('prod-category').value = p.category?._id || p.category;
+          document.getElementById('prod-unit').value = p.unit || 'piece';
+          document.getElementById('prod-price').value = p.price;
+          document.getElementById('prod-original-price').value = p.originalPrice || '';
+          document.getElementById('prod-stock').value = p.stock;
+          document.getElementById('prod-image').value = p.images?.[0] || '';
+          document.getElementById('prod-description').value = p.description;
+        }
+      } else {
+        modalTitle.textContent = 'Add New Product';
+        document.getElementById('edit-product-id').value = '';
+      }
+
+      modal.classList.add('active');
+    }
+
+    function closeModal() {
+      modal.classList.remove('active');
+    }
+
+    document.getElementById('btn-open-add-product').addEventListener('click', () => openModal());
+    modal.querySelectorAll('.modal-close, .modal-close-btn').forEach(btn => btn.addEventListener('click', closeModal));
+
+    document.getElementById('btn-save-product').addEventListener('click', async () => {
+      const id = document.getElementById('edit-product-id').value;
+      const name = document.getElementById('prod-name').value.trim();
+      const category = document.getElementById('prod-category').value;
+      const unit = document.getElementById('prod-unit').value;
+      const price = document.getElementById('prod-price').value;
+      const originalPrice = document.getElementById('prod-original-price').value;
+      const stock = document.getElementById('prod-stock').value;
+      const image = document.getElementById('prod-image').value.trim();
+      const description = document.getElementById('prod-description').value.trim();
+
+      if (!name || !price || stock === '' || !description) {
+        notify.warning('Please fill in all required product fields');
+        return;
+      }
+
+      const payload = {
+        name,
+        category,
+        unit,
+        price: Number(price),
+        originalPrice: originalPrice ? Number(originalPrice) : undefined,
+        stock: Number(stock),
+        images: image ? [image] : undefined,
+        description
+      };
+
+      try {
+        if (id) {
+          await api.patch(`/products/${id}`, payload);
+          notify.success('Product updated successfully');
+        } else {
+          await api.post('/products', payload);
+          notify.success('Product added to your shop!');
+        }
+        closeModal();
+        loadProducts();
+      } catch (err) {
+        notify.error(err.message || 'Failed to save product');
+      }
+    });
+
+    document.getElementById('seller-product-search').addEventListener('input', debounce((e) => {
+      loadProducts(e.target.value.trim());
+    }, 300));
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+  <script type="module" src="js/pwa.js"></script>
+</body>
+</html>

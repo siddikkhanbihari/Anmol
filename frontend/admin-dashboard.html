@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123B70">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ANMOL STORE">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <title>Admin Dashboard — ANMOL STORE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: var(--space-8);
+      align-items: start;
+    }
+    .admin-sidebar {
+      background: #FFF;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      position: sticky;
+      top: 20px;
+    }
+    .admin-panel {
+      background: #FFF;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+    }
+    .table-responsive {
+      overflow-x: auto;
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--font-size-xs);
+    }
+    .admin-table th, .admin-table td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .admin-table th {
+      background: var(--color-surface-alt);
+      color: var(--primary-navy);
+      font-weight: 700;
+    }
+    @media (max-width: 900px) {
+      .admin-layout { grid-template-columns: 1fr; }
+      .admin-sidebar { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Admin Top Bar -->
+  <header style="background: var(--primary-navy-dark); color: #FFF; padding: var(--space-3) 0;">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+      <div style="display: flex; align-items: center; gap: var(--space-3);">
+        <strong style="font-size: 1.1rem; color: #FFF;">ANMOL <span style="color: var(--accent-orange);">STORE</span></strong>
+        <span class="badge badge-orange" style="font-size: 0.65rem;">Platform Administration</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: var(--space-4);">
+        <a href="index.html" target="_blank" style="color: #CBD5E1; font-size: var(--font-size-xs);"><i class="fas fa-external-link-alt"></i> View Live Store</a>
+        <button id="btn-admin-logout" class="btn btn-outline-orange btn-sm" style="padding: 2px 8px; font-size: 0.75rem;">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding: var(--space-8) var(--space-4);">
+    <div class="admin-layout">
+      <!-- Admin Sidebar Navigation -->
+      <aside class="admin-sidebar">
+        <nav>
+          <div class="dash-nav-item active" data-tab="overview"><i class="fas fa-chart-pie"></i> Overview KPIs</div>
+          <div class="dash-nav-item" data-tab="sellers"><i class="fas fa-store"></i> Seller Approvals</div>
+          <div class="dash-nav-item" data-tab="orders"><i class="fas fa-shopping-cart"></i> All Orders</div>
+          <div class="dash-nav-item" data-tab="users"><i class="fas fa-users"></i> Users Management</div>
+          <div class="dash-nav-item" data-tab="settings"><i class="fas fa-sliders-h"></i> Platform Policies</div>
+          <div class="dash-nav-item" data-tab="audit"><i class="fas fa-history"></i> Audit Logs</div>
+        </nav>
+      </aside>
+
+      <!-- Main Panels -->
+      <section class="admin-panel">
+        <!-- 1. Overview Panel -->
+        <div id="tab-overview" class="admin-tab-pane">
+          <h2 style="font-size: var(--font-size-xl); color: var(--primary-navy); margin-bottom: var(--space-4);">
+            Platform Performance & Metrics
+          </h2>
+
+          <div class="grid-4" style="margin-bottom: var(--space-6);">
+            <div class="stat-card">
+              <div class="stat-card-title">Gross Order Value (GMV)</div>
+              <div class="stat-card-val" id="metric-gmv">₹0</div>
+              <span style="font-size: 0.7rem; color: var(--color-success); font-weight: 600;">Total customer volume</span>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-title">Total Orders</div>
+              <div class="stat-card-val" id="metric-orders">0</div>
+              <span style="font-size: 0.7rem; color: var(--brand-blue); font-weight: 600;">All marketplace orders</span>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-title">Registered Sellers</div>
+              <div class="stat-card-val" id="metric-sellers">0</div>
+              <span style="font-size: 0.7rem; color: var(--color-text-muted);">Verified local merchants</span>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-title">Pending Seller Approvals</div>
+              <div class="stat-card-val" id="metric-pending-sellers" style="color: var(--accent-orange);">0</div>
+              <span style="font-size: 0.7rem; color: var(--accent-orange); font-weight: 600;">Needs review</span>
+            </div>
+          </div>
+
+          <div class="grid-3" style="margin-bottom: var(--space-6);">
+            <div class="stat-card">
+              <div class="stat-card-title">Active Products</div>
+              <div class="stat-card-val" id="metric-products">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-title">Service Offerings</div>
+              <div class="stat-card-val" id="metric-services">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-title">Registered Customers</div>
+              <div class="stat-card-val" id="metric-customers">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Sellers Management Panel -->
+        <div id="tab-sellers" class="admin-tab-pane" style="display: none;">
+          <h2 style="font-size: var(--font-size-xl); color: var(--primary-navy); margin-bottom: var(--space-4);">
+            Seller Verification & Moderation
+          </h2>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Shop & Owner</th>
+                  <th>Category</th>
+                  <th>Contact</th>
+                  <th>Location</th>
+                  <th>Approval Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-sellers-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 3. All Orders Panel -->
+        <div id="tab-orders" class="admin-tab-pane" style="display: none;">
+          <h2 style="font-size: var(--font-size-xl); color: var(--primary-navy); margin-bottom: var(--space-4);">
+            Order Monitoring Across Platform
+          </h2>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Order #</th>
+                  <th>Customer</th>
+                  <th>Fulfilling Sellers</th>
+                  <th>Total</th>
+                  <th>Payment</th>
+                  <th>Overall Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="admin-orders-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 4. Users Panel -->
+        <div id="tab-users" class="admin-tab-pane" style="display: none;">
+          <h2 style="font-size: var(--font-size-xl); color: var(--primary-navy); margin-bottom: var(--space-4);">
+            User & Customer Directory
+          </h2>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="admin-users-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 5. Platform Settings Panel -->
+        <div id="tab-settings" class="admin-tab-pane" style="display: none;">
+          <h2 style="font-size: var(--font-size-xl); color: var(--primary-navy); margin-bottom: var(--space-4);">
+            Configurable Platform Policies
+          </h2>
+          <form id="admin-settings-form" style="max-width: 600px;">
+            <div class="form-group">
+              <label class="filter-option" style="font-weight: 700; font-size: var(--font-size-sm);">
+                <input type="checkbox" id="cfg-free-seller" checked>
+                <span>Free Seller Registration Policy Enabled (Zero mandatory upfront fees)</span>
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label class="filter-option" style="font-weight: 700; font-size: var(--font-size-sm);">
+                <input type="checkbox" id="cfg-cod-enabled" checked>
+                <span>Enable Cash on Delivery (COD) for Buyers</span>
+              </label>
+            </div>
+
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label" for="cfg-admin-del-charge">Default Local Delivery Fee (₹)</label>
+                <input type="number" id="cfg-admin-del-charge" class="form-control" value="40" min="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="cfg-free-del-threshold">Free Delivery Threshold (₹)</label>
+                <input type="number" id="cfg-free-del-threshold" class="form-control" value="499" min="0">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="cfg-commission">Platform Commission Percent (%)</label>
+              <input type="number" id="cfg-commission" class="form-control" value="0" min="0">
+              <div class="form-hint">Set to 0% as per current free local business empowerment pledge.</div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg" style="margin-top: var(--space-2);">
+              Save Platform Policies
+            </button>
+          </form>
+        </div>
+
+        <!-- 6. Audit Logs Panel -->
+        <div id="tab-audit" class="admin-tab-pane" style="display: none;">
+          <h2 style="font-size: var(--font-size-xl); color: var(--primary-navy); margin-bottom: var(--space-4);">
+            Security & Action Audit Logs
+          </h2>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Admin</th>
+                  <th>Action</th>
+                  <th>Entity</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody id="admin-audit-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script type="module" src="js/config.js"></script>
+  <script type="module" src="js/notifications.js"></script>
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script type="module">
+    import { api } from './js/api.js';
+    import { auth } from './js/auth.js';
+    import { notify } from './js/notifications.js';
+    import { formatCurrency, formatDate } from './js/config.js';
+
+    auth.requireAuth(['admin']);
+
+    // Tab navigation
+    const navItems = document.querySelectorAll('.dash-nav-item');
+    const tabPanes = document.querySelectorAll('.admin-tab-pane');
+
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        navItems.forEach(i => i.classList.remove('active'));
+        tabPanes.forEach(p => p.style.display = 'none');
+
+        item.classList.add('active');
+        const tab = item.dataset.tab;
+        document.getElementById(`tab-${tab}`).style.display = 'block';
+
+        if (tab === 'overview') loadOverview();
+        else if (tab === 'sellers') loadSellers();
+        else if (tab === 'orders') loadOrders();
+        else if (tab === 'users') loadUsers();
+        else if (tab === 'settings') loadSettings();
+        else if (tab === 'audit') loadAuditLogs();
+      });
+    });
+
+    // 1. Overview KPIs
+    async function loadOverview() {
+      try {
+        const res = await api.get('/admin/overview');
+        if (res.success && res.data) {
+          const { metrics } = res.data;
+          document.getElementById('metric-gmv').textContent = formatCurrency(metrics.grossMerchandiseValue);
+          document.getElementById('metric-orders').textContent = metrics.totalOrders;
+          document.getElementById('metric-sellers').textContent = metrics.totalSellers;
+          document.getElementById('metric-pending-sellers').textContent = metrics.pendingSellers;
+          document.getElementById('metric-products').textContent = metrics.activeProducts;
+          document.getElementById('metric-services').textContent = metrics.activeServices;
+          document.getElementById('metric-customers').textContent = metrics.totalCustomers;
+        }
+      } catch (err) {
+        notify.error('Failed to load metrics');
+      }
+    }
+
+    // 2. Sellers
+    async function loadSellers() {
+      const tbody = document.getElementById('admin-sellers-tbody');
+      try {
+        const res = await api.get('/admin/sellers');
+        if (res.success && res.data) {
+          tbody.innerHTML = res.data.map(s => `
+            <tr>
+              <td>
+                <strong>${s.businessName}</strong><br>
+                <span style="color: var(--color-text-muted);">Owner: ${s.ownerName}</span>
+              </td>
+              <td>${s.businessCategory}</td>
+              <td>${s.user?.email}<br>${s.user?.phone}</td>
+              <td>${s.shop?.address?.city || 'Kanpur'}</td>
+              <td>
+                <span class="badge ${s.approvalStatus === 'approved' ? 'badge-success' : s.approvalStatus === 'rejected' ? 'badge-danger' : 'badge-warning'}">
+                  ${s.approvalStatus.toUpperCase()}
+                </span>
+              </td>
+              <td>
+                <div style="display: flex; gap: 4px;">
+                  ${s.approvalStatus !== 'approved' ? `
+                    <button class="btn btn-outline btn-sm btn-update-seller" data-id="${s._id}" data-status="approved" style="color: var(--color-success); border-color: var(--color-success); padding: 2px 6px;">
+                      Approve
+                    </button>
+                  ` : `
+                    <button class="btn btn-outline btn-sm btn-update-seller" data-id="${s._id}" data-status="rejected" style="color: var(--color-danger); border-color: var(--color-danger); padding: 2px 6px;">
+                      Suspend
+                    </button>
+                  `}
+                </div>
+              </td>
+            </tr>
+          `).join('');
+
+          tbody.querySelectorAll('.btn-update-seller').forEach(btn => {
+            btn.addEventListener('click', async () => {
+              const status = btn.dataset.status;
+              if (confirm(`Set seller status to ${status.toUpperCase()}?`)) {
+                await api.patch(`/admin/sellers/${btn.dataset.id}/status`, { status });
+                notify.success(`Seller status updated to ${status}`);
+                loadSellers();
+              }
+            });
+          });
+        }
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6" style="color: var(--color-danger);">${err.message}</td></tr>`;
+      }
+    }
+
+    // 3. Orders
+    async function loadOrders() {
+      const tbody = document.getElementById('admin-orders-tbody');
+      try {
+        const res = await api.get('/admin/orders');
+        if (res.success && res.data) {
+          tbody.innerHTML = res.data.orders.map(o => `
+            <tr>
+              <td><strong>#${o.orderNumber}</strong></td>
+              <td>${o.customer?.name}<br><span style="color: var(--color-text-muted);">${o.customer?.phone}</span></td>
+              <td>${o.sellerOrders.map(g => g.shop?.name || 'Seller').join(', ')}</td>
+              <td><strong>${formatCurrency(o.totalAmount)}</strong></td>
+              <td>${o.paymentMethod.toUpperCase()} (${o.paymentStatus})</td>
+              <td><span class="badge badge-primary">${o.overallStatus.toUpperCase()}</span></td>
+              <td>${formatDate(o.createdAt, true)}</td>
+            </tr>
+          `).join('');
+        }
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="7" style="color: var(--color-danger);">${err.message}</td></tr>`;
+      }
+    }
+
+    // 4. Users
+    async function loadUsers() {
+      const tbody = document.getElementById('admin-users-tbody');
+      try {
+        const res = await api.get('/admin/users');
+        if (res.success && res.data) {
+          tbody.innerHTML = res.data.users.map(u => `
+            <tr>
+              <td><strong>${u.name}</strong></td>
+              <td>${u.email}</td>
+              <td>${u.phone}</td>
+              <td><span class="badge ${u.role === 'admin' ? 'badge-orange' : u.role === 'seller' ? 'badge-primary' : 'badge-navy'}">${u.role.toUpperCase()}</span></td>
+              <td><span class="badge ${u.status === 'active' ? 'badge-success' : 'badge-danger'}">${u.status.toUpperCase()}</span></td>
+              <td>
+                ${u.role !== 'admin' ? `
+                  <button class="btn btn-outline btn-sm btn-toggle-user" data-id="${u._id}" data-status="${u.status === 'active' ? 'suspended' : 'active'}" style="padding: 2px 6px;">
+                    ${u.status === 'active' ? 'Suspend' : 'Activate'}
+                  </button>
+                ` : '-'}
+              </td>
+            </tr>
+          `).join('');
+
+          tbody.querySelectorAll('.btn-toggle-user').forEach(btn => {
+            btn.addEventListener('click', async () => {
+              const status = btn.dataset.status;
+              if (confirm(`Change user account status to ${status.toUpperCase()}?`)) {
+                await api.patch(`/admin/users/${btn.dataset.id}/status`, { status });
+                notify.success('User status updated');
+                loadUsers();
+              }
+            });
+          });
+        }
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6" style="color: var(--color-danger);">${err.message}</td></tr>`;
+      }
+    }
+
+    // 5. Settings
+    async function loadSettings() {
+      try {
+        const res = await api.get('/admin/settings');
+        if (res.success && res.data) {
+          const s = res.data;
+          document.getElementById('cfg-free-seller').checked = s.freeSellerRegistration;
+          document.getElementById('cfg-cod-enabled').checked = s.codEnabled;
+          document.getElementById('cfg-admin-del-charge').value = s.defaultDeliveryCharge || 40;
+          document.getElementById('cfg-free-del-threshold').value = s.freeDeliveryThreshold || 499;
+          document.getElementById('cfg-commission').value = s.commissionRatePercent || 0;
+        }
+      } catch (err) {}
+    }
+
+    document.getElementById('admin-settings-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        const payload = {
+          freeSellerRegistration: document.getElementById('cfg-free-seller').checked,
+          codEnabled: document.getElementById('cfg-cod-enabled').checked,
+          defaultDeliveryCharge: Number(document.getElementById('cfg-admin-del-charge').value),
+          freeDeliveryThreshold: Number(document.getElementById('cfg-free-del-threshold').value),
+          commissionRatePercent: Number(document.getElementById('cfg-commission').value)
+        };
+        const res = await api.patch('/admin/settings', payload);
+        if (res.success) {
+          notify.success('Platform policies updated!');
+        }
+      } catch (err) {
+        notify.error(err.message || 'Failed to update settings');
+      }
+    });
+
+    // 6. Audit Logs
+    async function loadAuditLogs() {
+      const tbody = document.getElementById('admin-audit-tbody');
+      try {
+        const res = await api.get('/admin/audit-logs');
+        if (res.success && res.data) {
+          tbody.innerHTML = res.data.map(log => `
+            <tr>
+              <td>${formatDate(log.createdAt, true)}</td>
+              <td>${log.admin?.name || 'System Admin'}</td>
+              <td><strong>${log.action}</strong></td>
+              <td>${log.targetEntity}</td>
+              <td><pre style="margin: 0; font-size: 0.7rem;">${JSON.stringify(log.details || {})}</pre></td>
+            </tr>
+          `).join('');
+        }
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="5" style="color: var(--color-danger);">${err.message}</td></tr>`;
+      }
+    }
+
+    document.getElementById('btn-admin-logout').addEventListener('click', () => {
+      auth.logout();
+    });
+
+    document.addEventListener('DOMContentLoaded', loadOverview);
+  </script>
+  <script type="module" src="js/pwa.js"></script>
+</body>
+</html>

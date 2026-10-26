@@ -1,0 +1,16 @@
+{
+  "name": "anmol-store",
+  "version": "1.0.0",
+  "description": "ANMOL STORE — Premium Local Business Marketplace",
+  "main": "backend/src/server.js",
+  "scripts": {
+    "start": "npm start --prefix backend",
+    "build": "npm install --prefix backend",
+    "postinstall": "npm install --prefix backend",
+    "seed": "npm run seed --prefix backend",
+    "test": "npm test --prefix backend"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

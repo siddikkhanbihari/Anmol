@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123B70">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ANMOL STORE">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <title>Explore Local Shops & Dukaans — ANMOL STORE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- Announcement Bar -->
+  <div class="announcement-bar">
+    <div class="container">
+      <div class="announcement-text">
+        <span class="announcement-badge">Local Directory</span>
+        <span>Verified local shops across grocery, electronics, garage, and hardware</span>
+      </div>
+      <div class="announcement-links">
+        <a href="seller-register.html"><i class="fas fa-store"></i> Register Your Dukaan</a>
+        <a href="contact.html"><i class="fas fa-headset"></i> Support</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Header -->
+  <header class="main-header">
+    <div class="container">
+      <div class="header-inner">
+        <button class="mobile-menu-btn mobile-menu-toggle" aria-label="Open menu"><i class="fas fa-bars"></i></button>
+
+        <a href="index.html" class="brand-logo">
+          <div class="brand-icon-wrap"><i class="fas fa-store-alt"></i></div>
+          <div class="brand-text-wrap">
+            <div class="brand-title">ANMOL <span>STORE</span></div>
+            <div class="brand-tagline">Local Business, Digital Future</div>
+          </div>
+        </a>
+
+        <button class="location-btn location-picker-btn" title="Choose Location">
+          <i class="fas fa-map-marker-alt"></i>
+          <span class="location-text current-location-display">Kanpur, 208001</span>
+          <i class="fas fa-chevron-down" style="font-size: 0.65rem;"></i>
+        </button>
+
+        <div class="header-search">
+          <form class="header-search-form" action="products.html" method="GET">
+            <i class="fas fa-search search-icon-left"></i>
+            <input type="text" name="q" placeholder="Search shops, products, services...">
+            <button type="submit">Search</button>
+          </form>
+        </div>
+
+        <div class="header-actions">
+          <a href="login.html" class="header-action-item user-account-link">
+            <i class="far fa-user action-icon"></i>
+            <span class="header-action-text">Sign In</span>
+          </a>
+          <a href="cart.html" class="header-action-item" title="Cart">
+            <i class="fas fa-shopping-bag action-icon">
+              <span class="badge-count cart-badge-count" style="display: none;">0</span>
+            </i>
+            <span class="header-action-text">Cart</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Secondary Nav -->
+  <nav class="secondary-nav">
+    <div class="container">
+      <div class="nav-links-wrap">
+        <div class="main-nav-links">
+          <a href="index.html"><i class="fas fa-home"></i> Home</a>
+          <a href="shops.html" class="active"><i class="fas fa-store"></i> Explore Shops</a>
+          <a href="products.html"><i class="fas fa-shopping-basket"></i> All Products</a>
+          <a href="services.html"><i class="fas fa-tools"></i> Local Services</a>
+          <a href="vehicles.html"><i class="fas fa-motorcycle"></i> Cars & Bikes</a>
+        </div>
+        <div class="main-nav-links">
+          <a href="seller-register.html" class="seller-promo-link"><i class="fas fa-handshake"></i> Free Seller Registration</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main style="padding: var(--space-8) 0;">
+    <div class="container">
+      <!-- Breadcrumb & Title -->
+      <div style="margin-bottom: var(--space-6);">
+        <p style="font-size: var(--font-size-xs); color: var(--color-text-muted); margin-bottom: var(--space-2);">
+          <a href="index.html">Home</a> &rsaquo; <span>Local Shops</span>
+        </p>
+        <h1 style="font-size: var(--font-size-2xl);">Explore Local Shops & Digital Dukaans</h1>
+        <p style="color: var(--color-text-muted);">Direct digital storefronts of verified local retailers and service centers near you.</p>
+      </div>
+
+      <div class="catalog-layout">
+        <!-- Filter Sidebar -->
+        <aside class="filter-sidebar">
+          <div class="filter-title">
+            <span><i class="fas fa-filter"></i> Filters</span>
+            <button id="btn-reset-filters" class="btn btn-ghost btn-sm" style="padding: 2px 6px;">Reset</button>
+          </div>
+
+          <!-- Search Shop -->
+          <div class="filter-group">
+            <label class="filter-group-title" for="shop-search-input">Search Shop Name</label>
+            <input type="text" id="shop-search-input" class="form-control" placeholder="e.g. Sharma Kirana...">
+          </div>
+
+          <!-- Business Category Filter -->
+          <div class="filter-group">
+            <div class="filter-group-title">Business Category</div>
+            <label class="filter-option">
+              <input type="radio" name="shop-category" value="" checked> All Categories
+            </label>
+            <label class="filter-option">
+              <input type="radio" name="shop-category" value="Kirana & Grocery"> Kirana & Grocery
+            </label>
+            <label class="filter-option">
+              <input type="radio" name="shop-category" value="Electronics & Mobile"> Electronics & Mobile
+            </label>
+            <label class="filter-option">
+              <input type="radio" name="shop-category" value="Hardware & Machinery"> Hardware & Machinery
+            </label>
+            <label class="filter-option">
+              <input type="radio" name="shop-category" value="Auto Garage & Repair"> Auto Garage & Repair
+            </label>
+            <label class="filter-option">
+              <input type="radio" name="shop-category" value="Vehicles & Auto"> Vehicles & Auto
+            </label>
+          </div>
+
+          <!-- City Filter -->
+          <div class="filter-group">
+            <label class="filter-group-title" for="shop-city-input">City</label>
+            <input type="text" id="shop-city-input" class="form-control" placeholder="e.g. Kanpur">
+          </div>
+        </aside>
+
+        <!-- Shops List Column -->
+        <section>
+          <!-- Toolbar -->
+          <div style="background: #FFF; padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--color-border); margin-bottom: var(--space-4); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3);">
+            <div id="shops-count-label" style="font-size: var(--font-size-sm); color: var(--color-text-muted);">
+              Loading shops...
+            </div>
+            <div style="display: flex; align-items: center; gap: var(--space-2);">
+              <label for="sort-select" style="font-size: var(--font-size-xs); font-weight: 600;">Sort By:</label>
+              <select id="sort-select" class="form-select" style="width: auto; padding: 0.35rem 0.75rem;">
+                <option value="rating">Highest Rated</option>
+                <option value="newest">Newest First</option>
+                <option value="name">Shop Name (A-Z)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Shops Grid -->
+          <div class="grid-3" id="shops-container">
+            <div class="skeleton skeleton-card"></div>
+            <div class="skeleton skeleton-card"></div>
+            <div class="skeleton skeleton-card"></div>
+          </div>
+
+          <!-- Pagination -->
+          <div class="pagination" id="shops-pagination" style="display: none;"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- Location Picker Modal -->
+  <div class="modal-backdrop" id="location-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fas fa-map-marker-alt" style="color: var(--accent-orange);"></i> Select Your Delivery Location</h3>
+        <button class="modal-close" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="location-city-input">City</label>
+          <input type="text" id="location-city-input" class="form-control" placeholder="e.g. Kanpur">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="location-pincode-input">PIN Code</label>
+          <input type="text" id="location-pincode-input" class="form-control" placeholder="e.g. 208001" maxlength="6">
+        </div>
+        <button type="button" id="btn-detect-location" class="btn btn-outline btn-block">
+          <i class="fas fa-location-arrow"></i> Use Current Location
+        </button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="btn-save-location" class="btn btn-primary">Save Location</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Drawer Menu -->
+  <div class="mobile-drawer-overlay">
+    <div class="mobile-drawer">
+      <div class="mobile-drawer-header">
+        <div class="brand-title" style="color: #FFF;">ANMOL <span>STORE</span></div>
+        <button class="modal-close mobile-drawer-close" style="color: #FFF;">&times;</button>
+      </div>
+      <div class="mobile-drawer-body">
+        <ul class="mobile-nav-links">
+          <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+          <li><a href="shops.html"><i class="fas fa-store"></i> Explore Shops</a></li>
+          <li><a href="products.html"><i class="fas fa-shopping-basket"></i> Products</a></li>
+          <li><a href="services.html"><i class="fas fa-tools"></i> Local Services</a></li>
+          <li><a href="vehicles.html"><i class="fas fa-car"></i> Cars & Bikes</a></li>
+          <li><a href="seller-register.html" style="color: var(--accent-orange); font-weight: 700;"><i class="fas fa-plus-circle"></i> Register Your Shop (Free)</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-bottom">
+      <div class="container">
+        <div class="footer-bottom-inner">
+          <div>&copy; 2026 ANMOL STORE. All rights reserved.</div>
+          <div class="footer-bottom-links">
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
+            <a href="contact.html">Support</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="js/config.js"></script>
+  <script type="module" src="js/notifications.js"></script>
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/cart.js"></script>
+  <script type="module" src="js/navigation.js"></script>
+  <script type="module">
+    import { api } from './js/api.js';
+    import { getFallbackImage, debounce } from './js/config.js';
+
+    let currentPage = 1;
+
+    async function loadShops() {
+      const search = document.getElementById('shop-search-input').value.trim();
+      const category = document.querySelector('input[name="shop-category"]:checked')?.value || '';
+      const city = document.getElementById('shop-city-input').value.trim();
+      const sort = document.getElementById('sort-select').value;
+
+      const params = new URLSearchParams({
+        page: currentPage,
+        limit: 12,
+        sort
+      });
+
+      if (search) params.append('search', search);
+      if (category) params.append('category', category);
+      if (city) params.append('city', city);
+
+      const container = document.getElementById('shops-container');
+      const countLabel = document.getElementById('shops-count-label');
+
+      try {
+        const res = await api.get(`/shops?${params.toString()}`);
+        if (res.success && res.data) {
+          const { shops, pagination } = res.data;
+          countLabel.textContent = `Showing ${shops.length} of ${pagination.total} registered shops`;
+
+          if (shops.length === 0) {
+            container.innerHTML = `
+              <div class="empty-state" style="grid-column: 1 / -1;">
+                <div class="empty-state-icon"><i class="fas fa-store-slash"></i></div>
+                <h3 class="empty-state-title">No Shops Found</h3>
+                <p class="empty-state-text">No shops match your current filter criteria. Try expanding your search or selecting another category.</p>
+              </div>
+            `;
+            document.getElementById('shops-pagination').style.display = 'none';
+            return;
+          }
+
+          container.innerHTML = shops.map(s => `
+            <div class="shop-card">
+              <div class="shop-cover">
+                <img src="${s.coverImage || getFallbackImage('shop')}" alt="${s.name}">
+                <div class="shop-logo-wrap">
+                  <img src="${s.logo || getFallbackImage('shop')}" alt="${s.name}">
+                </div>
+              </div>
+              <div class="shop-card-body">
+                <div class="shop-card-name">
+                  <a href="shop-details.html?slug=${s.slug}">${s.name}</a>
+                  ${s.isVerified ? '<i class="fas fa-check-circle verified-icon" title="Verified Store"></i>' : ''}
+                </div>
+                <div class="shop-category">${s.category}</div>
+                <div class="shop-location">
+                  <i class="fas fa-map-marker-alt"></i> ${s.address.street}, ${s.address.city} (${s.address.pincode})
+                </div>
+                <div style="font-size: var(--font-size-xs); color: var(--color-text-muted); margin-top: 6px;">
+                  <i class="fas fa-box-open"></i> ${s.productCount || 0} Products Listed
+                </div>
+                <div class="shop-footer">
+                  <div class="stars"><i class="fas fa-star"></i> ${s.rating.toFixed(1)} (${s.reviewCount || 0})</div>
+                  <a href="shop-details.html?slug=${s.slug}" class="btn btn-outline btn-sm">Visit Store &rarr;</a>
+                </div>
+              </div>
+            </div>
+          `).join('');
+
+          // Pagination rendering
+          const pagContainer = document.getElementById('shops-pagination');
+          if (pagination.pages > 1) {
+            pagContainer.style.display = 'flex';
+            let pagHtml = '';
+            for (let i = 1; i <= pagination.pages; i++) {
+              pagHtml += `<button class="pagination-item ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+            }
+            pagContainer.innerHTML = pagHtml;
+            pagContainer.querySelectorAll('.pagination-item').forEach(btn => {
+              btn.addEventListener('click', () => {
+                currentPage = Number(btn.dataset.page);
+                loadShops();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              });
+            });
+          } else {
+            pagContainer.style.display = 'none';
+          }
+        }
+      } catch (err) {
+        container.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><p style="color: var(--color-danger);">Failed to load shops: ${err.message}</p></div>`;
+      }
+    }
+
+    // Event listeners
+    document.getElementById('shop-search-input').addEventListener('input', debounce(() => { currentPage = 1; loadShops(); }, 300));
+    document.getElementById('shop-city-input').addEventListener('input', debounce(() => { currentPage = 1; loadShops(); }, 300));
+    document.querySelectorAll('input[name="shop-category"]').forEach(r => {
+      r.addEventListener('change', () => { currentPage = 1; loadShops(); });
+    });
+    document.getElementById('sort-select').addEventListener('change', () => { currentPage = 1; loadShops(); });
+
+    document.getElementById('btn-reset-filters').addEventListener('click', () => {
+      document.getElementById('shop-search-input').value = '';
+      document.getElementById('shop-city-input').value = '';
+      document.querySelector('input[name="shop-category"][value=""]').checked = true;
+      document.getElementById('sort-select').value = 'rating';
+      currentPage = 1;
+      loadShops();
+    });
+
+    document.addEventListener('DOMContentLoaded', loadShops);
+  </script>
+</body>
+</html>

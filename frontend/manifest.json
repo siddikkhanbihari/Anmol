@@ -1,0 +1,85 @@
+{
+  "name": "ANMOL STORE — Aapki Dukaan, Aapka Business",
+  "short_name": "ANMOL STORE",
+  "description": "India's Local Business Digital Marketplace. Discover nearby shops, compare products, book home services, and buy vehicles.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "portrait-primary",
+  "background_color": "#F7F9FC",
+  "theme_color": "#123B70",
+  "lang": "en-IN",
+  "dir": "ltr",
+  "categories": ["shopping", "business", "lifestyle"],
+  "icons": [
+    {
+      "src": "/assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/assets/icons/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Explore Shops",
+      "short_name": "Shops",
+      "description": "Discover verified local shops near you",
+      "url": "/shops.html",
+      "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Browse Products",
+      "short_name": "Products",
+      "description": "Shop groceries, electronics, and daily essentials",
+      "url": "/products.html",
+      "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Book Services",
+      "short_name": "Services",
+      "description": "Book electricians, plumbers, and mechanics",
+      "url": "/services.html",
+      "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "My Cart",
+      "short_name": "Cart",
+      "description": "View shopping cart and checkout",
+      "url": "/cart.html",
+      "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Register Your Shop",
+      "short_name": "Sell",
+      "description": "Empower your business digitally on ANMOL STORE",
+      "url": "/seller-register.html",
+      "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
