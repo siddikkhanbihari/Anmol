@@ -122,13 +122,23 @@
           </p>
         </div>
 
-        <!-- Filter tabs -->
-        <div style="display: flex; gap: var(--space-2); margin-bottom: var(--space-4); overflow-x: auto;">
-          <button class="btn btn-sm btn-outline active-filter-btn" data-status="">All Orders</button>
-          <button class="btn btn-sm btn-outline" data-status="pending">Pending</button>
-          <button class="btn btn-sm btn-outline" data-status="accepted">Accepted / Packing</button>
-          <button class="btn btn-sm btn-outline" data-status="shipped">Dispatched</button>
-          <button class="btn btn-sm btn-outline" data-status="delivered">Delivered</button>
+        <!-- Filter tabs with live order counts and smooth horizontal touch scroll -->
+        <div class="seller-order-tabs-bar" style="display: flex; gap: 8px; margin-bottom: var(--space-4); overflow-x: auto; padding-bottom: 6px; -webkit-overflow-scrolling: touch; scrollbar-width: none;">
+          <button class="btn btn-sm btn-outline active-filter-btn" data-status="">
+            All (<span id="count-all">0</span>)
+          </button>
+          <button class="btn btn-sm btn-outline" data-status="pending">
+            Pending (<span id="count-pending">0</span>)
+          </button>
+          <button class="btn btn-sm btn-outline" data-status="accepted">
+            Packing (<span id="count-accepted">0</span>)
+          </button>
+          <button class="btn btn-sm btn-outline" data-status="shipped">
+            Dispatched (<span id="count-shipped">0</span>)
+          </button>
+          <button class="btn btn-sm btn-outline" data-status="delivered">
+            Delivered (<span id="count-delivered">0</span>)
+          </button>
         </div>
 
         <div id="seller-orders-container">
@@ -252,166 +262,239 @@
       } catch (e) {}
     }
 
+    let lastOrdersFingerprint = '';
+
     async function loadOrders(isSilent = false) {
       const container = document.getElementById('seller-orders-container');
       try {
-        const query = currentFilterStatus ? `?status=${currentFilterStatus}` : '';
-        const res = await api.get(`/orders/seller${query}`);
+        // Fetch all seller orders to calculate tab counts accurately
+        const resAll = await api.get('/orders/seller');
+        let allOrders = [];
+        if (resAll.success && resAll.data) {
+          allOrders = resAll.data.orders || [];
+        }
 
-        if (res.success && res.data) {
-          const orders = res.data.orders || [];
+        // Update live order tab counts
+        const countAll = allOrders.length;
+        const countPending = allOrders.filter(o => o.sellerStatus === 'pending').length;
+        const countAccepted = allOrders.filter(o => ['accepted', 'processing', 'ready_for_pickup'].includes(o.sellerStatus)).length;
+        const countShipped = allOrders.filter(o => ['shipped', 'out_for_delivery'].includes(o.sellerStatus)).length;
+        const countDelivered = allOrders.filter(o => o.sellerStatus === 'delivered').length;
 
-          // Detect new order arrival
-          if (orders.length > 0) {
-            const newest = orders[0];
-            if (!isInitialLoad && lastKnownOrderNumber && newest.orderNumber !== lastKnownOrderNumber) {
-              notify.playOrderSound();
-              const alertBox = document.getElementById('seller-live-popup-alert');
+        const elAll = document.getElementById('count-all');
+        const elPending = document.getElementById('count-pending');
+        const elAccepted = document.getElementById('count-accepted');
+        const elShipped = document.getElementById('count-shipped');
+        const elDelivered = document.getElementById('count-delivered');
+
+        if (elAll) elAll.textContent = countAll;
+        if (elPending) elPending.textContent = countPending;
+        if (elAccepted) elAccepted.textContent = countAccepted;
+        if (elShipped) elShipped.textContent = countShipped;
+        if (elDelivered) elDelivered.textContent = countDelivered;
+
+        // Filter orders based on active filter
+        let filteredOrders = allOrders;
+        if (currentFilterStatus) {
+          if (currentFilterStatus === 'accepted') {
+            filteredOrders = allOrders.filter(o => ['accepted', 'processing', 'ready_for_pickup'].includes(o.sellerStatus));
+          } else if (currentFilterStatus === 'shipped') {
+            filteredOrders = allOrders.filter(o => ['shipped', 'out_for_delivery'].includes(o.sellerStatus));
+          } else {
+            filteredOrders = allOrders.filter(o => o.sellerStatus === currentFilterStatus);
+          }
+        }
+
+        // Detect new order arrival for sound & desktop notification
+        if (allOrders.length > 0) {
+          const newest = allOrders[0];
+          if (!isInitialLoad && lastKnownOrderNumber && newest.orderNumber !== lastKnownOrderNumber) {
+            notify.playOrderSound();
+            const alertBox = document.getElementById('seller-live-popup-alert');
+            if (alertBox) {
               document.getElementById('live-alert-title').textContent = `Order #${newest.orderNumber}`;
               document.getElementById('live-alert-desc').textContent = `${newest.customer?.name || 'Customer'} • ${formatCurrency(newest.groupTotal)} (${newest.items.length} items)`;
               alertBox.style.display = 'block';
-
-              notify.showDesktopNotification(
-                '🔔 Naya Customer Order!',
-                `Order #${newest.orderNumber} received for ${formatCurrency(newest.groupTotal)}`,
-                'seller-orders.html'
-              );
             }
-            lastKnownOrderNumber = newest.orderNumber;
+
+            notify.showDesktopNotification(
+              '🔔 Naya Customer Order!',
+              `Order #${newest.orderNumber} received for ${formatCurrency(newest.groupTotal)}`,
+              'seller-orders.html'
+            );
           }
-          isInitialLoad = false;
+          lastKnownOrderNumber = newest.orderNumber;
+        }
+        isInitialLoad = false;
 
-          if (!orders.length) {
-            container.innerHTML = `
-              <div class="empty-state">
-                <div class="empty-state-icon"><i class="fas fa-clipboard-check"></i></div>
-                <h3 class="empty-state-title">No Orders Found</h3>
-                <p class="empty-state-text">There are no orders matching this status filter.</p>
-              </div>
-            `;
-            return;
-          }
+        // Smart polling: Do NOT touch DOM if data hasn't changed!
+        const fingerprint = `${currentFilterStatus}_` + filteredOrders.map(o => `${o.orderId}-${o.sellerStatus}-${o.paymentStatus}`).join('|');
+        if (isSilent && fingerprint === lastOrdersFingerprint) {
+          return;
+        }
+        lastOrdersFingerprint = fingerprint;
 
-          container.innerHTML = orders.map(order => `
-            <div class="order-card" data-id="${order.orderId}">
-              <div class="order-card-header">
-                <div>
-                  <strong style="color: var(--primary-navy); font-size: var(--font-size-md);">Order #${order.orderNumber}</strong>
-                  <div style="font-size: var(--font-size-xs); color: var(--color-text-muted);">
-                    Received: ${formatDate(order.createdAt, true)}
-                  </div>
-                </div>
-                <div style="text-align: right;">
-                  <span class="badge ${order.sellerStatus === 'delivered' ? 'badge-success' : order.sellerStatus === 'rejected' ? 'badge-danger' : 'badge-primary'}">
-                    ${order.sellerStatus.toUpperCase()}
-                  </span>
-                  <div style="font-weight: 800; color: var(--primary-navy); margin-top: 2px;">
-                    ${formatCurrency(order.groupTotal)}
-                  </div>
-                </div>
-              </div>
+        if (!filteredOrders.length) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon"><i class="fas fa-clipboard-check"></i></div>
+              <h3 class="empty-state-title">No Orders in this Tab</h3>
+              <p class="empty-state-text">Tap "All" or another tab above to view your orders.</p>
+            </div>
+          `;
+          return;
+        }
 
-              <!-- Customer & Address info -->
-              <div class="order-customer-details-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); background: var(--color-surface-alt); padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); margin-bottom: var(--space-3); font-size: var(--font-size-xs);">
-                <div>
-                  <strong>Customer:</strong> ${order.customer?.name || 'Customer'}<br>
-                  <strong>Contact:</strong> ${order.deliveryAddress?.phone || order.customer?.phone}
-                </div>
-                <div>
-                  <strong>Delivery Address:</strong><br>
-                  ${order.deliveryAddress?.street}, ${order.deliveryAddress?.city} (${order.deliveryAddress?.pincode})
-                </div>
-              </div>
-
-              <!-- Items belonging to this shop -->
-              <div style="margin-bottom: var(--space-4);">
-                <div style="font-weight: 600; font-size: var(--font-size-xs); color: var(--primary-navy); margin-bottom: 4px;">Items in this fulfillment:</div>
-                ${order.items.map(item => `
-                  <div style="display: flex; justify-content: space-between; font-size: var(--font-size-xs); padding: 4px 0; border-bottom: 1px dashed var(--color-border);">
-                    <span>${item.name} &times; ${item.quantity}</span>
-                    <span>${formatCurrency(item.totalItemPrice)}</span>
-                  </div>
-                `).join('')}
-                <div style="display: flex; justify-content: space-between; font-size: var(--font-size-xs); padding-top: 4px; color: var(--color-text-muted);">
-                  <span>Delivery Fee Allocated:</span>
-                  <span>${formatCurrency(order.deliveryFee)}</span>
-                </div>
-              </div>
-
-              <!-- Status Action Buttons -->
-              <div class="order-card-actions" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--color-border); padding-top: var(--space-3); flex-wrap: wrap; gap: var(--space-2);">
+        container.innerHTML = filteredOrders.map(order => `
+          <div class="order-card" data-id="${order.orderId}">
+            <div class="order-card-header">
+              <div>
+                <strong style="color: var(--primary-navy); font-size: var(--font-size-md);">Order #${order.orderNumber}</strong>
                 <div style="font-size: var(--font-size-xs); color: var(--color-text-muted);">
-                  Payment: <strong>${order.paymentMethod.toUpperCase()}</strong> (${order.paymentStatus.toUpperCase()})
+                  Received: ${formatDate(order.createdAt, true)}
                 </div>
-                <div class="order-action-buttons" style="display: flex; gap: var(--space-2);">
-                  ${order.sellerStatus === 'pending' ? `
-                    <button class="btn btn-primary btn-sm btn-update-status" data-id="${order.orderId}" data-status="accepted" style="background: #10B981; border-color: #10B981; font-weight: 700;">
-                      <i class="fas fa-check"></i> Accept Order
-                    </button>
-                    <button class="btn btn-outline btn-sm btn-reject-order" data-id="${order.orderId}" style="color: var(--color-danger); border-color: var(--color-danger);">
-                      Reject
-                    </button>
-                  ` : ''}
-
-                  ${order.sellerStatus === 'accepted' ? `
-                    <button class="btn btn-primary btn-sm btn-update-status" data-id="${order.orderId}" data-status="ready_for_pickup" style="background: #D97706; border-color: #D97706; font-weight: 700;">
-                      <i class="fas fa-box"></i> Packed (Ready for Rider)
-                    </button>
-                    <button class="btn btn-outline btn-sm btn-update-status" data-id="${order.orderId}" data-status="shipped">
-                      <i class="fas fa-motorcycle"></i> Self-Dispatch
-                    </button>
-                  ` : ''}
-
-                  ${order.sellerStatus === 'ready_for_pickup' ? `
-                    <span class="badge" style="background: #FEF3C7; color: #92400E; font-size: 0.72rem; padding: 6px 10px;">
-                      <i class="fas fa-clock"></i> Waiting for Rider Pickup
-                    </span>
-                  ` : ''}
-
-                  ${order.sellerStatus === 'out_for_delivery' || order.sellerStatus === 'shipped' ? `
-                    <button class="btn btn-primary btn-sm btn-update-status" data-id="${order.orderId}" data-status="delivered">
-                      <i class="fas fa-check-double"></i> Mark Delivered
-                    </button>
-                  ` : ''}
+              </div>
+              <div style="text-align: right;">
+                <span class="badge ${order.sellerStatus === 'delivered' ? 'badge-success' : order.sellerStatus === 'rejected' ? 'badge-danger' : 'badge-primary'}">
+                  ${order.sellerStatus.replace(/_/g, ' ').toUpperCase()}
+                </span>
+                <div style="font-weight: 800; color: var(--primary-navy); margin-top: 2px;">
+                  ${formatCurrency(order.groupTotal)}
                 </div>
               </div>
             </div>
-          `).join('');
 
-          // Bind status buttons
-          container.querySelectorAll('.btn-update-status').forEach(btn => {
-            btn.addEventListener('click', async () => {
-              const status = btn.dataset.status;
+            <!-- Customer & Address info -->
+            <div class="order-customer-details-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); background: var(--color-surface-alt); padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); margin-bottom: var(--space-3); font-size: var(--font-size-xs);">
+              <div>
+                <strong>Customer:</strong> ${order.customer?.name || 'Customer'}<br>
+                <strong>Contact:</strong> <a href="tel:${order.deliveryAddress?.phone || order.customer?.phone}" style="color: var(--brand-blue); font-weight: 700;">${order.deliveryAddress?.phone || order.customer?.phone}</a>
+              </div>
+              <div>
+                <strong>Delivery Address:</strong><br>
+                ${order.deliveryAddress?.street}, ${order.deliveryAddress?.city} (${order.deliveryAddress?.pincode})
+              </div>
+            </div>
+
+            <!-- Items belonging to this shop -->
+            <div style="margin-bottom: var(--space-4);">
+              <div style="font-weight: 600; font-size: var(--font-size-xs); color: var(--primary-navy); margin-bottom: 4px;">Items in this fulfillment:</div>
+              ${order.items.map(item => `
+                <div style="display: flex; justify-content: space-between; font-size: var(--font-size-xs); padding: 4px 0; border-bottom: 1px dashed var(--color-border);">
+                  <span>${item.name} &times; ${item.quantity}</span>
+                  <span>${formatCurrency(item.totalItemPrice)}</span>
+                </div>
+              `).join('')}
+              <div style="display: flex; justify-content: space-between; font-size: var(--font-size-xs); padding-top: 4px; color: var(--color-text-muted);">
+                <span>Delivery Fee Allocated:</span>
+                <span>${formatCurrency(order.deliveryFee)}</span>
+              </div>
+            </div>
+
+            <!-- Status Action Buttons -->
+            <div class="order-card-actions" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--color-border); padding-top: var(--space-3); flex-wrap: wrap; gap: var(--space-2);">
+              <div style="font-size: var(--font-size-xs); color: var(--color-text-muted);">
+                Payment: <strong>${order.paymentMethod.toUpperCase()}</strong> (${order.paymentStatus.toUpperCase()})
+              </div>
+              <div class="order-action-buttons" style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
+                ${order.sellerStatus === 'pending' ? `
+                  <button type="button" class="btn btn-primary btn-sm btn-update-status" data-id="${order.orderId}" data-status="accepted" style="background: #10B981; border-color: #10B981; font-weight: 700;">
+                    <i class="fas fa-check"></i> Accept Order
+                  </button>
+                  <button type="button" class="btn btn-outline btn-sm btn-reject-order" data-id="${order.orderId}" style="color: var(--color-danger); border-color: var(--color-danger);">
+                    Reject
+                  </button>
+                ` : ''}
+
+                ${order.sellerStatus === 'accepted' ? `
+                  <button type="button" class="btn btn-primary btn-sm btn-update-status" data-id="${order.orderId}" data-status="ready_for_pickup" style="background: #D97706; border-color: #D97706; font-weight: 700;">
+                    <i class="fas fa-box"></i> Packed (Ready for Rider)
+                  </button>
+                  <button type="button" class="btn btn-outline btn-sm btn-update-status" data-id="${order.orderId}" data-status="shipped">
+                    <i class="fas fa-motorcycle"></i> Self-Dispatch
+                  </button>
+                ` : ''}
+
+                ${order.sellerStatus === 'ready_for_pickup' ? `
+                  <span class="badge" style="background: #FEF3C7; color: #92400E; font-size: 0.72rem; padding: 6px 10px;">
+                    <i class="fas fa-clock"></i> Waiting for Rider Pickup
+                  </span>
+                  <button type="button" class="btn btn-outline btn-sm btn-update-status" data-id="${order.orderId}" data-status="shipped">
+                    <i class="fas fa-motorcycle"></i> Self-Dispatch Instead
+                  </button>
+                ` : ''}
+
+                ${order.sellerStatus === 'out_for_delivery' || order.sellerStatus === 'shipped' ? `
+                  <button type="button" class="btn btn-primary btn-sm btn-update-status" data-id="${order.orderId}" data-status="delivered" style="background: #10B981; border-color: #10B981; font-weight: 800; font-size: 0.9rem;">
+                    <i class="fas fa-check-double"></i> Mark Delivered
+                  </button>
+                ` : ''}
+
+                ${order.sellerStatus === 'delivered' ? `
+                  <span class="badge" style="background: #ECFDF5; color: #047857; font-size: 0.8rem; padding: 8px 14px; font-weight: 800; border: 1px solid #A7F3D0; display: inline-flex; align-items: center; gap: 6px;">
+                    <i class="fas fa-check-circle"></i> Delivered Successfully ✓
+                  </span>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+        // Bind status buttons with immediate touch feedback
+        container.querySelectorAll('.btn-update-status').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const status = btn.dataset.status;
+            const originalHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processing...`;
+
+            try {
+              const res = await api.patch(`/orders/seller/${btn.dataset.id}/status`, { status });
+              if (res.success) {
+                notify.playSuccessSound();
+                notify.success(`✓ Order status updated to: ${status.replace(/_/g, ' ').toUpperCase()}`);
+
+                // If marked delivered, automatically switch active tab to 'delivered' so order stays visible!
+                if (status === 'delivered') {
+                  document.querySelectorAll('[data-status]').forEach(b => {
+                    b.classList.remove('btn-primary', 'active-filter-btn');
+                    if (b.dataset.status === 'delivered') b.classList.add('btn-primary', 'active-filter-btn');
+                  });
+                  currentFilterStatus = 'delivered';
+                }
+
+                lastOrdersFingerprint = ''; // Invalidate cache to force render
+                await loadOrders();
+              } else {
+                throw new Error(res.message || 'Status update failed');
+              }
+            } catch (err) {
+              btn.disabled = false;
+              btn.innerHTML = originalHtml;
+              notify.error(err.message || 'Status update failed. Kripya punah prayas karein.');
+            }
+          });
+        });
+
+        container.querySelectorAll('.btn-reject-order').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const reason = prompt('Please enter reason for rejection (e.g. Out of stock locally):');
+            if (reason) {
               try {
-                const res = await api.patch(`/orders/seller/${btn.dataset.id}/status`, { status });
+                const res = await api.patch(`/orders/seller/${btn.dataset.id}/status`, { status: 'rejected', rejectionReason: reason });
                 if (res.success) {
-                  notify.playSuccessSound();
-                  notify.success(`Order status updated to ${status.toUpperCase()}`);
-                  loadOrders();
+                  notify.info('Order rejected');
+                  lastOrdersFingerprint = '';
+                  await loadOrders();
                 }
               } catch (err) {
-                notify.error(err.message || 'Status update failed');
+                notify.error(err.message || 'Rejection failed');
               }
-            });
+            }
           });
-
-          container.querySelectorAll('.btn-reject-order').forEach(btn => {
-            btn.addEventListener('click', async () => {
-              const reason = prompt('Please enter reason for rejection (e.g. Out of stock locally):');
-              if (reason) {
-                try {
-                  const res = await api.patch(`/orders/seller/${btn.dataset.id}/status`, { status: 'rejected', rejectionReason: reason });
-                  if (res.success) {
-                    notify.info('Order rejected');
-                    loadOrders();
-                  }
-                } catch (err) {
-                  notify.error(err.message || 'Rejection failed');
-                }
-              }
-            });
-          });
-        }
+        });
       } catch (err) {
         container.innerHTML = `<p style="color: var(--color-danger);">${err.message}</p>`;
       }
@@ -423,16 +506,22 @@
         document.querySelectorAll('[data-status]').forEach(b => b.classList.remove('btn-primary', 'active-filter-btn'));
         btn.classList.add('btn-primary', 'active-filter-btn');
         currentFilterStatus = btn.dataset.status;
+        lastOrdersFingerprint = '';
         loadOrders();
       });
     });
 
-    // Auto-poll orders and notifications every 4 seconds for instant alerts!
+    // Auto-poll orders and notifications every 5 seconds for instant alerts!
     setInterval(async () => {
       await Promise.all([loadOrders(true), fetchNotifications()]);
-    }, 4000);
+    }, 5000);
 
     document.addEventListener('DOMContentLoaded', () => {
+      // Auto-scroll the active seller tab into view on mobile
+      const activeTab = document.querySelector('.seller-sidebar .dash-nav-item.active');
+      if (activeTab) {
+        activeTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
       loadOrders();
       fetchNotifications();
     });

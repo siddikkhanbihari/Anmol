@@ -69,26 +69,26 @@
 <body>
 
   <!-- Admin Top Bar -->
-  <header style="background: var(--primary-navy-dark); color: #FFF; padding: var(--space-3) 0;">
-    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-      <div style="display: flex; align-items: center; gap: var(--space-3);">
-        <strong style="font-size: 1.1rem; color: #FFF;">ANMOL <span style="color: var(--accent-orange);">STORE</span></strong>
-        <span class="badge badge-orange" style="font-size: 0.65rem;">Platform Administration</span>
+  <header style="background: var(--primary-navy-dark); color: #FFF; padding: var(--space-3) 0; position: sticky; top: 0; z-index: var(--z-sticky); box-shadow: var(--shadow-sm);">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <strong style="font-size: 1.1rem; color: #FFF; white-space: nowrap;">ANMOL <span style="color: var(--accent-orange);">STORE</span></strong>
+        <span class="badge badge-orange" style="font-size: 0.65rem; white-space: nowrap;">Admin Hub</span>
       </div>
-      <div style="display: flex; align-items: center; gap: var(--space-4);">
-        <a href="index.html" target="_blank" style="color: #CBD5E1; font-size: var(--font-size-xs);"><i class="fas fa-external-link-alt"></i> View Live Store</a>
-        <button id="btn-admin-logout" class="btn btn-outline-orange btn-sm" style="padding: 2px 8px; font-size: 0.75rem;">
+      <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
+        <a href="index.html" target="_blank" style="color: #CBD5E1; font-size: var(--font-size-xs); white-space: nowrap;"><i class="fas fa-external-link-alt"></i> Live Store</a>
+        <button id="btn-admin-logout" class="btn btn-outline-orange btn-sm" style="padding: 3px 10px; font-size: 0.75rem; white-space: nowrap;">
           <i class="fas fa-sign-out-alt"></i> Logout
         </button>
       </div>
     </div>
   </header>
 
-  <main class="container" style="padding: var(--space-8) var(--space-4);">
+  <main class="container" style="padding: var(--space-6) var(--space-3); width: 100%; max-width: 100%;">
     <div class="admin-layout">
       <!-- Admin Sidebar Navigation -->
       <aside class="admin-sidebar">
-        <nav>
+        <nav class="admin-nav-tabs">
           <div class="dash-nav-item active" data-tab="overview"><i class="fas fa-chart-pie"></i> Overview KPIs</div>
           <div class="dash-nav-item" data-tab="sellers"><i class="fas fa-store"></i> Seller Approvals</div>
           <div class="dash-nav-item" data-tab="orders"><i class="fas fa-shopping-cart"></i> All Orders</div>
@@ -154,6 +154,7 @@
             Seller Verification & Moderation
           </h2>
           <div class="table-responsive">
+            <div class="table-scroll-hint"><i class="fas fa-arrows-left-right"></i> Scroll table horizontally to view all columns</div>
             <table class="admin-table">
               <thead>
                 <tr>
@@ -176,6 +177,7 @@
             Order Monitoring Across Platform
           </h2>
           <div class="table-responsive">
+            <div class="table-scroll-hint"><i class="fas fa-arrows-left-right"></i> Scroll table horizontally to view all columns</div>
             <table class="admin-table">
               <thead>
                 <tr>
@@ -199,6 +201,7 @@
             User & Customer Directory
           </h2>
           <div class="table-responsive">
+            <div class="table-scroll-hint"><i class="fas fa-arrows-left-right"></i> Scroll table horizontally to view all columns</div>
             <table class="admin-table">
               <thead>
                 <tr>
@@ -264,6 +267,7 @@
             Security & Action Audit Logs
           </h2>
           <div class="table-responsive">
+            <div class="table-scroll-hint"><i class="fas fa-arrows-left-right"></i> Scroll table horizontally to view all columns</div>
             <table class="admin-table">
               <thead>
                 <tr>
@@ -344,25 +348,28 @@
           tbody.innerHTML = res.data.map(s => `
             <tr>
               <td>
-                <strong>${s.businessName}</strong><br>
-                <span style="color: var(--color-text-muted);">Owner: ${s.ownerName}</span>
+                <strong style="color: var(--primary-navy);">${s.businessName}</strong><br>
+                <span style="color: var(--color-text-muted); font-size: 0.75rem;">Owner: ${s.ownerName}</span>
               </td>
-              <td>${s.businessCategory}</td>
-              <td>${s.user?.email}<br>${s.user?.phone}</td>
-              <td>${s.shop?.address?.city || 'Kanpur'}</td>
-              <td>
+              <td><span class="badge badge-surface" style="white-space: nowrap;">${s.businessCategory}</span></td>
+              <td class="user-email" style="word-break: break-all; max-width: 170px;">
+                ${s.user?.email || '-'}<br>
+                <span style="color: var(--color-text-muted); white-space: nowrap;"><i class="fas fa-phone"></i> ${s.user?.phone || '-'}</span>
+              </td>
+              <td style="white-space: nowrap;">${s.shop?.address?.city || 'Palanpur'}</td>
+              <td style="white-space: nowrap;">
                 <span class="badge ${s.approvalStatus === 'approved' ? 'badge-success' : s.approvalStatus === 'rejected' ? 'badge-danger' : 'badge-warning'}">
                   ${s.approvalStatus.toUpperCase()}
                 </span>
               </td>
-              <td>
-                <div style="display: flex; gap: 4px;">
+              <td style="white-space: nowrap;">
+                <div style="display: flex; gap: 6px; align-items: center;">
                   ${s.approvalStatus !== 'approved' ? `
-                    <button class="btn btn-outline btn-sm btn-update-seller" data-id="${s._id}" data-status="approved" style="color: var(--color-success); border-color: var(--color-success); padding: 2px 6px;">
+                    <button class="btn btn-outline btn-sm btn-update-seller" data-id="${s._id}" data-status="approved" style="color: var(--color-success); border-color: var(--color-success); padding: 4px 10px; font-size: 0.78rem;">
                       Approve
                     </button>
                   ` : `
-                    <button class="btn btn-outline btn-sm btn-update-seller" data-id="${s._id}" data-status="rejected" style="color: var(--color-danger); border-color: var(--color-danger); padding: 2px 6px;">
+                    <button class="btn btn-outline btn-sm btn-update-seller" data-id="${s._id}" data-status="rejected" style="color: var(--color-danger); border-color: var(--color-danger); padding: 4px 10px; font-size: 0.78rem;">
                       Suspend
                     </button>
                   `}
@@ -395,13 +402,19 @@
         if (res.success && res.data) {
           tbody.innerHTML = res.data.orders.map(o => `
             <tr>
-              <td><strong>#${o.orderNumber}</strong></td>
-              <td>${o.customer?.name}<br><span style="color: var(--color-text-muted);">${o.customer?.phone}</span></td>
-              <td>${o.sellerOrders.map(g => g.shop?.name || 'Seller').join(', ')}</td>
-              <td><strong>${formatCurrency(o.totalAmount)}</strong></td>
-              <td>${o.paymentMethod.toUpperCase()} (${o.paymentStatus})</td>
-              <td><span class="badge badge-primary">${o.overallStatus.toUpperCase()}</span></td>
-              <td>${formatDate(o.createdAt, true)}</td>
+              <td style="white-space: nowrap;"><strong>#${o.orderNumber}</strong></td>
+              <td>
+                <strong style="color: var(--primary-navy);">${o.customer?.name || 'Customer'}</strong><br>
+                <span style="color: var(--color-text-muted); font-size: 0.75rem; white-space: nowrap;"><i class="fas fa-phone"></i> ${o.customer?.phone || '-'}</span>
+              </td>
+              <td style="max-width: 180px; overflow-wrap: break-word;">${o.sellerOrders.map(g => g.shop?.name || 'Seller').join(', ')}</td>
+              <td style="white-space: nowrap;"><strong>${formatCurrency(o.totalAmount)}</strong></td>
+              <td style="white-space: nowrap;">
+                ${o.paymentMethod.toUpperCase()}<br>
+                <span style="font-size: 0.7rem; color: var(--color-text-muted);">(${o.paymentStatus})</span>
+              </td>
+              <td style="white-space: nowrap;"><span class="badge badge-primary">${o.overallStatus.toUpperCase()}</span></td>
+              <td style="white-space: nowrap; font-size: 0.75rem;">${formatDate(o.createdAt, true)}</td>
             </tr>
           `).join('');
         }
@@ -419,13 +432,13 @@
           tbody.innerHTML = res.data.users.map(u => `
             <tr>
               <td><strong>${u.name}</strong></td>
-              <td>${u.email}</td>
-              <td>${u.phone}</td>
-              <td><span class="badge ${u.role === 'admin' ? 'badge-orange' : u.role === 'seller' ? 'badge-primary' : 'badge-navy'}">${u.role.toUpperCase()}</span></td>
-              <td><span class="badge ${u.status === 'active' ? 'badge-success' : 'badge-danger'}">${u.status.toUpperCase()}</span></td>
-              <td>
+              <td class="user-email" style="word-break: break-all; max-width: 180px;">${u.email}</td>
+              <td style="white-space: nowrap;">${u.phone || '-'}</td>
+              <td style="white-space: nowrap;"><span class="badge ${u.role === 'admin' ? 'badge-orange' : u.role === 'seller' ? 'badge-primary' : 'badge-navy'}">${u.role.toUpperCase()}</span></td>
+              <td style="white-space: nowrap;"><span class="badge ${u.status === 'active' ? 'badge-success' : 'badge-danger'}">${u.status.toUpperCase()}</span></td>
+              <td style="white-space: nowrap;">
                 ${u.role !== 'admin' ? `
-                  <button class="btn btn-outline btn-sm btn-toggle-user" data-id="${u._id}" data-status="${u.status === 'active' ? 'suspended' : 'active'}" style="padding: 2px 6px;">
+                  <button class="btn btn-outline btn-sm btn-toggle-user" data-id="${u._id}" data-status="${u.status === 'active' ? 'suspended' : 'active'}" style="padding: 4px 10px; font-size: 0.78rem;">
                     ${u.status === 'active' ? 'Suspend' : 'Activate'}
                   </button>
                 ` : '-'}
@@ -491,11 +504,11 @@
         if (res.success && res.data) {
           tbody.innerHTML = res.data.map(log => `
             <tr>
-              <td>${formatDate(log.createdAt, true)}</td>
-              <td>${log.admin?.name || 'System Admin'}</td>
-              <td><strong>${log.action}</strong></td>
-              <td>${log.targetEntity}</td>
-              <td><pre style="margin: 0; font-size: 0.7rem;">${JSON.stringify(log.details || {})}</pre></td>
+              <td style="white-space: nowrap; font-size: 0.75rem;">${formatDate(log.createdAt, true)}</td>
+              <td style="white-space: nowrap;"><strong>${log.admin?.name || 'System Admin'}</strong></td>
+              <td style="white-space: nowrap;"><span class="badge badge-surface">${log.action}</span></td>
+              <td style="white-space: nowrap;">${log.targetEntity}</td>
+              <td style="max-width: 300px;"><pre style="margin: 0; font-size: 0.7rem; white-space: pre-wrap; word-break: break-all; max-height: 80px; overflow-y: auto;">${JSON.stringify(log.details || {})}</pre></td>
             </tr>
           `).join('');
         }

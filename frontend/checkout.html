@@ -82,13 +82,32 @@
       border-color: var(--brand-blue);
       background: var(--brand-blue-light);
     }
+    @media (max-width: 900px) {
+      .checkout-layout {
+        grid-template-columns: 1fr;
+        gap: var(--space-4);
+      }
+      .checkout-step {
+        padding: var(--space-4);
+      }
+    }
+    @media (max-width: 600px) {
+      #new-address-form .grid-2,
+      #new-address-form .grid-3 {
+        grid-template-columns: 1fr !important;
+        gap: var(--space-2) !important;
+      }
+      .address-card {
+        padding: var(--space-3);
+      }
+    }
   </style>
 </head>
 <body>
 
   <!-- Minimal Checkout Header -->
-  <header style="background: #FFF; border-bottom: 1px solid var(--color-border); padding: var(--space-4) 0;">
-    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+  <header style="background: #FFF; border-bottom: 1px solid var(--color-border); padding: var(--space-3) 0;">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
       <a href="index.html" class="brand-logo">
         <div class="brand-icon-wrap"><i class="fas fa-store-alt"></i></div>
         <div class="brand-text-wrap">

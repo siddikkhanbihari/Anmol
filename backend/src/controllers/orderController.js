@@ -281,7 +281,7 @@ export async function updateSellerOrderStatus(req, res, next) {
     const { id } = req.params; // Order ID or group ID
     const { status, comment, rejectionReason } = req.body;
 
-    const validStatuses = ['accepted', 'processing', 'shipped', 'delivered', 'rejected', 'cancelled'];
+    const validStatuses = ['accepted', 'processing', 'ready_for_pickup', 'out_for_delivery', 'shipped', 'delivered', 'rejected', 'cancelled'];
     if (!validStatuses.includes(status)) {
       return ApiResponse.badRequest(res, `Invalid status. Allowed: ${validStatuses.join(', ')}`);
     }
@@ -301,7 +301,9 @@ export async function updateSellerOrderStatus(req, res, next) {
 
     // Find the matching seller group
     const group = order.sellerOrders.find(
-      g => (shop && g.shop.toString() === shop._id.toString()) || g._id.toString() === id
+      g => (shop && (g.shop?._id || g.shop).toString() === shop._id.toString()) ||
+           (g.seller && g.seller.toString() === req.user._id.toString()) ||
+           g._id.toString() === id
     );
 
     if (!group) {

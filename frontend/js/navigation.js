@@ -322,14 +322,42 @@ export class Navigation {
   }
 
   static bindMobileDrawer() {
-    const toggleBtns = document.querySelectorAll('.mobile-menu-toggle');
-    const overlay = document.querySelector('.mobile-drawer-overlay');
-    const closeBtn = document.querySelector('.mobile-drawer-close');
+    const toggleBtns = document.querySelectorAll('.mobile-menu-toggle, .mobile-menu-btn');
+    if (!toggleBtns.length) return;
 
-    if (!overlay) return;
+    let overlay = document.querySelector('.mobile-drawer-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.className = 'mobile-drawer-overlay';
+      overlay.innerHTML = `
+        <div class="mobile-drawer">
+          <div class="mobile-drawer-header">
+            <div class="brand-title" style="color: #FFF; font-size: 1.15rem;">ANMOL <span style="color: var(--accent-orange);">STORE</span></div>
+            <button class="modal-close mobile-drawer-close" style="color: #FFF; font-size: 1.5rem; background: none; border: none; cursor: pointer;" aria-label="Close menu">&times;</button>
+          </div>
+          <div class="mobile-drawer-body">
+            <ul class="mobile-nav-links">
+              <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+              <li><a href="products.html"><i class="fas fa-boxes"></i> All Products</a></li>
+              <li><a href="shops.html"><i class="fas fa-store"></i> Local Shops</a></li>
+              <li><a href="services.html"><i class="fas fa-tools"></i> Book Services</a></li>
+              <li><a href="vehicles.html"><i class="fas fa-motorcycle"></i> Vehicles & Motors</a></li>
+              <li><a href="customer-dashboard.html"><i class="fas fa-user-circle"></i> My Account / Orders</a></li>
+              <li><a href="seller-register.html" style="color: #D97706; font-weight: 700;"><i class="fas fa-store-alt"></i> Register as Seller</a></li>
+              <li><a href="rider-register.html" style="color: #059669; font-weight: 700;"><i class="fas fa-biking"></i> Join as Rider Partner</a></li>
+              <li><a href="contact.html"><i class="fas fa-headset"></i> Customer Care</a></li>
+            </ul>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+    }
+
+    const closeBtn = overlay.querySelector('.mobile-drawer-close');
 
     toggleBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
         overlay.classList.add('active');
         document.body.style.overflow = 'hidden';
       });

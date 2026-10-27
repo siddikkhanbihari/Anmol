@@ -124,9 +124,47 @@
     @media (max-width: 900px) {
       .dashboard-layout {
         grid-template-columns: 1fr;
+        gap: var(--space-4);
       }
       .dash-sidebar {
         position: static;
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: var(--radius-xl);
+      }
+      .dash-user-card {
+        padding-bottom: 8px;
+        margin-bottom: 8px;
+      }
+      .dash-sidebar nav {
+        display: flex;
+        overflow-x: auto;
+        gap: 8px;
+        padding: 2px 0 6px 0;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .dash-sidebar nav::-webkit-scrollbar {
+        display: none;
+      }
+      .dash-nav-item {
+        white-space: nowrap;
+        flex-shrink: 0;
+        padding: 8px 14px;
+        border-radius: 99px;
+        background: #F8FAFC;
+        border: 1px solid var(--color-border);
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 0;
+      }
+      .dash-nav-item:hover, .dash-nav-item.active {
+        background: var(--brand-blue);
+        color: #FFF;
+        border-color: var(--brand-blue);
+      }
+      .dash-content-panel {
+        padding: 14px;
       }
     }
   </style>
@@ -398,7 +436,7 @@
               </div>
 
               <!-- Actions -->
-              <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed var(--color-border); padding-top: var(--space-3);">
+              <div class="dash-order-actions" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed var(--color-border); padding-top: var(--space-3); flex-wrap: wrap; gap: 8px;">
                 <div style="font-size: var(--font-size-xs); color: var(--color-text-muted);">
                   Paid via: ${order.paymentMethod.toUpperCase()} | Status: ${order.paymentStatus.toUpperCase()}
                 </div>

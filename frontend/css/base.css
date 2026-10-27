@@ -11,7 +11,6 @@ html {
   -webkit-text-size-adjust: 100%;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
 }
 
 body {
@@ -25,12 +24,35 @@ body {
   flex-direction: column;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
   position: relative;
+}
+
+/* Universal text boundary wrapping to prevent overflow across screens */
+p, span, h1, h2, h3, h4, h5, h6, a, td, th, label, div {
+  overflow-wrap: break-word;
+}
+
+/* Critical CSS Grid & Flex containment: prevent children from inflating column track min-width */
+.grid-2 > *,
+.grid-3 > *,
+.grid-4 > *,
+.grid-6 > *,
+.grid-8 > *,
+.hero-inner > *,
+.admin-layout > *,
+.dashboard-layout > *,
+.seller-layout > *,
+.checkout-layout > *,
+.cart-layout > *,
+.catalog-layout > * {
+  min-width: 0;
+  max-width: 100%;
 }
 
 main {
   flex: 1;
+  width: 100%;
+  max-width: 100%;
 }
 
 /* Typography */
