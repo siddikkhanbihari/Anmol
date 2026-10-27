@@ -140,11 +140,27 @@ export async function createOrder(req, res, next) {
     for (const group of sellerOrders) {
       await Notification.create({
         user: group.seller,
-        title: 'New Customer Order Received!',
-        message: `New order #${orderNumber} received for ₹${group.groupTotal}. Please review and accept.`,
+        title: '🔔 New Customer Order Received!',
+        message: `New order #${orderNumber} received for ₹${group.groupTotal}. Please review and prepare for pickup.`,
         type: 'order',
         link: `/seller-orders.html?id=${order._id}`
       });
+    }
+
+    // Notify all active delivery riders in the fleet
+    try {
+      const activeRiders = await User.find({ role: 'rider', status: 'active' });
+      for (const r of activeRiders) {
+        await Notification.create({
+          user: r._id,
+          title: '🛵 New Delivery Order in Palanpur!',
+          message: `New order #${orderNumber} is waiting for pickup. Earn ₹40 payout. Tap to view & accept!`,
+          type: 'order',
+          link: `/rider-dashboard.html`
+        });
+      }
+    } catch (riderNotifErr) {
+      console.warn('Could not notify riders on order placement:', riderNotifErr.message);
     }
 
     return ApiResponse.created(res, order, 'Order placed successfully');
@@ -206,7 +222,10 @@ export async function getOrderById(req, res, next) {
 
 export async function getSellerOrders(req, res, next) {
   try {
-    const shop = await Shop.findOne({ user: req.user._id });
+    let shop = await Shop.findOne({ user: req.user._id });
+    if (!shop && req.user.role === 'admin') {
+      shop = await Shop.findOne();
+    }
     if (!shop) {
       return ApiResponse.forbidden(res, 'No shop found for your seller account');
     }
@@ -321,6 +340,24 @@ export async function updateSellerOrderStatus(req, res, next) {
       type: 'order',
       link: `/customer-dashboard.html?tab=orders&id=${order._id}`
     });
+
+    // If order was accepted or marked ready for pickup, notify available riders
+    if (['accepted', 'processing', 'ready_for_pickup'].includes(status) && !group.rider) {
+      try {
+        const riders = await User.find({ role: 'rider', status: 'active' });
+        for (const r of riders) {
+          await Notification.create({
+            user: r._id,
+            title: '📦 Order Ready for Pickup in Palanpur!',
+            message: `Order #${order.orderNumber} is ready at ${shop ? shop.name : 'Local Store'}. Earn ₹40 payout!`,
+            type: 'order',
+            link: `/rider-dashboard.html`
+          });
+        }
+      } catch (errRider) {
+        console.warn('Could not notify riders on status update:', errRider.message);
+      }
+    }
 
     return ApiResponse.success(res, order, `Order status updated to ${status}`);
   } catch (err) {

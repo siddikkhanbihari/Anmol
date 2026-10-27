@@ -82,6 +82,25 @@
         </a>
 
         <div style="display: flex; align-items: center; gap: var(--space-4); margin-left: auto;">
+          <!-- Notification Bell -->
+          <div style="position: relative;">
+            <button id="btn-seller-notif" class="btn btn-ghost btn-sm" style="position: relative; font-size: 1.15rem; padding: 6px 12px; color: var(--primary-navy);" title="Notifications">
+              <i class="fas fa-bell"></i>
+              <span id="seller-notif-badge" style="display: none; position: absolute; top: 2px; right: 4px; background: #EF4444; color: #FFF; font-size: 0.65rem; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-weight: 700; line-height: 1;">0</span>
+            </button>
+
+            <!-- Dropdown -->
+            <div id="seller-notif-dropdown" style="display: none; position: absolute; right: 0; top: calc(100% + 8px); width: 320px; background: #FFF; border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-xl); z-index: 1000; padding: var(--space-3);">
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--color-border); padding-bottom: 8px; margin-bottom: 8px;">
+                <strong style="font-size: var(--font-size-sm); color: var(--primary-navy);">Dukaan Notifications</strong>
+                <button id="btn-mark-all-read" class="btn btn-ghost btn-xs" style="font-size: 0.7rem; color: var(--brand-blue); padding: 0;">Mark Read</button>
+              </div>
+              <div id="seller-notif-list" style="max-height: 260px; overflow-y: auto;">
+                <div style="text-align: center; color: var(--color-text-muted); font-size: var(--font-size-xs); padding: var(--space-4);">No notifications yet</div>
+              </div>
+            </div>
+          </div>
+
           <a id="view-my-shop-btn" href="#" target="_blank" class="btn btn-outline btn-sm">
             <i class="fas fa-external-link-alt"></i> View My Storefront
           </a>
@@ -183,6 +202,22 @@
     </div>
   </main>
 
+  <!-- Floating Live Order Alert Banner for Seller -->
+  <div id="seller-live-popup-alert" style="display: none; position: fixed; top: 20px; right: 20px; z-index: 10000; background: #0F172A; color: #FFF; border-left: 5px solid #10B981; border-radius: var(--radius-lg); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); padding: 16px 20px; min-width: 320px; max-width: 420px; animation: slideIn 0.3s ease;">
+    <div style="display: flex; align-items: flex-start; gap: 12px;">
+      <div style="font-size: 1.6rem; color: #10B981;"><i class="fas fa-bell"></i></div>
+      <div style="flex: 1;">
+        <div style="font-size: 0.68rem; color: #34D399; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">🔔 NAYA CUSTOMER ORDER AAYA HAI!</div>
+        <div id="live-alert-title" style="font-weight: 700; font-size: 0.95rem; margin: 2px 0;">Order #ANM-...</div>
+        <div id="live-alert-desc" style="font-size: 0.78rem; color: #CBD5E1;">Customer &bull; ₹0</div>
+        <div style="margin-top: 10px; display: flex; gap: 8px;">
+          <a href="seller-orders.html" class="btn btn-primary btn-xs" style="background: #10B981; border-color: #10B981; font-weight: 700;">View & Accept</a>
+          <button type="button" class="btn btn-outline btn-xs" id="btn-close-seller-alert" style="color: #FFF; border-color: #475569;">Dismiss</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <footer class="site-footer">
     <div class="footer-bottom">
       <div class="container">
@@ -204,9 +239,82 @@
   <script type="module">
     import { api } from './js/api.js';
     import { auth } from './js/auth.js';
+    import { notify } from './js/notifications.js';
     import { formatCurrency, formatDate } from './js/config.js';
 
     auth.requireAuth(['seller', 'admin']);
+
+    let lastKnownOrderNumber = null;
+    let isInitialLoad = true;
+
+    // Enable notification and audio permissions on click
+    document.addEventListener('click', () => {
+      notify.requestPermission();
+    }, { once: true });
+
+    // Notification dropdown toggle
+    const notifBtn = document.getElementById('btn-seller-notif');
+    const notifDropdown = document.getElementById('seller-notif-dropdown');
+    const notifBadge = document.getElementById('seller-notif-badge');
+    const notifList = document.getElementById('seller-notif-list');
+
+    notifBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isVisible = notifDropdown.style.display === 'block';
+      notifDropdown.style.display = isVisible ? 'none' : 'block';
+      if (!isVisible) {
+        fetchNotifications();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!notifDropdown.contains(e.target) && e.target !== notifBtn) {
+        notifDropdown.style.display = 'none';
+      }
+    });
+
+    // Dismiss floating alert
+    document.getElementById('btn-close-seller-alert')?.addEventListener('click', () => {
+      document.getElementById('seller-live-popup-alert').style.display = 'none';
+    });
+
+    // Mark all notifications read
+    document.getElementById('btn-mark-all-read')?.addEventListener('click', async () => {
+      try {
+        await api.put('/users/notifications/read-all');
+        notifBadge.style.display = 'none';
+        notifBadge.textContent = '0';
+        fetchNotifications();
+      } catch (e) {}
+    });
+
+    async function fetchNotifications() {
+      try {
+        const res = await api.get('/users/notifications');
+        if (res.success && res.data) {
+          const { notifications, unreadCount } = res.data;
+          if (unreadCount > 0) {
+            notifBadge.style.display = 'flex';
+            notifBadge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+          } else {
+            notifBadge.style.display = 'none';
+          }
+
+          if (!notifications.length) {
+            notifList.innerHTML = '<div style="text-align: center; color: var(--color-text-muted); font-size: var(--font-size-xs); padding: var(--space-4);">No notifications</div>';
+            return;
+          }
+
+          notifList.innerHTML = notifications.slice(0, 8).map(n => `
+            <div style="border-bottom: 1px solid var(--color-border); padding: 8px 0; font-size: 0.75rem; background: ${n.isRead ? 'transparent' : '#F0FDF4'};">
+              <div style="font-weight: 700; color: var(--primary-navy);">${n.title}</div>
+              <div style="color: var(--color-text-muted); margin: 2px 0;">${n.message}</div>
+              <div style="font-size: 0.68rem; color: #94A3B8;">${formatDate(n.createdAt, true)}</div>
+            </div>
+          `).join('');
+        }
+      } catch (e) {}
+    }
 
     async function loadDashboard() {
       try {
@@ -234,6 +342,27 @@
 
           const pendingCount = orders.filter(o => o.sellerStatus === 'pending' || o.sellerStatus === 'accepted').length;
           document.getElementById('stat-pending-orders').textContent = pendingCount;
+
+          // Check if brand new order arrived!
+          if (orders.length > 0) {
+            const newestOrder = orders[0];
+            if (!isInitialLoad && lastKnownOrderNumber && newestOrder.orderNumber !== lastKnownOrderNumber) {
+              // Trigger audio and popup alert!
+              notify.playOrderSound();
+              const alertBox = document.getElementById('seller-live-popup-alert');
+              document.getElementById('live-alert-title').textContent = `Order #${newestOrder.orderNumber}`;
+              document.getElementById('live-alert-desc').textContent = `${newestOrder.customer?.name || 'Customer'} • ${formatCurrency(newestOrder.groupTotal)} (${newestOrder.items.length} items)`;
+              alertBox.style.display = 'block';
+
+              notify.showDesktopNotification(
+                '🔔 Naya Customer Order!',
+                `Order #${newestOrder.orderNumber} received for ${formatCurrency(newestOrder.groupTotal)}`,
+                'seller-orders.html'
+              );
+            }
+            lastKnownOrderNumber = newestOrder.orderNumber;
+          }
+          isInitialLoad = false;
 
           const container = document.getElementById('recent-seller-orders-list');
           if (!orders.length) {
@@ -263,7 +392,15 @@
       auth.logout();
     });
 
-    document.addEventListener('DOMContentLoaded', loadDashboard);
+    // Auto-poll orders and notifications every 4 seconds for instant alerts!
+    setInterval(async () => {
+      await Promise.all([loadDashboard(), fetchNotifications()]);
+    }, 4000);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadDashboard();
+      fetchNotifications();
+    });
   </script>
   <script type="module" src="js/pwa.js"></script>
 </body>

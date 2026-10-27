@@ -300,6 +300,54 @@
       border-radius: var(--radius-lg);
       outline: none;
     }
+
+    /* Rider Order Pop Alert Modal */
+    .rider-order-popup-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(5px);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4);
+      visibility: hidden;
+      opacity: 0;
+      transition: all 0.25s ease;
+    }
+    .rider-order-popup-backdrop.active {
+      visibility: visible;
+      opacity: 1;
+    }
+    .rider-order-popup-box {
+      background: var(--color-white);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-5);
+      max-width: 420px;
+      width: 100%;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+      border: 2px solid #10B981;
+      transform: scale(0.92);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .rider-order-popup-backdrop.active .rider-order-popup-box {
+      transform: scale(1);
+    }
+    .pulse-beacon {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #EF4444;
+      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+      animation: pulseAlert 1.4s infinite;
+    }
+    @keyframes pulseAlert {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
   </style>
 </head>
 <body>
@@ -422,6 +470,71 @@
     </div>
   </div>
 
+  <!-- RIDER NEW ORDER POPUP ALERT MODAL (POP MSG) -->
+  <div class="rider-order-popup-backdrop" id="rider-order-popup">
+    <div class="rider-order-popup-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); padding-bottom: 8px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="pulse-beacon"></span>
+          <strong style="color: #DC2626; font-size: 0.85rem; letter-spacing: 0.5px; text-transform: uppercase;">
+            🚨 NAYA DELIVERY TASK!
+          </strong>
+        </div>
+        <button type="button" id="btn-close-pop" style="border: none; background: none; font-size: 1.5rem; color: var(--color-muted); cursor: pointer; line-height: 1;">&times;</button>
+      </div>
+
+      <!-- Payout Banner -->
+      <div style="background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%); border: 1px solid #10B981; border-radius: var(--radius-lg); padding: var(--space-3) var(--space-4); display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-4);">
+        <div>
+          <div style="font-size: 0.68rem; color: #047857; font-weight: 700; text-transform: uppercase;">Guaranteed Payout</div>
+          <div style="font-size: 1.6rem; font-weight: 800; color: #065F46; line-height: 1;" id="pop-payout-display">₹40</div>
+        </div>
+        <span class="badge" style="background: #10B981; color: #FFF; font-weight: 700; padding: 4px 8px; font-size: 0.72rem;">
+          <i class="fas fa-motorcycle"></i> Palanpur Local
+        </span>
+      </div>
+
+      <!-- Route Info -->
+      <div style="background: #F8FAFC; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-3); margin-bottom: var(--space-4);">
+        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+          <div style="width: 30px; height: 30px; border-radius: 50%; background: #FEF3C7; color: #D97706; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0;">
+            <i class="fas fa-store"></i>
+          </div>
+          <div>
+            <div style="font-size: 0.65rem; color: var(--color-muted); font-weight: 700; text-transform: uppercase;">1. Dukaan Se Pickup</div>
+            <strong style="color: var(--primary-navy); font-size: 0.85rem; display: block;" id="pop-shop-name">Sharma Kirana & General Store</strong>
+            <div style="font-size: 0.72rem; color: var(--color-text-muted);" id="pop-shop-addr">Aroma Circle, Palanpur</div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <div style="width: 30px; height: 30px; border-radius: 50%; background: #DCFCE7; color: #16A34A; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0;">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+          <div>
+            <div style="font-size: 0.65rem; color: var(--color-muted); font-weight: 700; text-transform: uppercase;">2. Customer Drop Location</div>
+            <strong style="color: var(--primary-navy); font-size: 0.85rem; display: block;" id="pop-drop-name">Customer Delivery</strong>
+            <div style="font-size: 0.72rem; color: var(--color-text-muted);" id="pop-drop-addr">Station Road, Palanpur</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="font-size: 0.72rem; color: var(--color-muted); text-align: center; margin-bottom: var(--space-3);" id="pop-order-summary">
+        Order #ANM-... &bull; 1 item
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+        <button type="button" class="btn btn-primary btn-block btn-lg" id="btn-pop-accept" style="background: #047857; border-color: #047857; font-weight: 800; font-size: 1rem; box-shadow: 0 4px 14px rgba(4,120,87,0.35);">
+          <i class="fas fa-check-circle"></i> ACCEPT ORDER (Order Accept Karein)
+        </button>
+        <button type="button" class="btn btn-outline btn-block btn-sm" id="btn-pop-ignore" style="color: var(--color-muted); font-size: 0.75rem; border-color: var(--color-border);">
+          Ignore / Baad Me
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script type="module" src="js/config.js"></script>
   <script type="module" src="js/notifications.js"></script>
   <script type="module" src="js/api.js"></script>
@@ -442,6 +555,86 @@
     let riderProfile = null;
     let activeDeliveryOrder = null;
     let completingOrderId = null;
+    let pendingPopupTask = null;
+    const seenOrderIds = new Set();
+    let audioPermissionGranted = false;
+
+    // Enable audio & desktop notification on first user interaction
+    document.addEventListener('click', () => {
+      if (!audioPermissionGranted) {
+        audioPermissionGranted = true;
+        notify.requestPermission();
+      }
+    }, { once: true });
+
+    // Rider Order Pop Alert Modal controls
+    const popModal = document.getElementById('rider-order-popup');
+    function closeRiderPopup() {
+      popModal.classList.remove('active');
+      pendingPopupTask = null;
+    }
+
+    document.getElementById('btn-close-pop')?.addEventListener('click', closeRiderPopup);
+    document.getElementById('btn-pop-ignore')?.addEventListener('click', closeRiderPopup);
+
+    // Accept task directly from popup
+    document.getElementById('btn-pop-accept')?.addEventListener('click', async () => {
+      if (!pendingPopupTask) return;
+      const btn = document.getElementById('btn-pop-accept');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Accepting Task...';
+
+      try {
+        const accRes = await api.post(`/rider/orders/${pendingPopupTask.orderId}/accept`, {
+          sellerOrderIndex: pendingPopupTask.sellerOrderIndex || 0
+        });
+
+        if (accRes.success) {
+          notify.playSuccessSound();
+          closeRiderPopup();
+          notify.success('🎉 Delivery task accepted! Store par jakar order collect karein.');
+          document.querySelector('[data-tab=active-tab]')?.click();
+          await loadRiderData();
+        } else {
+          notify.error(accRes.message || 'Could not accept task');
+        }
+      } catch (err) {
+        notify.error('Could not accept task: ' + (err.message || 'Server error'));
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-check-circle"></i> ACCEPT ORDER (Order Accept Karein)';
+      }
+    });
+
+    function showOrderPopup(task) {
+      if (!task || popModal.classList.contains('active')) return;
+      pendingPopupTask = task;
+
+      document.getElementById('pop-payout-display').textContent = formatCurrency(task.payout || 40);
+      document.getElementById('pop-shop-name').textContent = task.shop?.name || 'Local Store';
+
+      const shopAddr = typeof task.shop?.address === 'object'
+        ? `${task.shop.address.street || ''}, ${task.shop.address.city || 'Palanpur'}`
+        : (task.shop?.address || 'Palanpur');
+      document.getElementById('pop-shop-addr').textContent = shopAddr;
+
+      document.getElementById('pop-drop-name').textContent = task.customerAddress?.recipientName || 'Customer Delivery';
+      const custAddr = `${task.customerAddress?.street || ''}, ${task.customerAddress?.city || 'Palanpur'} (PIN: ${task.customerAddress?.pincode || '385001'})`;
+      document.getElementById('pop-drop-addr').textContent = custAddr;
+
+      document.getElementById('pop-order-summary').textContent = `Order #${task.orderNumber} &bull; ${task.itemsCount || 1} items`;
+
+      // Play alert chime and show modal
+      notify.playRiderAlert();
+      popModal.classList.add('active');
+
+      // Native browser notification
+      notify.showDesktopNotification(
+        '🛵 Naya Delivery Order Alert!',
+        `Pickup from ${task.shop?.name || 'Store'}. Payout: ${formatCurrency(task.payout || 40)}`,
+        window.location.href
+      );
+    }
 
     // Logout
     document.getElementById('btn-rider-logout').addEventListener('click', async () => {
@@ -696,7 +889,7 @@
     });
 
     // Load Available Delivery Tasks
-    async function loadAvailableDeliveries() {
+    async function loadAvailableDeliveries(isSilent = false) {
       const list = document.getElementById('available-deliveries-list');
       const badgeCount = document.getElementById('avail-badge-count');
 
@@ -705,6 +898,22 @@
         if (res.success) {
           const tasks = res.data || [];
           badgeCount.textContent = tasks.length;
+
+          // Check for brand new incoming delivery tasks to trigger the POP MSG Modal!
+          if (riderProfile?.isOnline && !activeDeliveryOrder && tasks.length > 0) {
+            const unseenTasks = tasks.filter(t => !seenOrderIds.has(t.orderId + '-' + t.sellerOrderIndex));
+            if (unseenTasks.length > 0) {
+              const newest = unseenTasks[0];
+              seenOrderIds.add(newest.orderId + '-' + newest.sellerOrderIndex);
+              showOrderPopup(newest);
+            }
+          }
+
+          // If available tab is not active and this was a background poll, don't re-render list HTML
+          const availTab = document.getElementById('available-tab');
+          if (isSilent && (!availTab || !availTab.classList.contains('active'))) {
+            return;
+          }
 
           if (tasks.length === 0) {
             list.innerHTML = `
@@ -718,9 +927,9 @@
 
           list.innerHTML = tasks.map(t => {
             const shopAddr = typeof t.shop?.address === 'object'
-              ? `${t.shop.address.street || ''}, ${t.shop.address.city || ''}`
-              : (t.shop?.address || 'Kanpur');
-            const dropAddr = `${t.customerAddress?.street || ''}, ${t.customerAddress?.city || ''}`;
+              ? `${t.shop.address.street || ''}, ${t.shop.address.city || 'Palanpur'}`
+              : (t.shop?.address || 'Palanpur');
+            const dropAddr = `${t.customerAddress?.street || ''}, ${t.customerAddress?.city || 'Palanpur'}`;
 
             return `
               <div class="delivery-task-card">
@@ -750,7 +959,7 @@
                   </div>
                 </div>
 
-                <button type="button" class="btn btn-primary btn-block btn-sm btn-accept-task" data-id="${t.orderId}" data-idx="${t.sellerOrderIndex}" style="background: #047857; border-color: #047857; margin-top: var(--space-2);">
+                <button type="button" class="btn btn-primary btn-block btn-sm btn-accept-task" data-id="${t.orderId}" data-idx="${t.sellerOrderIndex}" style="background: #047857; border-color: #047857; margin-top: var(--space-2); font-weight: 700;">
                   <i class="fas fa-hand-holding-usd"></i> Accept Delivery Task (Earn ${formatCurrency(t.payout || 40)})
                 </button>
               </div>
@@ -766,6 +975,7 @@
               try {
                 const accRes = await api.post(`/rider/orders/${orderId}/accept`, { sellerOrderIndex: idx });
                 if (accRes.success) {
+                  notify.playSuccessSound();
                   notify.success('Delivery task accepted! Navigate to shop.');
                   document.querySelector('[data-tab=active-tab]').click();
                   loadRiderData();
@@ -783,7 +993,7 @@
       }
     }
 
-    document.getElementById('btn-refresh-tasks').addEventListener('click', loadAvailableDeliveries);
+    document.getElementById('btn-refresh-tasks').addEventListener('click', () => loadAvailableDeliveries(false));
 
     // Load History
     async function loadHistory() {
@@ -819,13 +1029,12 @@
       }
     }
 
-    // Auto-poll available orders every 10 seconds if on available tab
-    setInterval(() => {
-      const availTab = document.getElementById('available-tab');
-      if (availTab && availTab.classList.contains('active')) {
-        loadAvailableDeliveries();
+    // Auto-poll available orders every 3.5 seconds for instant Pop Msg alerts
+    setInterval(async () => {
+      if (riderProfile && riderProfile.isOnline) {
+        await loadAvailableDeliveries(true);
       }
-    }, 10000);
+    }, 3500);
 
     // Initial load
     document.addEventListener('DOMContentLoaded', loadRiderData);

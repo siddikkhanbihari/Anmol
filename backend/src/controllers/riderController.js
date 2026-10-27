@@ -161,23 +161,23 @@ export const riderController = {
         return ApiResponse.success(res, [], 'You must be online to view available deliveries');
       }
 
-      // Find orders that have sellerOrders ready for pickup or processing, with NO rider assigned
+      // Find orders that have sellerOrders with NO rider assigned and not cancelled/delivered
       const orders = await Order.find({
-        status: { $nin: ['cancelled', 'delivered'] },
-        'sellerOrders.sellerStatus': { $in: ['accepted', 'processing', 'ready_for_pickup'] },
+        overallStatus: { $nin: ['cancelled', 'delivered'] },
+        'sellerOrders.sellerStatus': { $in: ['pending', 'accepted', 'processing', 'ready_for_pickup'] },
         'sellerOrders.rider': null
       })
         .populate('customer', 'name phone')
         .populate('sellerOrders.shop', 'name address phone logo location')
         .sort({ createdAt: -1 })
-        .limit(20);
+        .limit(25);
 
       // Flatten to individual deliverable shop-order tasks
       const tasks = [];
       for (const order of orders) {
         order.sellerOrders.forEach((so, index) => {
           if (
-            ['accepted', 'processing', 'ready_for_pickup'].includes(so.sellerStatus) &&
+            ['pending', 'accepted', 'processing', 'ready_for_pickup'].includes(so.sellerStatus) &&
             !so.rider
           ) {
             tasks.push({
@@ -185,7 +185,7 @@ export const riderController = {
               orderNumber: order.orderNumber,
               sellerOrderIndex: index,
               shop: so.shop,
-              itemsCount: so.items.reduce((sum, it) => sum + it.quantity, 0),
+              itemsCount: (so.items || []).reduce((sum, it) => sum + it.quantity, 0),
               subtotal: so.subtotal,
               payout: so.riderPayout || 40,
               customerAddress: order.deliveryAddress,
@@ -258,14 +258,27 @@ export const riderController = {
       // Notify customer
       try {
         await Notification.create({
-          recipient: order.customer,
+          user: order.customer,
           title: 'Delivery Partner Assigned 🛵',
           message: `${req.user.name} is on the way to pick up your order #${order.orderNumber}.`,
-          type: 'order_status',
-          data: { orderId: order._id, orderNumber: order.orderNumber }
+          type: 'order',
+          link: `/customer-dashboard.html?tab=orders&id=${order._id}`
         });
       } catch (notifErr) {
         console.warn('Could not send notification:', notifErr.message);
+      }
+
+      // Notify seller
+      try {
+        await Notification.create({
+          user: sellerOrder.seller,
+          title: 'Rider Assigned for Pickup! 🛵',
+          message: `${req.user.name} has accepted pickup for order #${order.orderNumber}. Please keep items ready.`,
+          type: 'order',
+          link: `/seller-orders.html?id=${order._id}`
+        });
+      } catch (sellerNotifErr) {
+        console.warn('Could not send seller notification:', sellerNotifErr.message);
       }
 
       return ApiResponse.success(res, { orderId: order._id, sellerOrderIndex: idx }, 'Delivery task accepted successfully!');
@@ -312,11 +325,11 @@ export const riderController = {
       // Notify customer with delivery OTP
       try {
         await Notification.create({
-          recipient: order.customer._id || order.customer,
+          user: order.customer._id || order.customer,
           title: 'Out for Delivery 📦',
           message: `Your order #${order.orderNumber} has been picked up by ${req.user.name} and is on the way! Your Delivery OTP is ${sellerOrder.deliveryOtp}.`,
-          type: 'order_status',
-          data: { orderId: order._id, deliveryOtp: sellerOrder.deliveryOtp }
+          type: 'order',
+          link: `/customer-dashboard.html?tab=orders&id=${order._id}`
         });
       } catch (notifErr) {
         console.warn('Could not send notification:', notifErr.message);
@@ -380,7 +393,10 @@ export const riderController = {
       // Check if all seller orders are delivered
       const allDelivered = order.sellerOrders.every((so) => so.sellerStatus === 'delivered');
       if (allDelivered) {
-        order.status = 'delivered';
+        order.overallStatus = 'delivered';
+        if (order.paymentMethod === 'cod') {
+          order.paymentStatus = 'paid';
+        }
       }
 
       // Credit payout to rider
@@ -397,14 +413,27 @@ export const riderController = {
       // Notify customer
       try {
         await Notification.create({
-          recipient: order.customer._id || order.customer,
+          user: order.customer._id || order.customer,
           title: 'Order Delivered! 🎉',
-          message: `Your order #${order.orderNumber} was delivered successfully by ${req.user.name}. Thank you for shopping local with ANMOL STORE!`,
-          type: 'order_status',
-          data: { orderId: order._id }
+          message: `Your order #${order.orderNumber} was delivered successfully by ${req.user.name}. Thank you for shopping with ANMOL STORE!`,
+          type: 'order',
+          link: `/customer-dashboard.html?tab=orders&id=${order._id}`
         });
       } catch (notifErr) {
         console.warn('Could not send notification:', notifErr.message);
+      }
+
+      // Notify seller
+      try {
+        await Notification.create({
+          user: sellerOrder.seller,
+          title: 'Order Delivered by Rider! ✅',
+          message: `Order #${order.orderNumber} was successfully delivered to customer by ${req.user.name}.`,
+          type: 'order',
+          link: `/seller-orders.html?id=${order._id}`
+        });
+      } catch (sellerErr) {
+        console.warn('Could not send seller notification:', sellerErr.message);
       }
 
       return ApiResponse.success(

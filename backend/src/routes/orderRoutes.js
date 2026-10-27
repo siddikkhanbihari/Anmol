@@ -16,7 +16,7 @@ router.use(authenticateToken);
 
 router.post('/', createOrder);
 router.get('/mine', getMyOrders);
-router.get('/seller', requireRole('seller'), getSellerOrders);
+router.get('/seller', requireRole('seller', 'admin'), getSellerOrders);
 router.get('/:id', getOrderById);
 router.patch('/seller/:id/status', requireRole('seller', 'admin'), updateSellerOrderStatus);
 router.patch('/:id/cancel', cancelOrder);

@@ -145,11 +145,11 @@
               </div>
               <div class="form-group">
                 <label class="form-label required" for="new-state">State</label>
-                <input type="text" id="new-state" class="form-control" value="Uttar Pradesh" required>
+                <input type="text" id="new-state" class="form-control" value="Gujarat" required>
               </div>
               <div class="form-group">
                 <label class="form-label required" for="new-pincode">PIN Code</label>
-                <input type="text" id="new-pincode" class="form-control" placeholder="385001" maxlength="6" required>
+                <input type="text" id="new-pincode" class="form-control" value="385001" placeholder="385001" maxlength="6" required>
               </div>
             </div>
             <button type="button" id="btn-save-new-addr" class="btn btn-secondary btn-sm">Save & Use This Address</button>
@@ -387,9 +387,40 @@
 
     // Place Order
     document.getElementById('btn-place-order').addEventListener('click', async () => {
+      // If no address selected from saved list, auto-check if new address form is filled
       if (!selectedAddress) {
-        notify.warning('Please select or add a delivery address.');
-        return;
+        const name = document.getElementById('new-recipient-name')?.value?.trim();
+        const phone = document.getElementById('new-recipient-phone')?.value?.trim();
+        const street = document.getElementById('new-street')?.value?.trim();
+        const city = document.getElementById('new-city')?.value?.trim() || 'Palanpur';
+        const state = document.getElementById('new-state')?.value?.trim() || 'Gujarat';
+        const pincode = document.getElementById('new-pincode')?.value?.trim() || '385001';
+
+        if (name && phone && street && pincode) {
+          try {
+            const addrRes = await api.post('/users/addresses', {
+              recipientName: name,
+              phone,
+              street,
+              city,
+              state,
+              pincode,
+              isDefault: true
+            });
+            if (addrRes.success && addrRes.data) {
+              selectedAddress = addrRes.data;
+            } else {
+              selectedAddress = { recipientName: name, phone, street, city, state, pincode };
+            }
+          } catch (e) {
+            selectedAddress = { recipientName: name, phone, street, city, state, pincode };
+          }
+        } else {
+          notify.warning('Kripya delivery address bharein ya select karein.');
+          document.getElementById('new-address-form').style.display = 'block';
+          document.getElementById('new-recipient-name')?.focus();
+          return;
+        }
       }
 
       const paymentMethod = document.querySelector('input[name="payment-method"]:checked')?.value || 'cod';
@@ -401,7 +432,7 @@
 
       const placeBtn = document.getElementById('btn-place-order');
       placeBtn.disabled = true;
-      placeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Order...';
+      placeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Placing Order...';
 
       try {
         const res = await api.post('/orders', {
@@ -410,21 +441,24 @@
             recipientName: selectedAddress.recipientName,
             phone: selectedAddress.phone,
             street: selectedAddress.street,
-            landmark: selectedAddress.landmark,
-            city: selectedAddress.city,
-            state: selectedAddress.state,
-            pincode: selectedAddress.pincode
+            landmark: selectedAddress.landmark || '',
+            city: selectedAddress.city || 'Palanpur',
+            state: selectedAddress.state || 'Gujarat',
+            pincode: selectedAddress.pincode || '385001'
           },
           paymentMethod
         });
 
         if (res.success && res.data) {
+          notify.playSuccessSound();
           await cart.clearCart();
-          notify.success('Order placed successfully!');
-          window.location.href = `order-confirmation.html?id=${res.data._id}`;
+          notify.success('🎉 Order successfully place ho gaya hai!');
+          setTimeout(() => {
+            window.location.href = `order-confirmation.html?id=${res.data._id}`;
+          }, 400);
         }
       } catch (err) {
-        notify.error(err.message || 'Failed to place order. Please review stock.');
+        notify.error(err.message || 'Order place karne me samasya aayi. Kripya punah prayas karein.');
         placeBtn.disabled = false;
         placeBtn.innerHTML = 'Place Order Now';
       }
