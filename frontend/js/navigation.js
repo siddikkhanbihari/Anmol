@@ -3,12 +3,14 @@ import { auth } from './auth.js';
 import { cart } from './cart.js';
 import { CONFIG } from './config.js';
 import { notify } from './notifications.js';
+import { i18n } from './i18n.js';
 import './pwa.js';
 import './app-download-modal.js';
 
 export class Navigation {
   static init() {
     this.initLocation();
+    this.initLanguage();
     this.updateUserNav();
     this.bindSearchForms();
     this.bindMobileDrawer();
@@ -25,6 +27,84 @@ export class Navigation {
     });
 
     cart.fetchCart();
+  }
+
+  static initLanguage() {
+    // 1. Language switcher mount in desktop announcement bar
+    const announcementLinks = document.querySelector('.announcement-links');
+    if (announcementLinks && !document.querySelector('.lang-switcher-announcement')) {
+      const langWrap = document.createElement('span');
+      langWrap.className = 'lang-switcher-announcement';
+      langWrap.style.marginLeft = '12px';
+      langWrap.style.display = 'inline-flex';
+      langWrap.style.alignItems = 'center';
+      announcementLinks.prepend(langWrap);
+      i18n.renderSwitcher('.lang-switcher-announcement');
+    }
+
+    // 2. Language switcher mount in desktop header actions
+    const headerActions = document.querySelector('.header-actions');
+    if (headerActions && !document.querySelector('.header-lang-mount')) {
+      const headerMount = document.createElement('div');
+      headerMount.className = 'header-lang-mount';
+      headerMount.style.display = 'flex';
+      headerMount.style.alignItems = 'center';
+      headerActions.prepend(headerMount);
+      i18n.renderSwitcher('.header-lang-mount');
+      headerMount.querySelectorAll('.btn-lang-toggle').forEach(btn => {
+        btn.style.background = '#F1F5F9';
+        btn.style.borderColor = 'var(--color-border)';
+        btn.style.color = 'var(--primary-navy)';
+      });
+    }
+
+    // 3. Mobile Drawer Language Switcher
+    const mobileDrawer = document.querySelector('.mobile-drawer-overlay');
+    if (mobileDrawer && !document.querySelector('.mobile-lang-box')) {
+      const mobileBox = document.createElement('div');
+      mobileBox.className = 'mobile-lang-box';
+      mobileBox.style.padding = '12px 16px';
+      mobileBox.style.borderBottom = '1px solid var(--color-border)';
+      mobileBox.style.background = '#F8FAFC';
+      mobileBox.innerHTML = `
+        <div style="font-size: 0.72rem; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase; margin-bottom: 6px;">
+          🌐 Language / ભાષા / भाषा
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button type="button" class="btn btn-sm btn-outline mobile-lang-btn ${i18n.getLang() === 'gu' ? 'btn-primary' : ''}" data-lang="gu" style="flex: 1; padding: 6px 2px; font-size: 0.78rem;">
+            🇮🇳 ગુજરાતી
+          </button>
+          <button type="button" class="btn btn-sm btn-outline mobile-lang-btn ${i18n.getLang() === 'hi' ? 'btn-primary' : ''}" data-lang="hi" style="flex: 1; padding: 6px 2px; font-size: 0.78rem;">
+            🇮🇳 हिन्दी
+          </button>
+          <button type="button" class="btn btn-sm btn-outline mobile-lang-btn ${i18n.getLang() === 'en' ? 'btn-primary' : ''}" data-lang="en" style="flex: 1; padding: 6px 2px; font-size: 0.78rem;">
+            🇬🇧 English
+          </button>
+        </div>
+      `;
+      const navList = mobileDrawer.querySelector('nav') || mobileDrawer.querySelector('.mobile-drawer-body') || mobileDrawer.querySelector('.mobile-drawer-inner');
+      if (navList) {
+        navList.prepend(mobileBox);
+      } else {
+        mobileDrawer.prepend(mobileBox);
+      }
+
+      mobileBox.querySelectorAll('.mobile-lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          i18n.setLang(btn.dataset.lang);
+          mobileBox.querySelectorAll('.mobile-lang-btn').forEach(b => b.classList.remove('btn-primary'));
+          btn.classList.add('btn-primary');
+        });
+      });
+    }
+
+    // 4. Translate page elements
+    i18n.translatePage();
+
+    // 5. Re-translate when dynamic content or language changes
+    window.addEventListener('languageChanged', () => {
+      this.updateLocationDisplays();
+    });
   }
 
   static initLocation() {
