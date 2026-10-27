@@ -30,21 +30,35 @@ export class Navigation {
   static initLocation() {
     const saved = localStorage.getItem(CONFIG.STORAGE_KEYS.USER_LOCATION);
     this.currentLocation = saved ? JSON.parse(saved) : CONFIG.DEFAULT_LOCATION;
+    // Ensure default is Palanpur 385001 if previously set to legacy Kanpur
+    if (this.currentLocation.city === 'Kanpur') {
+      this.currentLocation = CONFIG.DEFAULT_LOCATION;
+      localStorage.setItem(CONFIG.STORAGE_KEYS.USER_LOCATION, JSON.stringify(this.currentLocation));
+    }
     this.updateLocationDisplays();
   }
 
   static updateLocationDisplays() {
     const locElements = document.querySelectorAll('.current-location-display');
+    const label = this.currentLocation.area
+      ? `${this.currentLocation.area}, ${this.currentLocation.city || 'Palanpur'}`
+      : `${this.currentLocation.city || 'Palanpur'}, ${this.currentLocation.pincode || '385001'}`;
     locElements.forEach(el => {
-      el.textContent = `${this.currentLocation.city}, ${this.currentLocation.pincode}`;
+      el.textContent = label;
     });
   }
 
-  static setLocation(city, state, pincode) {
-    this.currentLocation = { city, state: state || 'Uttar Pradesh', pincode };
+  static setLocation(city, state, pincode, area = '') {
+    this.currentLocation = {
+      area: area || (city === 'Palanpur' ? (this.currentLocation.area || 'Aroma Circle') : ''),
+      city: city || 'Palanpur',
+      state: state || 'Gujarat',
+      pincode: pincode || '385001'
+    };
     localStorage.setItem(CONFIG.STORAGE_KEYS.USER_LOCATION, JSON.stringify(this.currentLocation));
     this.updateLocationDisplays();
-    notify.success(`Location set to ${city} (${pincode})`);
+    const locName = this.currentLocation.area ? `${this.currentLocation.area}, ${this.currentLocation.city}` : this.currentLocation.city;
+    notify.success(`Delivery location set to ${locName} (${this.currentLocation.pincode})`);
     // Dispatch custom event for pages that want to reload based on location
     window.dispatchEvent(new CustomEvent('locationChanged', { detail: this.currentLocation }));
   }
@@ -128,15 +142,165 @@ export class Navigation {
     const modal = document.getElementById('location-modal');
     if (!modal) return;
 
+    const modalBody = modal.querySelector('.modal-body');
     const closeBtn = modal.querySelector('.modal-close');
-    const saveBtn = modal.querySelector('#btn-save-location');
-    const detectBtn = modal.querySelector('#btn-detect-location');
-    const cityInput = modal.querySelector('#location-city-input');
-    const pincodeInput = modal.querySelector('#location-pincode-input');
+
+    const renderPalanpurPicker = () => {
+      if (!modalBody) return;
+
+      const areas = CONFIG.PALANPUR_AREAS || [];
+      const currentArea = this.currentLocation.area || 'Aroma Circle';
+
+      modalBody.innerHTML = `
+        <div class="palanpur-location-wrap">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-3); background: #EFF6FF; padding: 10px 14px; border-radius: var(--radius-lg); border: 1px solid #BFDBFE;">
+            <div>
+              <div style="font-weight: 700; color: var(--primary-navy); font-size: var(--font-size-sm);"><i class="fas fa-city" style="color: var(--brand-blue);"></i> Palanpur, Gujarat</div>
+              <div style="font-size: 0.72rem; color: var(--color-muted);">District: Banaskantha &bull; PIN Code: <strong>385001</strong></div>
+            </div>
+            <span class="badge" style="background: #10B981; color: #FFF; font-size: 0.68rem; font-weight: 700;">Local Hub</span>
+          </div>
+
+          <div style="margin-bottom: var(--space-3); position: relative;">
+            <i class="fas fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--color-muted); font-size: 0.85rem;"></i>
+            <input type="text" id="palanpur-area-search" class="form-control" placeholder="Search area in Palanpur (Aroma Circle, Gathaman, Delhi Gate...)" style="padding-left: 36px; font-size: 0.85rem; height: 40px;" autocomplete="off">
+          </div>
+
+          <div style="font-size: 0.75rem; font-weight: 700; color: var(--primary-navy); margin-bottom: 8px; display: flex; justify-content: space-between;">
+            <span>CHOOSE DELIVERY LOCALITY / AREA:</span>
+            <span style="color: var(--brand-blue);" id="area-count-label">${areas.length} Areas in Palanpur</span>
+          </div>
+
+          <div id="palanpur-areas-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; max-height: 260px; overflow-y: auto; padding: 2px;">
+            ${renderAreaCards(areas, currentArea)}
+          </div>
+
+          <div style="margin-top: var(--space-4); border-top: 1px dashed var(--color-border); padding-top: var(--space-3); display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem;">
+            <button type="button" id="btn-detect-location" class="btn btn-outline btn-sm" style="font-size: 0.72rem; padding: 4px 10px;">
+              <i class="fas fa-location-arrow"></i> Use Current GPS
+            </button>
+            <button type="button" id="btn-toggle-custom-loc" style="background: none; border: none; color: var(--brand-blue); cursor: pointer; text-decoration: underline; font-size: 0.72rem;">
+              Other City / Pincode
+            </button>
+          </div>
+
+          <div id="custom-location-box" style="display: none; margin-top: var(--space-3); background: var(--color-bg); padding: var(--space-3); border-radius: var(--radius-md);">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div>
+                <label style="font-size: 0.7rem; font-weight: 600;">City</label>
+                <input type="text" id="custom-city-input" class="form-control" value="Palanpur" style="font-size: 0.8rem; padding: 4px 8px;">
+              </div>
+              <div>
+                <label style="font-size: 0.7rem; font-weight: 600;">PIN Code</label>
+                <input type="text" id="custom-pin-input" class="form-control" value="385001" maxlength="6" style="font-size: 0.8rem; padding: 4px 8px;">
+              </div>
+            </div>
+            <button type="button" id="btn-save-custom-loc" class="btn btn-primary btn-block btn-sm" style="margin-top: 8px;">Save Location</button>
+          </div>
+        </div>
+      `;
+
+      // Hide default save button in modal footer if present
+      const modalFooter = modal.querySelector('.modal-footer');
+      if (modalFooter) modalFooter.style.display = 'none';
+
+      // Bind Area card clicks
+      bindAreaCardClicks();
+
+      // Bind search filter
+      const searchInput = modal.querySelector('#palanpur-area-search');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          const query = e.target.value.toLowerCase().trim();
+          const filtered = areas.filter(a => a.name.toLowerCase().includes(query) || (a.landmark && a.landmark.toLowerCase().includes(query)));
+          const grid = modal.querySelector('#palanpur-areas-grid');
+          const countLabel = modal.querySelector('#area-count-label');
+          if (grid) grid.innerHTML = renderAreaCards(filtered, this.currentLocation.area || 'Aroma Circle');
+          if (countLabel) countLabel.textContent = `${filtered.length} Areas found`;
+          bindAreaCardClicks();
+        });
+      }
+
+      // Bind Custom location toggle
+      const toggleCustom = modal.querySelector('#btn-toggle-custom-loc');
+      const customBox = modal.querySelector('#custom-location-box');
+      if (toggleCustom && customBox) {
+        toggleCustom.addEventListener('click', () => {
+          customBox.style.display = customBox.style.display === 'none' ? 'block' : 'none';
+        });
+      }
+
+      // Bind Save Custom
+      const saveCustomBtn = modal.querySelector('#btn-save-custom-loc');
+      if (saveCustomBtn) {
+        saveCustomBtn.addEventListener('click', () => {
+          const cCity = modal.querySelector('#custom-city-input')?.value.trim() || 'Palanpur';
+          const cPin = modal.querySelector('#custom-pin-input')?.value.trim() || '385001';
+          this.setLocation(cCity, 'Gujarat', cPin);
+          closeModal();
+        });
+      }
+
+      // Bind GPS Detect
+      const detectBtn = modal.querySelector('#btn-detect-location');
+      if (detectBtn) {
+        detectBtn.addEventListener('click', () => {
+          if (!navigator.geolocation) {
+            notify.error('Geolocation is not supported by your browser');
+            return;
+          }
+          detectBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Detecting...';
+          navigator.geolocation.getCurrentPosition(
+            () => {
+              detectBtn.innerHTML = '<i class="fas fa-location-arrow"></i> Use Current GPS';
+              this.setLocation('Palanpur', 'Gujarat', '385001', 'Aroma Circle');
+              closeModal();
+            },
+            () => {
+              detectBtn.innerHTML = '<i class="fas fa-location-arrow"></i> Use Current GPS';
+              notify.warning('GPS permission denied. Palanpur location selected.');
+              this.setLocation('Palanpur', 'Gujarat', '385001', 'Aroma Circle');
+              closeModal();
+            }
+          );
+        });
+      }
+    };
+
+    function renderAreaCards(areaList, activeArea) {
+      if (areaList.length === 0) {
+        return '<div style="grid-column: span 2; text-align: center; padding: var(--space-4); color: var(--color-muted); font-size: var(--font-size-xs);">No matching Palanpur area found. Try another search.</div>';
+      }
+
+      return areaList.map(a => {
+        const isSelected = a.name === activeArea;
+        return `
+          <div class="palanpur-area-card" data-area="${a.name}" style="background: ${isSelected ? '#EFF6FF' : '#FFF'}; border: 1.5px solid ${isSelected ? 'var(--brand-blue)' : 'var(--color-border)'}; border-radius: var(--radius-md); padding: 8px 10px; cursor: pointer; transition: all var(--transition-fast); display: flex; align-items: flex-start; gap: 8px;">
+            <div style="width: 26px; height: 26px; border-radius: 50%; background: ${isSelected ? 'var(--brand-blue)' : '#F1F5F9'}; color: ${isSelected ? '#FFF' : 'var(--brand-blue)'}; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; flex-shrink: 0; margin-top: 1px;">
+              <i class="fas ${a.icon || 'fa-map-pin'}"></i>
+            </div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 0.78rem; font-weight: 700; color: var(--primary-navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${a.name}</div>
+              <div style="font-size: 0.65rem; color: var(--color-muted);">${a.landmark || 'Palanpur 385001'}</div>
+            </div>
+            ${isSelected ? '<i class="fas fa-check-circle" style="color: var(--brand-blue); font-size: 0.85rem; margin-top: 4px;"></i>' : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    const bindAreaCardClicks = () => {
+      modal.querySelectorAll('.palanpur-area-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const areaName = card.dataset.area;
+          this.setLocation('Palanpur', 'Gujarat', '385001', areaName);
+          closeModal();
+        });
+      });
+    };
 
     const openModal = () => {
-      if (cityInput) cityInput.value = this.currentLocation.city;
-      if (pincodeInput) pincodeInput.value = this.currentLocation.pincode;
+      renderPalanpurPicker();
       modal.classList.add('active');
     };
 
@@ -149,37 +313,6 @@ export class Navigation {
     modal.addEventListener('click', (e) => {
       if (e.target === modal) closeModal();
     });
-
-    if (saveBtn) {
-      saveBtn.addEventListener('click', () => {
-        const city = cityInput.value.trim() || 'Kanpur';
-        const pincode = pincodeInput.value.trim() || '208001';
-        this.setLocation(city, 'Uttar Pradesh', pincode);
-        closeModal();
-      });
-    }
-
-    if (detectBtn) {
-      detectBtn.addEventListener('click', () => {
-        if (!navigator.geolocation) {
-          notify.error('Geolocation is not supported by your browser');
-          return;
-        }
-        detectBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Detecting...';
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            detectBtn.innerHTML = '<i class="fas fa-location-arrow"></i> Use Current Location';
-            // In a production setup, reverse-geocode with API. For now, detect local area
-            this.setLocation('Kanpur Civil Lines', 'Uttar Pradesh', '208001');
-            closeModal();
-          },
-          (err) => {
-            detectBtn.innerHTML = '<i class="fas fa-location-arrow"></i> Use Current Location';
-            notify.warning('Could not get GPS permission. Please enter city or PIN code manually.');
-          }
-        );
-      });
-    }
   }
 }
 
