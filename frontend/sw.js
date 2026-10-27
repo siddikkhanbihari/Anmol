@@ -1,5 +1,5 @@
 // ANMOL STORE - High Performance Progressive Web App Service Worker
-const CACHE_NAME = 'anmol-store-v1.0.0';
+const CACHE_NAME = 'anmol-store-v2.3.0';
 
 const PRECACHE_ASSETS = [
   '/',
@@ -86,7 +86,25 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 2. Static Assets & Pages -> Stale-While-Revalidate
+  // 2. HTML Pages & Documents -> Network First (Never serve outdated cached forms)
+  if (request.mode === 'navigate' || request.headers.get('accept')?.includes('text/html') || url.pathname.endsWith('.html')) {
+    event.respondWith(
+      fetch(request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, responseToCache);
+            });
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match(request).then((res) => res || caches.match('/index.html')))
+    );
+    return;
+  }
+
+  // 3. Static Assets (CSS, JS, Fonts, Images) -> Stale-While-Revalidate
   event.respondWith(
     caches.match(request).then((cachedResponse) => {
       const fetchPromise = fetch(request).then((networkResponse) => {

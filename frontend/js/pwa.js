@@ -16,6 +16,8 @@ class PWAManager {
           .register('/sw.js')
           .then((reg) => {
             console.log('[ANMOL PWA] Service Worker registered with scope:', reg.scope);
+            // Ensure worker updates immediately
+            reg.update();
           })
           .catch((err) => {
             console.warn('[ANMOL PWA] Service Worker registration failed:', err);

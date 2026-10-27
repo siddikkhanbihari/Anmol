@@ -139,13 +139,17 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Shop Cover Banner Photo</label>
+            <label class="form-label" style="font-weight: 700; color: var(--primary-navy);">Shop Cover Banner Photo</label>
             <div style="display: flex; gap: var(--space-3); align-items: center; margin-bottom: 8px; flex-wrap: wrap;">
               <img id="preview-cover-img" src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80" style="width: 140px; height: 70px; object-fit: cover; border-radius: var(--radius-md); border: 2px solid var(--color-border);">
               <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <input type="file" id="input-cover-file" accept="image/*" capture="environment" style="display: none;">
-                <button type="button" id="btn-upload-cover" class="btn btn-outline btn-sm">
-                  <i class="fas fa-camera"></i> 📸 Photo Kheechein / Upload
+                <input type="file" id="input-cover-gallery" accept="image/*" style="display: none;">
+                <input type="file" id="input-cover-camera" accept="image/*" capture="environment" style="display: none;">
+                <button type="button" id="btn-upload-cover-gallery" class="btn btn-primary btn-sm" style="background: #0284C7; border-color: #0284C7;">
+                  <i class="fas fa-folder-open"></i> 🖼️ Gallery Se Banner Chunein
+                </button>
+                <button type="button" id="btn-upload-cover-camera" class="btn btn-outline btn-sm">
+                  <i class="fas fa-camera"></i> 📸 Camera
                 </button>
               </div>
             </div>
@@ -153,13 +157,17 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Shop Logo / Avatar Photo</label>
+            <label class="form-label" style="font-weight: 700; color: var(--primary-navy);">Shop Logo / Avatar Photo</label>
             <div style="display: flex; gap: var(--space-3); align-items: center; margin-bottom: 8px; flex-wrap: wrap;">
               <img id="preview-logo-img" src="https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&w=200&q=80" style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%; border: 2px solid var(--color-border);">
               <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <input type="file" id="input-logo-file" accept="image/*" capture="environment" style="display: none;">
-                <button type="button" id="btn-upload-logo" class="btn btn-outline btn-sm">
-                  <i class="fas fa-camera"></i> 📸 Logo Kheechein / Upload
+                <input type="file" id="input-logo-gallery" accept="image/*" style="display: none;">
+                <input type="file" id="input-logo-camera" accept="image/*" capture="environment" style="display: none;">
+                <button type="button" id="btn-upload-logo-gallery" class="btn btn-primary btn-sm" style="background: #0284C7; border-color: #0284C7;">
+                  <i class="fas fa-folder-open"></i> 🖼️ Gallery Se Logo Chunein
+                </button>
+                <button type="button" id="btn-upload-logo-camera" class="btn btn-outline btn-sm">
+                  <i class="fas fa-camera"></i> 📸 Camera
                 </button>
               </div>
             </div>
@@ -293,17 +301,37 @@
       }
     }
 
-    document.getElementById('btn-upload-cover')?.addEventListener('click', () => {
-      document.getElementById('input-cover-file').click();
+    // Cover Banner bindings (Gallery + Camera)
+    const coverGalleryInput = document.getElementById('input-cover-gallery');
+    const coverCameraInput = document.getElementById('input-cover-camera');
+
+    document.getElementById('btn-upload-cover-gallery')?.addEventListener('click', () => {
+      coverGalleryInput.click();
     });
-    document.getElementById('input-cover-file')?.addEventListener('change', (e) => {
+    document.getElementById('btn-upload-cover-camera')?.addEventListener('click', () => {
+      coverCameraInput.click();
+    });
+    coverGalleryInput?.addEventListener('change', (e) => {
+      if (e.target.files?.[0]) uploadImageFile(e.target.files[0], 'cfg-cover-img', 'preview-cover-img');
+    });
+    coverCameraInput?.addEventListener('change', (e) => {
       if (e.target.files?.[0]) uploadImageFile(e.target.files[0], 'cfg-cover-img', 'preview-cover-img');
     });
 
-    document.getElementById('btn-upload-logo')?.addEventListener('click', () => {
-      document.getElementById('input-logo-file').click();
+    // Logo / Avatar bindings (Gallery + Camera)
+    const logoGalleryInput = document.getElementById('input-logo-gallery');
+    const logoCameraInput = document.getElementById('input-logo-camera');
+
+    document.getElementById('btn-upload-logo-gallery')?.addEventListener('click', () => {
+      logoGalleryInput.click();
     });
-    document.getElementById('input-logo-file')?.addEventListener('change', (e) => {
+    document.getElementById('btn-upload-logo-camera')?.addEventListener('click', () => {
+      logoCameraInput.click();
+    });
+    logoGalleryInput?.addEventListener('change', (e) => {
+      if (e.target.files?.[0]) uploadImageFile(e.target.files[0], 'cfg-logo-img', 'preview-logo-img');
+    });
+    logoCameraInput?.addEventListener('change', (e) => {
       if (e.target.files?.[0]) uploadImageFile(e.target.files[0], 'cfg-logo-img', 'preview-logo-img');
     });
 

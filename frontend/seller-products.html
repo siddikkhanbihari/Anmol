@@ -220,80 +220,76 @@
             </div>
           </div>
 
-          <!-- Product Photo Upload & Camera Capture Component -->
+          <!-- Product Photo Upload Component (Gallery & Camera) -->
           <div class="form-group">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-              <label class="form-label" style="margin: 0; font-weight: 700; color: var(--primary-navy);">
-                <i class="fas fa-camera" style="color: var(--brand-blue); margin-right: 4px;"></i> Product Photo (Photo Kheechein ya Chunein)
-              </label>
-              <button type="button" id="btn-toggle-url-mode" class="btn btn-ghost btn-xs" style="color: var(--brand-blue); font-size: 0.72rem; padding: 2px 6px;">
-                <i class="fas fa-link"></i> URL Link
-              </button>
-            </div>
+            <label class="form-label required" style="font-weight: 700; color: var(--primary-navy); display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+              <span><i class="fas fa-images" style="color: var(--brand-blue); margin-right: 6px;"></i> Product Photo (Gallery ya Camera)</span>
+              <span style="font-size: 0.72rem; color: #10B981; font-weight: 600;"><i class="fas fa-check-circle"></i> 8K Ultra HD Ready</span>
+            </label>
 
             <!-- Upload Card -->
-            <div id="photo-upload-box" style="border: 2px dashed #CBD5E1; border-radius: var(--radius-lg); padding: var(--space-4); text-align: center; background: #F8FAFC; transition: all 0.2s ease;">
+            <div id="photo-upload-box" style="border: 2px dashed #0284C7; border-radius: var(--radius-xl); padding: var(--space-5) var(--space-4); text-align: center; background: #F0F9FF; transition: all 0.2s ease; cursor: pointer;">
               
-              <!-- Hidden Native Inputs: Camera (mobile direct shoot) & File Picker -->
-              <input type="file" id="input-camera-shoot" accept="image/*" capture="environment" style="display: none;">
+              <!-- Hidden Native Inputs: File Picker (Gallery) & Camera (direct shoot) -->
               <input type="file" id="input-gallery-file" accept="image/*" style="display: none;">
+              <input type="file" id="input-camera-shoot" accept="image/*" capture="environment" style="display: none;">
               <!-- Stores final image URL or Base64 -->
               <input type="hidden" id="prod-image">
 
               <!-- State 1: No Photo Selected -->
               <div id="photo-empty-state">
-                <div style="width: 50px; height: 50px; border-radius: 50%; background: #EFF6FF; color: var(--brand-blue); font-size: 1.4rem; display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-2);">
-                  <i class="fas fa-camera"></i>
+                <div style="width: 58px; height: 58px; border-radius: 50%; background: #E0F2FE; color: #0284C7; font-size: 1.6rem; display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-3);">
+                  <i class="fas fa-images"></i>
                 </div>
-                <div style="font-weight: 700; font-size: 0.88rem; color: var(--primary-navy); margin-bottom: 2px;">
-                  Item ki Ultra HD 8K / 4K Photo Kheechein ya Gallery Se Dalein
+                <div style="font-weight: 800; font-size: 1.05rem; color: var(--primary-navy); margin-bottom: 4px;">
+                  Phone ki Gallery Se Product Photo Chunein
                 </div>
-                <div style="font-size: 0.72rem; color: var(--color-text-muted); margin-bottom: var(--space-3);">
-                  8K Ultra HD Tak Support (7680px) • Minimum 1080px Full HD Quality
+                <div style="font-size: 0.78rem; color: var(--color-text-muted); margin-bottom: var(--space-4);">
+                  Koi link ya URL ki zaroorat nahi hai — seedha apne phone ki gallery se photo select karein
                 </div>
 
-                <div style="display: flex; gap: var(--space-2); justify-content: center; flex-wrap: wrap;">
-                  <button type="button" id="btn-shoot-camera" class="btn btn-primary btn-sm" style="background: #0284C7; border-color: #0284C7; font-weight: 700;">
-                    <i class="fas fa-camera"></i> 📸 Camera Se Photo Kheechein
+                <div style="display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap;">
+                  <button type="button" id="btn-pick-gallery" class="btn btn-primary btn-md" style="background: #0284C7; border-color: #0284C7; font-weight: 700; padding: 10px 22px; font-size: 0.95rem; border-radius: var(--radius-lg); box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);">
+                    <i class="fas fa-folder-open" style="margin-right: 6px;"></i> 🖼️ Gallery Se Photo Select Karein
                   </button>
-                  <button type="button" id="btn-pick-gallery" class="btn btn-outline btn-sm">
-                    <i class="fas fa-images"></i> 🖼️ Gallery Se Chunein
+                  <button type="button" id="btn-shoot-camera" class="btn btn-outline btn-md" style="font-weight: 700; padding: 10px 18px; font-size: 0.92rem; border-radius: var(--radius-lg); background: #FFF;">
+                    <i class="fas fa-camera" style="margin-right: 6px;"></i> 📸 Camera Se Kheechein
                   </button>
+                </div>
+                <div style="font-size: 0.72rem; color: #64748B; margin-top: 12px;">
+                  <i class="fas fa-shield-alt" style="color: #10B981;"></i> 8K Ultra HD tak high resolution photos automatically optimize hoti hain.
                 </div>
               </div>
 
               <!-- State 2: Uploading Spinner -->
               <div id="photo-uploading-state" style="display: none; padding: var(--space-4);">
-                <i class="fas fa-spinner fa-spin" style="font-size: 1.8rem; color: var(--brand-blue);"></i>
-                <div style="font-size: 0.75rem; color: var(--color-text-muted); margin-top: 8px;">
-                  Photo 8K Ultra HD quality me optimize aur upload ho rahi hai...
+                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #0284C7;"></i>
+                <div style="font-weight: 700; font-size: 0.9rem; color: var(--primary-navy); margin-top: 10px;">
+                  Photo Process Ho Rahi Hai...
+                </div>
+                <div style="font-size: 0.75rem; color: var(--color-text-muted); margin-top: 4px;">
+                  8K Ultra HD quality me photo load ho rahi hai
                 </div>
               </div>
 
               <!-- State 3: Photo Preview -->
               <div id="photo-preview-state" style="display: none;">
-                <div style="position: relative; display: inline-block; max-width: 220px; width: 100%;">
-                  <img id="img-product-preview" src="" alt="Product Preview" style="width: 100%; height: 160px; object-fit: cover; border-radius: var(--radius-md); border: 2px solid #10B981; box-shadow: var(--shadow-sm);">
-                  <span class="badge" style="position: absolute; top: 8px; left: 8px; background: #10B981; color: #FFF; font-size: 0.65rem; padding: 2px 6px;">
-                    <i class="fas fa-check-circle"></i> 8K Ultra HD Photo Ready
+                <div style="position: relative; display: inline-block; max-width: 260px; width: 100%;">
+                  <img id="img-product-preview" src="" alt="Product Preview" style="width: 100%; height: 180px; object-fit: cover; border-radius: var(--radius-lg); border: 3px solid #10B981; box-shadow: var(--shadow-md);">
+                  <span class="badge" style="position: absolute; top: 10px; left: 10px; background: #10B981; color: #FFF; font-size: 0.72rem; font-weight: 700; padding: 3px 8px; border-radius: var(--radius-sm); box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                    <i class="fas fa-check-circle"></i> Photo Ready
                   </span>
                 </div>
                 <div style="display: flex; gap: var(--space-2); justify-content: center; margin-top: var(--space-3);">
-                  <button type="button" id="btn-retake-photo" class="btn btn-outline btn-xs">
-                    <i class="fas fa-camera"></i> Dusri Photo Kheechein
+                  <button type="button" id="btn-change-photo" class="btn btn-outline btn-sm" style="font-weight: 600;">
+                    <i class="fas fa-images"></i> 🖼️ Dusri Photo Chunein
                   </button>
-                  <button type="button" id="btn-remove-photo" class="btn btn-ghost btn-xs" style="color: var(--color-danger);">
+                  <button type="button" id="btn-remove-photo" class="btn btn-ghost btn-sm" style="color: var(--color-danger); font-weight: 600;">
                     <i class="fas fa-trash-alt"></i> Hatao
                   </button>
                 </div>
               </div>
 
-            </div>
-
-            <!-- Optional manual URL input (collapsible fallback) -->
-            <div id="manual-url-container" style="display: none; margin-top: 6px;">
-              <input type="url" id="prod-image-url-manual" class="form-control" placeholder="https://images.unsplash.com/photo-...">
-              <div class="form-hint">Yahan online image link paste kar sakte hain.</div>
             </div>
           </div>
 
@@ -581,28 +577,38 @@
     // Photo input bindings
     const cameraInput = document.getElementById('input-camera-shoot');
     const galleryInput = document.getElementById('input-gallery-file');
+    const uploadBox = document.getElementById('photo-upload-box');
 
-    document.getElementById('btn-shoot-camera')?.addEventListener('click', () => cameraInput.click());
-    document.getElementById('btn-pick-gallery')?.addEventListener('click', () => galleryInput.click());
-    document.getElementById('btn-retake-photo')?.addEventListener('click', () => cameraInput.click());
-    document.getElementById('btn-remove-photo')?.addEventListener('click', () => setPhotoPreview(''));
+    document.getElementById('btn-pick-gallery')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      galleryInput.click();
+    });
+    document.getElementById('btn-shoot-camera')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      cameraInput.click();
+    });
+    document.getElementById('btn-change-photo')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      galleryInput.click();
+    });
+    document.getElementById('btn-remove-photo')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setPhotoPreview('');
+    });
+
+    // Clicking anywhere on the empty dashed card also triggers gallery selector
+    uploadBox?.addEventListener('click', (e) => {
+      const emptyState = document.getElementById('photo-empty-state');
+      if (emptyState && emptyState.style.display !== 'none') {
+        galleryInput.click();
+      }
+    });
 
     cameraInput?.addEventListener('change', (e) => {
       if (e.target.files?.[0]) handlePhotoFile(e.target.files[0]);
     });
     galleryInput?.addEventListener('change', (e) => {
       if (e.target.files?.[0]) handlePhotoFile(e.target.files[0]);
-    });
-
-    // Toggle URL link mode
-    document.getElementById('btn-toggle-url-mode')?.addEventListener('click', () => {
-      const container = document.getElementById('manual-url-container');
-      container.style.display = container.style.display === 'none' ? 'block' : 'none';
-    });
-    document.getElementById('prod-image-url-manual')?.addEventListener('input', (e) => {
-      if (e.target.value.trim()) {
-        setPhotoPreview(e.target.value.trim());
-      }
     });
 
     // Drag and drop onto upload box
