@@ -402,7 +402,10 @@
                 <div style="font-size: var(--font-size-xs); color: var(--color-text-muted);">
                   Paid via: ${order.paymentMethod.toUpperCase()} | Status: ${order.paymentStatus.toUpperCase()}
                 </div>
-                <div>
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                  <a href="order-tracking.html?id=${order._id}" class="btn btn-primary btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700; background: #0284C7; border-color: #0284C7;">
+                    <i class="fas fa-location-crosshairs"></i> Live Location Track
+                  </a>
                   ${order.overallStatus === 'placed' || order.overallStatus === 'processing' ? `
                     <button class="btn btn-outline btn-sm btn-cancel-order" data-id="${order._id}" style="color: var(--color-danger); border-color: var(--color-danger);">
                       Cancel Order

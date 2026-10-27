@@ -12,7 +12,8 @@ export const TRANSLATIONS = {
     join_rider: 'Join as Rider',
     register_dukaan: 'Register Your Dukaan',
     support: 'Support',
-    support_phone: 'Support: +91 80099 00123',
+    support_phone: 'Care: +91 6351111457 (Arman Piprani)',
+    customer_care: 'Customer Care: Arman Piprani (+91 6351111457)',
     // Nav
     nav_home: 'Home',
     nav_shops: 'Explore Shops',
@@ -105,7 +106,8 @@ export const TRANSLATIONS = {
     join_rider: 'राइडर बनें',
     register_dukaan: 'अपनी दुकान जोड़ें',
     support: 'सहायता',
-    support_phone: 'कस्टमर केयर: +91 80099 00123',
+    support_phone: 'कस्टमर केयर: +91 6351111457 (अरमान पिपराणी)',
+    customer_care: 'कस्टमर केयर: अरमान पिपराणी (+91 6351111457)',
     // Nav
     nav_home: 'होम',
     nav_shops: 'दुकानें देखें',
@@ -198,7 +200,8 @@ export const TRANSLATIONS = {
     join_rider: 'ડિલિવરી રાઇડર બનો',
     register_dukaan: 'તમારી દુકાન જોડો',
     support: 'સહાયતા',
-    support_phone: 'હેલ્પલાઇન: +91 80099 00123',
+    support_phone: 'કસ્ટમર કેર: +91 6351111457 (અરમાન પીપરાણી)',
+    customer_care: 'કસ્ટમર કેર: અરમાન પીપરાણી (+91 6351111457)',
     // Nav
     nav_home: 'હોમ',
     nav_shops: 'દુકાનો જુઓ',

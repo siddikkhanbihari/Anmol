@@ -31,12 +31,17 @@ const addressSchema = new mongoose.Schema(
     state: {
       type: String,
       required: true,
-      default: 'Uttar Pradesh'
+      default: 'Gujarat'
     },
     pincode: {
       type: String,
       required: true,
+      default: '385001',
       match: [/^\d{6}$/, 'Must be a 6-digit Indian PIN code']
+    },
+    location: {
+      lat: Number,
+      lng: Number
     },
     addressType: {
       type: String,

@@ -117,13 +117,20 @@
             <!-- Populated via API -->
           </div>
 
-          <!-- Add New Address Toggle -->
-          <button type="button" id="btn-toggle-new-addr" class="btn btn-outline btn-sm" style="margin-top: var(--space-2);">
-            <i class="fas fa-plus"></i> Add New Delivery Address
-          </button>
+          <!-- Add New Address Toggle & Live GPS Auto-fill -->
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: var(--space-2);">
+            <button type="button" id="btn-toggle-new-addr" class="btn btn-outline btn-sm">
+              <i class="fas fa-plus"></i> Add New Delivery Address
+            </button>
+            <button type="button" id="btn-detect-checkout-gps" class="btn btn-outline btn-sm" style="color: #0284C7; border-color: #0284C7;">
+              <i class="fas fa-location-crosshairs"></i> Auto-Detect Live GPS
+            </button>
+          </div>
 
           <!-- New Address Form (Collapsible) -->
           <form id="new-address-form" style="display: none; margin-top: var(--space-4); padding: var(--space-4); background: var(--color-surface-alt); border-radius: var(--radius-md);">
+            <input type="hidden" id="new-coords-lat">
+            <input type="hidden" id="new-coords-lng">
             <div class="grid-2">
               <div class="form-group">
                 <label class="form-label required" for="new-recipient-name">Full Name</label>
@@ -341,6 +348,37 @@
       form.style.display = form.style.display === 'none' ? 'block' : 'none';
     });
 
+    // GPS Auto-detect for checkout address
+    document.getElementById('btn-detect-checkout-gps')?.addEventListener('click', () => {
+      if (!navigator.geolocation) {
+        notify.warning('Geolocation is not supported on this browser');
+        return;
+      }
+      const btn = document.getElementById('btn-detect-checkout-gps');
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Detecting Live GPS...';
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          btn.innerHTML = '<i class="fas fa-check"></i> GPS Detected';
+          const { latitude, longitude } = pos.coords;
+          document.getElementById('new-coords-lat').value = latitude;
+          document.getElementById('new-coords-lng').value = longitude;
+          document.getElementById('new-address-form').style.display = 'block';
+          if (!document.getElementById('new-street').value) {
+            document.getElementById('new-street').value = `GPS (${latitude.toFixed(4)}, ${longitude.toFixed(4)}), Palanpur`;
+          }
+          notify.success(`✓ Live GPS Coordinates: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+        },
+        (err) => {
+          btn.innerHTML = '<i class="fas fa-location-crosshairs"></i> Auto-Detect Live GPS';
+          notify.info('GPS permission denied. Palanpur location selected.');
+          document.getElementById('new-coords-lat').value = 24.1724;
+          document.getElementById('new-coords-lng').value = 72.4346;
+          document.getElementById('new-address-form').style.display = 'block';
+        },
+        { enableHighAccuracy: true, timeout: 8000 }
+      );
+    });
+
     // Save new address button
     document.getElementById('btn-save-new-addr').addEventListener('click', async () => {
       const recipientName = document.getElementById('new-recipient-name').value.trim();
@@ -349,6 +387,9 @@
       const city = document.getElementById('new-city').value.trim();
       const state = document.getElementById('new-state').value.trim();
       const pincode = document.getElementById('new-pincode').value.trim();
+      const lat = document.getElementById('new-coords-lat')?.value;
+      const lng = document.getElementById('new-coords-lng')?.value;
+      const location = (lat && lng) ? { lat: Number(lat), lng: Number(lng) } : null;
 
       if (!recipientName || !phone || !street || !pincode) {
         notify.warning('Please enter recipient name, phone, street, and PIN code');
@@ -363,6 +404,7 @@
           city,
           state,
           pincode,
+          location,
           isDefault: true
         });
 
@@ -444,7 +486,8 @@
             landmark: selectedAddress.landmark || '',
             city: selectedAddress.city || 'Palanpur',
             state: selectedAddress.state || 'Gujarat',
-            pincode: selectedAddress.pincode || '385001'
+            pincode: selectedAddress.pincode || '385001',
+            location: selectedAddress.location || (selectedAddress.coords ? { lat: selectedAddress.coords.lat, lng: selectedAddress.coords.lng } : null)
           },
           paymentMethod
         });

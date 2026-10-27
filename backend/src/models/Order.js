@@ -97,7 +97,11 @@ const orderSchema = new mongoose.Schema(
       landmark: String,
       city: { type: String, required: true },
       state: { type: String, required: true },
-      pincode: { type: String, required: true }
+      pincode: { type: String, required: true },
+      location: {
+        lat: Number,
+        lng: Number
+      }
     },
     subtotal: {
       type: Number,

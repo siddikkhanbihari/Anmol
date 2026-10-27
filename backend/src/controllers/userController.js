@@ -13,7 +13,7 @@ export async function getAddresses(req, res, next) {
 
 export async function addAddress(req, res, next) {
   try {
-    const { recipientName, phone, street, landmark, city, state, pincode, addressType, isDefault } = req.body;
+    const { recipientName, phone, street, landmark, city, state, pincode, addressType, isDefault, location } = req.body;
 
     if (!recipientName || !phone || !street || !city || !pincode) {
       return ApiResponse.badRequest(res, 'Name, phone, street, city, and PIN code are required');
@@ -33,9 +33,10 @@ export async function addAddress(req, res, next) {
       street,
       landmark,
       city,
-      state: state || 'Uttar Pradesh',
+      state: state || 'Gujarat',
       pincode,
       addressType: addressType || 'Home',
+      location: location || null,
       isDefault: isDefault || count === 0
     });
 

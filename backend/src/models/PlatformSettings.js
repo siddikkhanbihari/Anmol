@@ -59,7 +59,11 @@ const platformSettingsSchema = new mongoose.Schema(
     },
     supportPhone: {
       type: String,
-      default: '+91 80099 00123'
+      default: '+91 6351111457'
+    },
+    customerCareName: {
+      type: String,
+      default: 'Arman Piprani'
     }
   },
   {

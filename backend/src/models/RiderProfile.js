@@ -29,7 +29,7 @@ const riderProfileSchema = new mongoose.Schema(
     city: {
       type: String,
       trim: true,
-      default: 'Kanpur'
+      default: 'Palanpur'
     },
     serviceAreas: [
       {
@@ -83,9 +83,9 @@ const riderProfileSchema = new mongoose.Schema(
       assignedAt: Date
     },
     currentLocation: {
-      lat: { type: Number, default: 26.4499 },
-      lng: { type: Number, default: 80.3319 },
-      address: { type: String, default: 'Mall Road, Kanpur' },
+      lat: { type: Number, default: 24.1724 },
+      lng: { type: Number, default: 72.4346 },
+      address: { type: String, default: 'Aroma Circle, Palanpur, Gujarat' },
       updatedAt: { type: Date, default: Date.now }
     }
   },

@@ -15,6 +15,7 @@ router.use(requireRole('rider', 'admin'));
 router.get('/profile', riderController.getProfile);
 router.put('/status', riderController.toggleStatus);
 router.put('/location', riderController.updateLocation);
+router.post('/location', riderController.updateLocation);
 router.get('/available', riderController.getAvailableDeliveries);
 router.post('/orders/:orderId/accept', riderController.acceptDelivery);
 router.post('/orders/:orderId/pickup', riderController.pickupDelivery);

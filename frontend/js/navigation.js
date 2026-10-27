@@ -11,6 +11,7 @@ export class Navigation {
   static init() {
     this.initLocation();
     this.initLanguage();
+    this.initCustomerCare();
     this.updateUserNav();
     this.bindSearchForms();
     this.bindMobileDrawer();
@@ -107,6 +108,133 @@ export class Navigation {
     });
   }
 
+  static initCustomerCare() {
+    // 1. Mobile Drawer Customer Care Box
+    const drawerBody = document.querySelector('.mobile-drawer-body') || document.querySelector('.mobile-drawer');
+    if (drawerBody && !document.querySelector('.mobile-customer-care-card')) {
+      const careBox = document.createElement('div');
+      careBox.className = 'mobile-customer-care-card';
+      careBox.style.margin = '16px 12px 16px';
+      careBox.style.background = 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)';
+      careBox.style.border = '1px solid #334155';
+      careBox.style.borderRadius = '12px';
+      careBox.style.padding = '14px';
+      careBox.style.color = '#FFF';
+      careBox.innerHTML = `
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+          <span style="font-size: 0.68rem; font-weight: 700; color: #F97316; text-transform: uppercase; letter-spacing: 0.5px;">Customer Care Helpline</span>
+          <span style="font-size: 0.62rem; background: #10B981; color: #FFF; padding: 2px 6px; border-radius: 99px; font-weight: 700;">8 AM - 10 PM</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+          <div style="width: 38px; height: 38px; border-radius: 50%; background: #2563EB; color: #FFF; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 800; flex-shrink: 0;">
+            AP
+          </div>
+          <div>
+            <div style="font-weight: 800; font-size: 0.95rem; color: #FFF; line-height: 1.2;">ARMAN PIPRANI</div>
+            <a href="tel:6351111457" style="font-size: 0.85rem; color: #38BDF8; text-decoration: none; font-weight: 700;">+91 6351111457</a>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <a href="tel:6351111457" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; background: #2563EB; color: #FFF; text-decoration: none; padding: 8px 10px; border-radius: 8px; font-size: 0.78rem; font-weight: 700;">
+            <i class="fas fa-phone-alt"></i> Direct Call
+          </a>
+          <a href="https://wa.me/916351111457?text=Hello%20Arman%20bhai,%20I%20need%20assistance%20on%20ANMOL%20STORE" target="_blank" rel="noopener noreferrer" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; background: #10B981; color: #FFF; text-decoration: none; padding: 8px 10px; border-radius: 8px; font-size: 0.78rem; font-weight: 700;">
+            <i class="fab fa-whatsapp"></i> WhatsApp
+          </a>
+        </div>
+      `;
+      drawerBody.appendChild(careBox);
+    }
+
+    // 2. Floating Quick Customer Care Button (Accessible across entire store)
+    if (!document.querySelector('.floating-care-widget')) {
+      const widget = document.createElement('div');
+      widget.className = 'floating-care-widget';
+      widget.innerHTML = `
+        <style>
+          .floating-care-widget {
+            position: fixed;
+            z-index: 999;
+            right: 16px;
+            bottom: 74px; /* Default above mobile bottom nav */
+          }
+          @media (min-width: 769px) {
+            .floating-care-widget {
+              bottom: 24px;
+              right: 24px;
+            }
+          }
+          .floating-care-widget .care-popup {
+            display: none;
+            position: absolute;
+            bottom: 54px;
+            right: 0;
+            background: #FFF;
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+            width: 250px;
+            padding: 14px;
+            text-align: left;
+            color: var(--color-text);
+          }
+          .floating-care-widget .btn-care-floating {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: #FFF;
+            border: none;
+            border-radius: 99px;
+            height: 44px;
+            padding: 0 16px;
+            box-shadow: 0 4px 14px rgba(16,185,129,0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 700;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+          }
+          .floating-care-widget .btn-care-floating:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(16,185,129,0.5);
+          }
+        </style>
+        <div class="care-popup">
+          <div style="font-size: 0.68rem; font-weight: 700; color: var(--accent-orange); text-transform: uppercase;">Customer Care Support</div>
+          <div style="font-size: 0.95rem; font-weight: 800; color: var(--primary-navy); margin: 2px 0;">ARMAN PIPRANI</div>
+          <div style="font-size: 0.78rem; color: var(--color-text-muted); margin-bottom: 10px;">Palanpur Helpline: 08:00 AM – 10:00 PM</div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <a href="tel:6351111457" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: #2563EB; color: #FFF; text-decoration: none; padding: 8px; border-radius: 8px; font-weight: 700; font-size: 0.82rem;">
+              <i class="fas fa-phone-alt"></i> Call: 6351111457
+            </a>
+            <a href="https://wa.me/916351111457?text=Hello%20Arman%20bhai,%20I%20need%20assistance%20on%20ANMOL%20STORE" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: #10B981; color: #FFF; text-decoration: none; padding: 8px; border-radius: 8px; font-weight: 700; font-size: 0.82rem;">
+              <i class="fab fa-whatsapp"></i> Chat on WhatsApp
+            </a>
+          </div>
+        </div>
+        <button type="button" class="btn-care-floating" aria-label="Customer Care Help">
+          <i class="fas fa-headset" style="font-size: 1.05rem;"></i>
+          <span>Help / સહાય</span>
+        </button>
+      `;
+      document.body.appendChild(widget);
+
+      const triggerBtn = widget.querySelector('.btn-care-floating');
+      const popup = widget.querySelector('.care-popup');
+
+      triggerBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!widget.contains(e.target)) {
+          popup.style.display = 'none';
+        }
+      });
+    }
+  }
+
   static initLocation() {
     const saved = localStorage.getItem(CONFIG.STORAGE_KEYS.USER_LOCATION);
     this.currentLocation = saved ? JSON.parse(saved) : CONFIG.DEFAULT_LOCATION;
@@ -128,12 +256,13 @@ export class Navigation {
     });
   }
 
-  static setLocation(city, state, pincode, area = '') {
+  static setLocation(city, state, pincode, area = '', coords = null) {
     this.currentLocation = {
       area: area || (city === 'Palanpur' ? (this.currentLocation.area || 'Aroma Circle') : ''),
       city: city || 'Palanpur',
       state: state || 'Gujarat',
-      pincode: pincode || '385001'
+      pincode: pincode || '385001',
+      coords: coords || this.currentLocation.coords || { lat: 24.1724, lng: 72.4346 }
     };
     localStorage.setItem(CONFIG.STORAGE_KEYS.USER_LOCATION, JSON.stringify(this.currentLocation));
     this.updateLocationDisplays();
@@ -331,17 +460,19 @@ export class Navigation {
           }
           detectBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Detecting...';
           navigator.geolocation.getCurrentPosition(
-            () => {
+            (pos) => {
               detectBtn.innerHTML = '<i class="fas fa-location-arrow"></i> Use Current GPS';
-              this.setLocation('Palanpur', 'Gujarat', '385001', 'Aroma Circle');
+              const { latitude, longitude } = pos.coords;
+              this.setLocation('Palanpur', 'Gujarat', '385001', 'Aroma Circle', { lat: latitude, lng: longitude });
               closeModal();
             },
             () => {
               detectBtn.innerHTML = '<i class="fas fa-location-arrow"></i> Use Current GPS';
-              notify.warning('GPS permission denied. Palanpur location selected.');
-              this.setLocation('Palanpur', 'Gujarat', '385001', 'Aroma Circle');
+              notify.warning('GPS permission not allowed. Default Palanpur location used.');
+              this.setLocation('Palanpur', 'Gujarat', '385001', 'Aroma Circle', { lat: 24.1724, lng: 72.4346 });
               closeModal();
-            }
+            },
+            { enableHighAccuracy: true, timeout: 8000 }
           );
         });
       }

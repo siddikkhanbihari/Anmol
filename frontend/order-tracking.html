@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123B70">
+  <title>Live Delivery Tracking — ANMOL STORE (Palanpur)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Leaflet Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <style>
+    body {
+      background: #F8FAFC;
+    }
+    .tracking-wrapper {
+      max-width: 900px;
+      margin: var(--space-6) auto;
+      padding: 0 var(--space-4);
+    }
+    #live-map-container {
+      width: 100%;
+      height: 380px;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-md);
+      position: relative;
+      background: #E2E8F0;
+    }
+    .map-overlay-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 1000;
+      background: rgba(15, 23, 42, 0.9);
+      color: #FFF;
+      padding: 6px 12px;
+      border-radius: 99px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .pulse-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #10B981;
+      display: inline-block;
+      box-shadow: 0 0 10px #10B981;
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.9); opacity: 0.9; }
+      50% { transform: scale(1.4); opacity: 1; }
+      100% { transform: scale(0.9); opacity: 0.9; }
+    }
+    .custom-map-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      color: #FFF;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      border: 2px solid #FFF;
+    }
+    .icon-shop { background: #1E3A8A; width: 36px; height: 36px; }
+    .icon-rider { background: #059669; width: 40px; height: 40px; animation: bounce 2s infinite; }
+    .icon-customer { background: #EA580C; width: 36px; height: 36px; }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    /* Stepper */
+    .status-stepper {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: var(--space-6) 0;
+      position: relative;
+    }
+    .step-item {
+      text-align: center;
+      position: relative;
+    }
+    .step-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #E2E8F0;
+      color: #64748B;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 8px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      transition: all 0.3s ease;
+    }
+    .step-item.active .step-icon {
+      background: var(--brand-blue);
+      color: #FFF;
+      box-shadow: 0 0 12px rgba(2, 132, 199, 0.4);
+    }
+    .step-item.completed .step-icon {
+      background: #10B981;
+      color: #FFF;
+    }
+    .step-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      line-height: 1.2;
+    }
+    .step-item.active .step-title,
+    .step-item.completed .step-title {
+      color: var(--primary-navy);
+    }
+
+    .info-card {
+      background: #FFF;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5);
+      margin-bottom: var(--space-4);
+      box-shadow: var(--shadow-sm);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <div class="announcement-bar">
+    <div class="container">
+      <div class="announcement-text">
+        <span class="announcement-badge">Live GPS Tracking</span>
+        <span>Hyperlocal Fast Delivery in Palanpur (385001)</span>
+      </div>
+      <div class="announcement-links">
+        <a href="tel:6351111457" style="color: #6EE7B7; font-weight: 700;">
+          <i class="fas fa-headset"></i> Customer Care: +91 6351111457 (Arman Piprani)
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header style="background: #FFF; border-bottom: 1px solid var(--color-border); padding: var(--space-4) 0;">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon-wrap"><i class="fas fa-store-alt"></i></div>
+        <div class="brand-text-wrap">
+          <div class="brand-title">ANMOL <span>STORE</span></div>
+          <div class="brand-tagline">Palanpur Hyperlocal Delivery</div>
+        </div>
+      </a>
+      <div style="display: flex; gap: 8px;">
+        <a href="customer-dashboard.html?tab=orders" class="btn btn-outline btn-sm">
+          <i class="fas fa-arrow-left"></i> My Orders
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="tracking-wrapper">
+    <!-- Top Status Card -->
+    <div class="info-card" style="margin-top: var(--space-4);">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div>
+          <div style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 600;">ORDER REFERENCE</div>
+          <div style="font-size: 1.35rem; font-weight: 800; color: var(--primary-navy);" id="order-ref-title">Loading Order...</div>
+        </div>
+        <div style="text-align: right;">
+          <span class="badge" id="order-status-badge" style="background: #DBEAFE; color: #1E40AF; font-size: 0.82rem; padding: 4px 10px;">
+            <i class="fas fa-spinner fa-spin"></i> Fetching Live GPS...
+          </span>
+          <div style="font-size: 0.72rem; color: var(--color-text-muted); margin-top: 4px;" id="order-time-title"></div>
+        </div>
+      </div>
+
+      <!-- Stepper -->
+      <div class="status-stepper" id="tracking-stepper">
+        <div class="step-item" id="step-placed">
+          <div class="step-icon"><i class="fas fa-receipt"></i></div>
+          <div class="step-title">Order Placed</div>
+        </div>
+        <div class="step-item" id="step-preparing">
+          <div class="step-icon"><i class="fas fa-box-open"></i></div>
+          <div class="step-title">Store Packing</div>
+        </div>
+        <div class="step-item" id="step-out">
+          <div class="step-icon"><i class="fas fa-motorcycle"></i></div>
+          <div class="step-title">Out for Delivery</div>
+        </div>
+        <div class="step-item" id="step-delivered">
+          <div class="step-icon"><i class="fas fa-check-circle"></i></div>
+          <div class="step-title">Delivered</div>
+        </div>
+      </div>
+
+      <!-- ETA & OTP Banner -->
+      <div style="background: linear-gradient(135deg, #0F172A, #1E293B); color: #FFF; border-radius: var(--radius-lg); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 40px; height: 40px; border-radius: 50%; background: #059669; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+            <i class="fas fa-stopwatch"></i>
+          </div>
+          <div>
+            <div style="font-size: 0.7rem; color: #34D399; font-weight: 700; text-transform: uppercase;">Estimated Arrival (ETA)</div>
+            <div style="font-size: 1.1rem; font-weight: 800;" id="eta-display">Under 25 - 35 Mins</div>
+          </div>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.12); padding: 6px 14px; border-radius: var(--radius-md); text-align: center;">
+          <div style="font-size: 0.65rem; color: #FDBA74; font-weight: 700;">SHARE WITH RIDER AT DOORSTEP</div>
+          <div style="font-size: 1.15rem; font-weight: 800; letter-spacing: 2px; color: #FFF;" id="otp-display">OTP: ----</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Leaflet Map -->
+    <div id="live-map-container">
+      <div class="map-overlay-badge">
+        <span class="pulse-dot"></span>
+        <span id="map-live-status-text">PALANPUR LIVE GPS TRACKING ACTIVE</span>
+      </div>
+      <div id="leaflet-map" style="width: 100%; height: 100%;"></div>
+    </div>
+
+    <!-- Fulfillment Partner & Rider Details -->
+    <div class="grid-2" style="margin-top: var(--space-4);" id="details-grid">
+      <!-- Rider Card -->
+      <div class="info-card" id="rider-info-card">
+        <div style="font-size: 0.72rem; font-weight: 700; color: var(--accent-orange); text-transform: uppercase; margin-bottom: 8px;">
+          Delivery Rider Partner
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+          <div style="width: 48px; height: 48px; border-radius: 50%; background: #10B981; color: #FFF; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+            <i class="fas fa-motorcycle"></i>
+          </div>
+          <div style="flex: 1;">
+            <div style="font-weight: 800; font-size: 1rem; color: var(--primary-navy);" id="rider-name-display">Assigning Nearest Rider...</div>
+            <div style="font-size: 0.78rem; color: var(--color-text-muted);" id="rider-vehicle-display">Palanpur Fleet Partner</div>
+            <div style="font-size: 0.72rem; color: #059669; font-weight: 700; margin-top: 2px;" id="rider-rating-display">★ 4.9 Verified Rider</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <a href="#" id="btn-call-rider" class="btn btn-primary btn-sm" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+            <i class="fas fa-phone-alt"></i> Call Rider
+          </a>
+        </div>
+      </div>
+
+      <!-- Store Card -->
+      <div class="info-card" id="store-info-card">
+        <div style="font-size: 0.72rem; font-weight: 700; color: var(--brand-blue); text-transform: uppercase; margin-bottom: 8px;">
+          Fulfilling Store (Dukaan)
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+          <div style="width: 48px; height: 48px; border-radius: 50%; background: #EFF6FF; color: var(--brand-blue); display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+            <i class="fas fa-store"></i>
+          </div>
+          <div style="flex: 1;">
+            <div style="font-weight: 800; font-size: 1rem; color: var(--primary-navy);" id="shop-name-display">Local Store</div>
+            <div style="font-size: 0.78rem; color: var(--color-text-muted);" id="shop-address-display">Palanpur, Gujarat</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <a href="#" id="btn-call-shop" class="btn btn-outline btn-sm" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+            <i class="fas fa-phone-alt"></i> Call Shop
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Customer Care Support Card (Arman Piprani) -->
+    <div class="info-card" style="background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%); border-color: #BFDBFE;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 46px; height: 46px; border-radius: 50%; background: var(--brand-blue); color: #FFF; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; font-weight: 800;">
+            AP
+          </div>
+          <div>
+            <div style="font-size: 0.7rem; font-weight: 700; color: var(--accent-orange); text-transform: uppercase;">Direct Order Assistance</div>
+            <div style="font-size: 1rem; font-weight: 800; color: var(--primary-navy);">Customer Care: ARMAN PIPRANI</div>
+            <div style="font-size: 0.8rem; color: var(--brand-blue); font-weight: 700;">+91 6351111457</div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 8px;">
+          <a href="tel:6351111457" class="btn btn-primary btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
+            <i class="fas fa-phone-alt"></i> Call Helpline
+          </a>
+          <a href="https://wa.me/916351111457?text=Hello%20Arman%20bhai,%20I%20am%20tracking%20my%20order" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; color: #059669; border-color: #059669; background: #ECFDF5;">
+            <i class="fab fa-whatsapp"></i> WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Leaflet JS CDN -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <script type="module" src="js/config.js"></script>
+  <script type="module" src="js/notifications.js"></script>
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script type="module">
+    import { api } from './js/api.js';
+    import { auth } from './js/auth.js';
+    import { notify } from './js/notifications.js';
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('id');
+
+    if (!orderId) {
+      window.location.href = 'customer-dashboard.html?tab=orders';
+    }
+
+    let map = null;
+    let shopMarker = null;
+    let riderMarker = null;
+    let customerMarker = null;
+    let routeLine = null;
+    let pollInterval = null;
+
+    // Initialize Leaflet Map centered at Palanpur
+    function initMap(centerLat = 24.1724, centerLng = 72.4346) {
+      if (map) return;
+
+      const mapElement = document.getElementById('leaflet-map');
+      if (!mapElement || typeof L === 'undefined') return;
+
+      map = L.map('leaflet-map', {
+        zoomControl: true,
+        attributionControl: false
+      }).setView([centerLat, centerLng], 14);
+
+      // Free OpenStreetMap Tiles
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19
+      }).addTo(map);
+    }
+
+    function createCustomIcon(iconClass, bgClass) {
+      return L.divIcon({
+        className: 'custom-leaflet-marker',
+        html: `<div class="custom-map-icon ${bgClass}"><i class="${iconClass}"></i></div>`,
+        iconSize: [40, 40],
+        iconAnchor: [20, 20]
+      });
+    }
+
+    async function fetchTrackingData() {
+      try {
+        const res = await api.get(`/orders/${orderId}/live-tracking`);
+        if (!res.success || !res.data) {
+          throw new Error(res.message || 'Tracking unavailable');
+        }
+
+        const data = res.data;
+        renderTrackingView(data);
+      } catch (err) {
+        console.error('Error fetching live tracking:', err);
+      }
+    }
+
+    function renderTrackingView(data) {
+      // 1. Order Info
+      document.getElementById('order-ref-title').textContent = `#${data.orderNumber}`;
+      document.getElementById('order-time-title').textContent = `Status Updated: ${new Date().toLocaleTimeString('en-IN')}`;
+
+      const fulfillment = data.fulfillments?.[0] || {};
+      const status = fulfillment.status || data.overallStatus;
+      
+      const badge = document.getElementById('order-status-badge');
+      badge.textContent = status.replace(/_/g, ' ').toUpperCase();
+
+      // 2. Stepper
+      updateStepper(status);
+
+      // 3. ETA & OTP
+      const etaDisplay = document.getElementById('eta-display');
+      if (status === 'delivered') {
+        etaDisplay.textContent = 'Delivered Successfully ✓';
+      } else if (fulfillment.etaMinutes) {
+        etaDisplay.textContent = `~${fulfillment.etaMinutes} Mins`;
+      }
+
+      if (fulfillment.deliveryOtp) {
+        document.getElementById('otp-display').textContent = `OTP: ${fulfillment.deliveryOtp}`;
+      }
+
+      // 4. Shop Info
+      const shop = fulfillment.shop;
+      if (shop) {
+        document.getElementById('shop-name-display').textContent = shop.name || 'Local Seller';
+        document.getElementById('shop-address-display').textContent = shop.address || 'Palanpur, Gujarat';
+        const shopCall = document.getElementById('btn-call-shop');
+        if (shop.phone) {
+          shopCall.href = `tel:${shop.phone}`;
+        } else {
+          shopCall.style.display = 'none';
+        }
+      }
+
+      // 5. Rider Info
+      const rider = fulfillment.rider;
+      const riderCall = document.getElementById('btn-call-rider');
+      if (rider) {
+        document.getElementById('rider-name-display').textContent = rider.name;
+        document.getElementById('rider-vehicle-display').textContent = `${rider.vehicleType.toUpperCase()} (${rider.vehicleNumber})`;
+        document.getElementById('rider-rating-display').textContent = `★ ${rider.rating} Verified Rider`;
+        if (rider.phone) {
+          riderCall.href = `tel:${rider.phone}`;
+          riderCall.style.display = 'inline-flex';
+        }
+      } else {
+        document.getElementById('rider-name-display').textContent = 'Assigning Nearest Rider...';
+        document.getElementById('rider-vehicle-display').textContent = 'Palanpur Local Fleet';
+        riderCall.style.display = 'none';
+      }
+
+      // 6. Map Markers Update
+      updateMapMarkers(data, fulfillment);
+    }
+
+    function updateStepper(status) {
+      const steps = ['placed', 'preparing', 'out', 'delivered'];
+      steps.forEach(s => {
+        const el = document.getElementById(`step-${s}`);
+        if (el) el.className = 'step-item';
+      });
+
+      const sPlaced = document.getElementById('step-placed');
+      const sPrep = document.getElementById('step-preparing');
+      const sOut = document.getElementById('step-out');
+      const sDel = document.getElementById('step-delivered');
+
+      if (['placed', 'pending'].includes(status)) {
+        sPlaced.classList.add('active');
+      } else if (['accepted', 'processing', 'ready_for_pickup'].includes(status)) {
+        sPlaced.classList.add('completed');
+        sPrep.classList.add('active');
+      } else if (['shipped', 'out_for_delivery'].includes(status)) {
+        sPlaced.classList.add('completed');
+        sPrep.classList.add('completed');
+        sOut.classList.add('active');
+      } else if (status === 'delivered') {
+        sPlaced.classList.add('completed');
+        sPrep.classList.add('completed');
+        sOut.classList.add('completed');
+        sDel.classList.add('completed');
+      }
+    }
+
+    function updateMapMarkers(data, fulfillment) {
+      if (!map) {
+        initMap(data.center?.lat || 24.1724, data.center?.lng || 72.4346);
+      }
+      if (!map) return;
+
+      const shopCoords = fulfillment.shop?.location || { lat: 24.1724, lng: 72.4346 };
+      const custCoords = data.deliveryAddress?.location || { lat: 24.1800, lng: 72.4380 };
+      const riderCoords = fulfillment.rider?.currentLocation || {
+        lat: (shopCoords.lat + custCoords.lat) / 2,
+        lng: (shopCoords.lng + custCoords.lng) / 2
+      };
+
+      const points = [];
+
+      // 1. Shop Marker
+      if (!shopMarker) {
+        shopMarker = L.marker([shopCoords.lat, shopCoords.lng], {
+          icon: createCustomIcon('fas fa-store', 'icon-shop')
+        }).addTo(map).bindPopup(`<b>${fulfillment.shop?.name || 'Local Shop'}</b><br>Pickup Point`);
+      } else {
+        shopMarker.setLatLng([shopCoords.lat, shopCoords.lng]);
+      }
+      points.push([shopCoords.lat, shopCoords.lng]);
+
+      // 2. Customer Delivery Marker
+      if (!customerMarker) {
+        customerMarker = L.marker([custCoords.lat, custCoords.lng], {
+          icon: createCustomIcon('fas fa-home', 'icon-customer')
+        }).addTo(map).bindPopup(`<b>Delivery Address</b><br>${data.deliveryAddress?.street || 'Palanpur'}`);
+      } else {
+        customerMarker.setLatLng([custCoords.lat, custCoords.lng]);
+      }
+      points.push([custCoords.lat, custCoords.lng]);
+
+      // 3. Rider Live GPS Marker
+      if (!riderMarker) {
+        riderMarker = L.marker([riderCoords.lat, riderCoords.lng], {
+          icon: createCustomIcon('fas fa-motorcycle', 'icon-rider')
+        }).addTo(map).bindPopup(`<b>${fulfillment.rider?.name || 'Rider'}</b><br>Live GPS Location`);
+      } else {
+        riderMarker.setLatLng([riderCoords.lat, riderCoords.lng]);
+      }
+      points.push([riderCoords.lat, riderCoords.lng]);
+
+      // 4. Connecting Route Line
+      if (!routeLine) {
+        routeLine = L.polyline(points, {
+          color: '#2563EB',
+          weight: 4,
+          opacity: 0.7,
+          dashArray: '8, 8'
+        }).addTo(map);
+      } else {
+        routeLine.setLatLngs(points);
+      }
+
+      // Auto-fit bounds
+      map.fitBounds(L.latLngBounds(points), { padding: [40, 40], maxZoom: 16 });
+    }
+
+    // Initialize and start live polling every 7 seconds
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchTrackingData();
+      pollInterval = setInterval(fetchTrackingData, 7000);
+    });
+
+    window.addEventListener('beforeunload', () => {
+      if (pollInterval) clearInterval(pollInterval);
+    });
+  </script>
+</body>
+</html>

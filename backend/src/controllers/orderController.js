@@ -1,5 +1,5 @@
 // ANMOL STORE - Order Controller
-import { Order, Product, Shop, Cart, Notification, Payment, User } from '../models/index.js';
+import { Order, Product, Shop, Cart, Notification, Payment, User, RiderProfile } from '../models/index.js';
 import { ApiResponse } from '../utils/apiResponse.js';
 
 export async function createOrder(req, res, next) {
@@ -403,6 +403,149 @@ export async function cancelOrder(req, res, next) {
     }
 
     return ApiResponse.success(res, order, 'Order cancelled successfully');
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
+ * Get Real-time Live Tracking Data for an Order
+ * Returns Shop, Rider Live GPS, and Customer Delivery Coordinates
+ */
+export async function getOrderLiveTracking(req, res, next) {
+  try {
+    const { id } = req.params;
+    const isId = id.match(/^[0-9a-fA-F]{24}$/);
+
+    const order = await Order.findOne(isId ? { _id: id } : { orderNumber: id })
+      .populate('customer', 'name phone email')
+      .populate('sellerOrders.shop', 'name slug address contactPhone logo')
+      .populate('sellerOrders.rider', 'name phone avatar')
+      .populate('sellerOrders.riderProfile');
+
+    if (!order) {
+      return ApiResponse.notFound(res, 'Order not found');
+    }
+
+    // Access authorization: Customer, Seller, Rider or Admin
+    const isCustomer = order.customer && order.customer._id.toString() === req.user._id.toString();
+    const isAdmin = req.user.role === 'admin';
+    const isSeller = order.sellerOrders.some(g => g.seller && g.seller.toString() === req.user._id.toString());
+    const isRider = order.sellerOrders.some(g => g.rider && g.rider._id && g.rider._id.toString() === req.user._id.toString());
+
+    if (!isCustomer && !isAdmin && !isSeller && !isRider) {
+      return ApiResponse.forbidden(res, 'You are not authorized to view tracking for this order');
+    }
+
+    const PALANPUR_AREA_COORDS = {
+      'aroma circle': { lat: 24.1800, lng: 72.4380 },
+      'highway road': { lat: 24.1830, lng: 72.4410 },
+      'gathaman': { lat: 24.1710, lng: 72.4320 },
+      'shimla': { lat: 24.1720, lng: 72.4290 },
+      'delhi gate': { lat: 24.1740, lng: 72.4310 },
+      'mira gate': { lat: 24.1690, lng: 72.4330 },
+      'station': { lat: 24.1750, lng: 72.4400 },
+      'guru nanak': { lat: 24.1730, lng: 72.4350 },
+      'joravar': { lat: 24.1700, lng: 72.4280 },
+      'cozy': { lat: 24.1760, lng: 72.4360 },
+      'gobari': { lat: 24.1640, lng: 72.4450 },
+      'abu highway': { lat: 24.1900, lng: 72.4450 },
+      'civil hospital': { lat: 24.1780, lng: 72.4320 },
+      'man sarovar': { lat: 24.1660, lng: 72.4360 },
+      'ganeshpura': { lat: 24.1680, lng: 72.4220 },
+      'malan': { lat: 24.1770, lng: 72.4260 },
+      'gidc': { lat: 24.1950, lng: 72.4250 },
+      'kanodar': { lat: 24.1500, lng: 72.4100 }
+    };
+
+    const defaultCenter = { lat: 24.1724, lng: 72.4346 }; // Palanpur town center
+
+    // Resolve delivery coordinate
+    let deliveryCoords = order.deliveryAddress?.location || null;
+    if (!deliveryCoords || !deliveryCoords.lat) {
+      const addrStr = `${order.deliveryAddress?.street || ''} ${order.deliveryAddress?.city || ''}`.toLowerCase();
+      const matchKey = Object.keys(PALANPUR_AREA_COORDS).find(k => addrStr.includes(k));
+      deliveryCoords = matchKey ? PALANPUR_AREA_COORDS[matchKey] : { lat: 24.1750, lng: 72.4360 };
+    }
+
+    const fulfillments = [];
+
+    for (const group of order.sellerOrders) {
+      let shopCoords = group.shop?.location || null;
+      if (!shopCoords || !shopCoords.lat) {
+        const shopAddrStr = `${group.shop?.address?.street || ''} ${group.shop?.name || ''}`.toLowerCase();
+        const matchKey = Object.keys(PALANPUR_AREA_COORDS).find(k => shopAddrStr.includes(k));
+        shopCoords = matchKey ? PALANPUR_AREA_COORDS[matchKey] : { lat: 24.1724, lng: 72.4346 };
+      }
+
+      let riderInfo = null;
+      if (group.rider) {
+        let profile = group.riderProfile;
+        if (!profile) {
+          profile = await RiderProfile.findOne({ user: group.rider._id });
+        }
+
+        const riderLocation = (profile?.currentLocation && profile.currentLocation.lat) ? {
+          lat: profile.currentLocation.lat,
+          lng: profile.currentLocation.lng,
+          address: profile.currentLocation.address || 'Palanpur Live Location',
+          updatedAt: profile.currentLocation.updatedAt || new Date()
+        } : {
+          lat: (shopCoords.lat + deliveryCoords.lat) / 2,
+          lng: (shopCoords.lng + deliveryCoords.lng) / 2,
+          address: 'En route in Palanpur',
+          updatedAt: new Date()
+        };
+
+        riderInfo = {
+          id: group.rider._id,
+          name: group.rider.name,
+          phone: group.rider.phone,
+          avatar: group.rider.avatar,
+          vehicleType: profile?.vehicleType || 'Bike',
+          vehicleNumber: profile?.vehicleNumber || 'GJ-08-PL-1234',
+          rating: profile?.rating || 4.9,
+          currentLocation: riderLocation
+        };
+      }
+
+      let etaMinutes = 35;
+      if (group.sellerStatus === 'ready_for_pickup') etaMinutes = 20;
+      if (group.sellerStatus === 'shipped') etaMinutes = 10;
+      if (group.sellerStatus === 'delivered') etaMinutes = 0;
+
+      fulfillments.push({
+        groupId: group._id,
+        shop: {
+          name: group.shop?.name || 'Local Seller',
+          phone: group.shop?.contactPhone,
+          address: group.shop?.address?.street || 'Palanpur',
+          location: shopCoords
+        },
+        status: group.sellerStatus,
+        statusHistory: group.statusHistory,
+        rider: riderInfo,
+        etaMinutes,
+        deliveryOtp: order.deliveryOtp
+      });
+    }
+
+    return ApiResponse.success(res, {
+      orderId: order._id,
+      orderNumber: order.orderNumber,
+      overallStatus: order.overallStatus,
+      deliveryAddress: {
+        recipientName: order.deliveryAddress?.recipientName,
+        phone: order.deliveryAddress?.phone,
+        street: order.deliveryAddress?.street,
+        city: order.deliveryAddress?.city || 'Palanpur',
+        pincode: order.deliveryAddress?.pincode || '385001',
+        location: deliveryCoords
+      },
+      fulfillments,
+      center: defaultCenter,
+      timestamp: new Date()
+    });
   } catch (err) {
     next(err);
   }

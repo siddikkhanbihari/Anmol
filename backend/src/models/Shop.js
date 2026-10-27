@@ -43,9 +43,9 @@ const shopSchema = new mongoose.Schema(
     },
     address: {
       street: { type: String, required: true },
-      city: { type: String, required: true, default: 'Kanpur' },
-      state: { type: String, required: true, default: 'Uttar Pradesh' },
-      pincode: { type: String, required: true, match: [/^\d{6}$/, 'Must be a 6-digit Indian PIN code'] },
+      city: { type: String, required: true, default: 'Palanpur' },
+      state: { type: String, required: true, default: 'Gujarat' },
+      pincode: { type: String, required: true, default: '385001', match: [/^\d{6}$/, 'Must be a 6-digit Indian PIN code'] },
       landmark: String
     },
     operatingAreas: [String],

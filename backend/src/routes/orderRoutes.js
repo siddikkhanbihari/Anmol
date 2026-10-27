@@ -4,6 +4,7 @@ import {
   createOrder,
   getMyOrders,
   getOrderById,
+  getOrderLiveTracking,
   getSellerOrders,
   updateSellerOrderStatus,
   cancelOrder
@@ -18,6 +19,7 @@ router.post('/', createOrder);
 router.get('/mine', getMyOrders);
 router.get('/seller', requireRole('seller', 'admin'), getSellerOrders);
 router.get('/:id', getOrderById);
+router.get('/:id/live-tracking', getOrderLiveTracking);
 router.patch('/seller/:id/status', requireRole('seller', 'admin'), updateSellerOrderStatus);
 router.patch('/:id/cancel', cancelOrder);
 

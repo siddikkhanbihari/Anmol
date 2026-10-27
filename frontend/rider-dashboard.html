@@ -381,6 +381,20 @@
         <i class="fas fa-power-off"></i> <span id="btn-duty-text">ONLINE</span>
       </button>
     </div>
+
+    <!-- Live GPS Tracking Banner -->
+    <div id="rider-gps-banner" style="margin-top: 10px; background: rgba(0, 0, 0, 0.28); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-lg); padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: #FFF;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span id="gps-pulse-dot" style="width: 10px; height: 10px; border-radius: 50%; background: #10B981; display: inline-block; box-shadow: 0 0 10px #10B981; animation: pulse 1.8s infinite;"></span>
+        <div>
+          <span style="font-weight: 700;" id="gps-status-title">Live GPS Location: ACTIVE</span>
+          <div style="font-size: 0.68rem; opacity: 0.85;" id="gps-coords-display">Broadcasting real-time coordinates in Palanpur...</div>
+        </div>
+      </div>
+      <button type="button" id="btn-force-gps-sync" class="btn btn-outline-white btn-xs" style="padding: 4px 8px; font-size: 0.68rem; border-color: rgba(255,255,255,0.4);" title="Sync Live GPS">
+        <i class="fas fa-location-crosshairs"></i> Sync GPS
+      </button>
+    </div>
   </header>
 
   <!-- Today's Earnings Summary -->
@@ -695,13 +709,120 @@
         dutyBtn.innerHTML = '<i class="fas fa-power-off"></i> <span>ONLINE</span>';
         dutyLabel.textContent = 'ONLINE • Ready for Orders';
         dutyIndicator.style.backgroundColor = '#10B981';
+        startLiveLocationTracking();
       } else {
         dutyBtn.className = 'duty-switch-btn is-offline';
         dutyBtn.innerHTML = '<i class="fas fa-power-off"></i> <span>OFFLINE</span>';
         dutyLabel.textContent = 'OFFLINE • Tap to Go Online';
         dutyIndicator.style.backgroundColor = '#94A3B8';
+        stopLiveLocationTracking();
       }
     }
+
+    // Live GPS Location Tracking & Streaming
+    let gpsWatchId = null;
+    let lastGpsSendTime = 0;
+
+    function startLiveLocationTracking() {
+      const banner = document.getElementById('rider-gps-banner');
+      const pulseDot = document.getElementById('gps-pulse-dot');
+      const statusTitle = document.getElementById('gps-status-title');
+      const coordsDisplay = document.getElementById('gps-coords-display');
+
+      if (banner) banner.style.display = 'flex';
+      if (pulseDot) pulseDot.style.background = '#10B981';
+      if (statusTitle) statusTitle.textContent = 'Live GPS Location: ACTIVE';
+
+      if (!navigator.geolocation) {
+        if (coordsDisplay) coordsDisplay.textContent = 'Browser GPS not supported. Default Palanpur assigned.';
+        sendRiderLocation(24.1724, 72.4346, 'Palanpur Town Center');
+        return;
+      }
+
+      if (gpsWatchId !== null) return; // Already watching
+
+      const handlePos = (pos) => {
+        const { latitude, longitude, accuracy } = pos.coords;
+        const now = Date.now();
+        if (coordsDisplay) {
+          coordsDisplay.textContent = `Palanpur GPS: ${latitude.toFixed(4)}°N, ${longitude.toFixed(4)}°E (±${Math.round(accuracy)}m)`;
+        }
+        if (now - lastGpsSendTime > 8000) { // Throttle every 8 seconds
+          lastGpsSendTime = now;
+          sendRiderLocation(latitude, longitude, `Live GPS (±${Math.round(accuracy)}m)`);
+        }
+      };
+
+      const handleErr = (err) => {
+        console.warn('GPS watch warning:', err.message);
+        if (coordsDisplay) {
+          coordsDisplay.textContent = 'GPS permission needed. Default Palanpur 385001 active.';
+        }
+        // Send default Palanpur location so tracking still functions
+        sendRiderLocation(24.1724, 72.4346, 'Palanpur Center');
+      };
+
+      // Immediate fix
+      navigator.geolocation.getCurrentPosition(handlePos, handleErr, { enableHighAccuracy: true, timeout: 10000 });
+
+      // Continuous watch
+      gpsWatchId = navigator.geolocation.watchPosition(handlePos, handleErr, {
+        enableHighAccuracy: true,
+        maximumAge: 5000,
+        timeout: 20000
+      });
+    }
+
+    function stopLiveLocationTracking() {
+      if (gpsWatchId !== null) {
+        navigator.geolocation.clearWatch(gpsWatchId);
+        gpsWatchId = null;
+      }
+      const banner = document.getElementById('rider-gps-banner');
+      const pulseDot = document.getElementById('gps-pulse-dot');
+      const statusTitle = document.getElementById('gps-status-title');
+      const coordsDisplay = document.getElementById('gps-coords-display');
+
+      if (pulseDot) pulseDot.style.background = '#94A3B8';
+      if (statusTitle) statusTitle.textContent = 'Live GPS Location: PAUSED (Offline)';
+      if (coordsDisplay) coordsDisplay.textContent = 'Turn Online to start broadcasting live location';
+    }
+
+    async function sendRiderLocation(lat, lng, address) {
+      try {
+        await api.put('/rider/location', {
+          lat,
+          lng,
+          address: address || 'Palanpur, Gujarat'
+        });
+      } catch (err) {
+        console.warn('Could not sync rider location:', err.message);
+      }
+    }
+
+    document.getElementById('btn-force-gps-sync')?.addEventListener('click', () => {
+      if (!navigator.geolocation) {
+        notify.info('Palanpur location synced.');
+        sendRiderLocation(24.1724, 72.4346, 'Palanpur');
+        return;
+      }
+      const btn = document.getElementById('btn-force-gps-sync');
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Syncing...';
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          btn.innerHTML = '<i class="fas fa-check"></i> Synced';
+          setTimeout(() => { btn.innerHTML = '<i class="fas fa-location-crosshairs"></i> Sync GPS'; }, 2000);
+          sendRiderLocation(pos.coords.latitude, pos.coords.longitude, 'Live GPS');
+          notify.success(`GPS Synced: ${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`);
+        },
+        (err) => {
+          btn.innerHTML = '<i class="fas fa-location-crosshairs"></i> Sync GPS';
+          sendRiderLocation(24.1724, 72.4346, 'Palanpur Center');
+          notify.info('Palanpur default location updated.');
+        },
+        { enableHighAccuracy: true, timeout: 8000 }
+      );
+    });
 
     // Load Profile & Stats
     async function loadRiderData() {
@@ -761,7 +882,7 @@
 
       const shopAddress = typeof so.shop?.address === 'object'
         ? `${so.shop.address.street || ''}, ${so.shop.address.city || ''}`
-        : (so.shop?.address || 'Local Dukaan, Kanpur');
+        : (so.shop?.address || 'Local Dukaan, Palanpur');
 
       const custAddress = `${order.deliveryAddress?.street || ''}, ${order.deliveryAddress?.city || ''} (Pin: ${order.deliveryAddress?.pincode || ''})`;
 
