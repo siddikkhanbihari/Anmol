@@ -41,6 +41,6 @@ const fileFilter = (req, file, cb) => {
 
 export const upload = multer({
   storage,
-  limits: { fileSize: 15 * 1024 * 1024 }, // 15MB limit for high-res 1080p+ product photos
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit for ultra-high-res 8K UHD product photos
   fileFilter
 });

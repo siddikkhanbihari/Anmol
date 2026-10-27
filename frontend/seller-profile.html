@@ -220,8 +220,8 @@
       }
     }
 
-    // Full HD 1080p Image Processor for Shop Profile
-    function process1080pImage(file, minTarget = 1080, maxTarget = 1920) {
+    // Ultra HD 8K / 4K / Full HD Image Processor for Shop Profile
+    function process8KImage(file, minTarget = 1080, maxTarget = 7680) {
       return new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -260,7 +260,7 @@
 
             canvas.toBlob((blob) => {
               resolve(blob || file);
-            }, 'image/jpeg', 0.92);
+            }, 'image/jpeg', 0.95);
           };
           img.src = e.target.result;
         };
@@ -271,15 +271,15 @@
     async function uploadImageFile(file, targetHiddenId, targetPreviewId) {
       if (!file) return;
       try {
-        notify.info('1080p HD Photo optimize aur upload ho rahi hai...');
-        const optimizedBlob = await process1080pImage(file);
+        notify.info('8K Ultra HD Photo optimize aur upload ho rahi hai...');
+        const optimizedBlob = await process8KImage(file);
         const formData = new FormData();
         formData.append('image', optimizedBlob, 'shop-' + Date.now() + '.jpg');
         const res = await api.post('/upload', formData);
         if (res.success && res.data?.url) {
           document.getElementById(targetHiddenId).value = res.data.url;
           document.getElementById(targetPreviewId).src = res.data.url;
-          notify.success('✓ 1080p HD Photo upload ho gayi!');
+          notify.success('✓ 8K Ultra HD Photo upload ho gayi!');
         }
       } catch (err) {
         // Fallback to data URL
