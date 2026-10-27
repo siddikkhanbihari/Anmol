@@ -312,7 +312,7 @@
               </div>
 
               <!-- Customer & Address info -->
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); background: var(--color-surface-alt); padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); margin-bottom: var(--space-3); font-size: var(--font-size-xs);">
+              <div class="order-customer-details-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); background: var(--color-surface-alt); padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); margin-bottom: var(--space-3); font-size: var(--font-size-xs);">
                 <div>
                   <strong>Customer:</strong> ${order.customer?.name || 'Customer'}<br>
                   <strong>Contact:</strong> ${order.deliveryAddress?.phone || order.customer?.phone}
@@ -339,11 +339,11 @@
               </div>
 
               <!-- Status Action Buttons -->
-              <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--color-border); padding-top: var(--space-3); flex-wrap: wrap; gap: var(--space-2);">
+              <div class="order-card-actions" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--color-border); padding-top: var(--space-3); flex-wrap: wrap; gap: var(--space-2);">
                 <div style="font-size: var(--font-size-xs); color: var(--color-text-muted);">
                   Payment: <strong>${order.paymentMethod.toUpperCase()}</strong> (${order.paymentStatus.toUpperCase()})
                 </div>
-                <div style="display: flex; gap: var(--space-2);">
+                <div class="order-action-buttons" style="display: flex; gap: var(--space-2);">
                   ${order.sellerStatus === 'pending' ? `
                     <button class="btn btn-primary btn-sm btn-update-status" data-id="${order.orderId}" data-status="accepted" style="background: #10B981; border-color: #10B981; font-weight: 700;">
                       <i class="fas fa-check"></i> Accept Order

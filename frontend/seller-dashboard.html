@@ -81,7 +81,7 @@
           </div>
         </a>
 
-        <div style="display: flex; align-items: center; gap: var(--space-4); margin-left: auto;">
+        <div class="seller-header-actions" style="display: flex; align-items: center; gap: var(--space-4); margin-left: auto;">
           <!-- Notification Bell -->
           <div style="position: relative;">
             <button id="btn-seller-notif" class="btn btn-ghost btn-sm" style="position: relative; font-size: 1.15rem; padding: 6px 12px; color: var(--primary-navy);" title="Notifications">
@@ -101,8 +101,8 @@
             </div>
           </div>
 
-          <a id="view-my-shop-btn" href="#" target="_blank" class="btn btn-outline btn-sm">
-            <i class="fas fa-external-link-alt"></i> View My Storefront
+          <a id="view-my-shop-btn" href="#" target="_blank" class="btn btn-outline btn-sm btn-view-storefront">
+            <i class="fas fa-external-link-alt"></i> <span>View My Storefront</span>
           </a>
           <button id="btn-seller-logout" class="btn btn-ghost btn-sm">
             <i class="fas fa-sign-out-alt"></i> Logout
@@ -142,7 +142,7 @@
         </div>
 
         <!-- 4 KPI Cards -->
-        <div class="grid-4" style="margin-bottom: var(--space-8);">
+        <div class="grid-4 seller-stats-grid" style="margin-bottom: var(--space-8);">
           <div class="stat-card">
             <div class="stat-card-title">Pending Orders</div>
             <div class="stat-card-val" id="stat-pending-orders">0</div>
