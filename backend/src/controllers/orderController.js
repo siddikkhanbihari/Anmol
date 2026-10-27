@@ -1,5 +1,5 @@
 // ANMOL STORE - Order Controller
-import { Order, Product, Shop, Cart, Notification, Payment } from '../models/index.js';
+import { Order, Product, Shop, Cart, Notification, Payment, User } from '../models/index.js';
 import { ApiResponse } from '../utils/apiResponse.js';
 
 export async function createOrder(req, res, next) {
