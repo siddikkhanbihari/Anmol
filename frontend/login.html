@@ -99,16 +99,18 @@
         </p>
       </div>
 
-      <!-- Customer / Seller Tabs -->
+      <!-- Customer / Seller / Rider Tabs -->
       <div class="auth-tabs">
-        <div class="auth-tab active" data-role="customer"><i class="fas fa-user"></i> Customer Login</div>
+        <div class="auth-tab active" data-role="customer"><i class="fas fa-user"></i> Customer</div>
         <div class="auth-tab" data-role="seller"><i class="fas fa-store"></i> Seller Hub</div>
+        <div class="auth-tab" data-role="rider"><i class="fas fa-motorcycle"></i> Rider Fleet</div>
       </div>
 
       <!-- Demo Credentials Quick-Fill helper for convenience -->
       <div class="demo-credentials-box">
-        <strong>Demo Accounts (Click to Fill):</strong>
-        <div style="margin-top: 4px; display: flex; gap: 8px; flex-wrap: wrap;">
+        <strong>Quick Sign-In Helpers:</strong>
+        <div style="margin-top: 4px; display: flex; gap: 6px; flex-wrap: wrap;">
+          <button type="button" class="btn btn-sm btn-outline" id="btn-fill-phone" style="padding: 2px 6px; font-size: 0.7rem; color: #0284C7; border-color: #0284C7;">📱 6351111457 (Mobile)</button>
           <button type="button" class="btn btn-sm btn-outline" id="btn-fill-customer" style="padding: 2px 6px; font-size: 0.7rem;">Customer</button>
           <button type="button" class="btn btn-sm btn-outline" id="btn-fill-seller" style="padding: 2px 6px; font-size: 0.7rem;">Seller (Sharma Kirana)</button>
           <button type="button" class="btn btn-sm btn-outline" id="btn-fill-rider" style="padding: 2px 6px; font-size: 0.7rem; color: #10B981; border-color: #10B981;">🛵 Rider (Raju)</button>
@@ -118,8 +120,8 @@
 
       <form id="login-form">
         <div class="form-group">
-          <label class="form-label required" for="email">Email Address</label>
-          <input type="email" id="email" class="form-control" placeholder="name@example.com" required autocomplete="email">
+          <label class="form-label required" for="email">Mobile Number or Email Address</label>
+          <input type="text" id="email" class="form-control" placeholder="Mobile Number or Email (e.g. 6351111457)" required autocomplete="username">
         </div>
 
         <div class="form-group">
@@ -164,6 +166,16 @@
     const urlParams = new URLSearchParams(window.location.search);
     const redirectUrl = urlParams.get('redirect');
 
+    // Tab switching
+    let selectedTabRole = 'customer';
+    document.querySelectorAll('.auth-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        selectedTabRole = tab.dataset.role;
+      });
+    });
+
     // Toggle password visibility
     const pwdInput = document.getElementById('password');
     const toggleBtn = document.getElementById('btn-toggle-password');
@@ -180,15 +192,20 @@
     });
 
     // Quick demo fills
-    document.getElementById('btn-fill-customer').addEventListener('click', () => {
+    document.getElementById('btn-fill-phone')?.addEventListener('click', () => {
+      document.getElementById('email').value = '6351111457';
+      document.getElementById('password').value = '';
+      document.getElementById('password').focus();
+    });
+    document.getElementById('btn-fill-customer')?.addEventListener('click', () => {
       document.getElementById('email').value = 'customer@anmolstore.in';
       document.getElementById('password').value = 'Customer@123';
     });
-    document.getElementById('btn-fill-seller').addEventListener('click', () => {
+    document.getElementById('btn-fill-seller')?.addEventListener('click', () => {
       document.getElementById('email').value = 'sharma.kirana@anmolstore.in';
       document.getElementById('password').value = 'Seller@123';
     });
-    document.getElementById('btn-fill-admin').addEventListener('click', () => {
+    document.getElementById('btn-fill-admin')?.addEventListener('click', () => {
       document.getElementById('email').value = 'admin@anmolstore.in';
       document.getElementById('password').value = 'Admin@Anmol2026';
     });
@@ -203,13 +220,13 @@
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = document.getElementById('email').value.trim();
+      const identifier = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
 
       submitBtn.disabled = true;
       submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
 
-      const result = await auth.login(email, password);
+      const result = await auth.login(identifier, password);
 
       if (result.success) {
         notify.success(`Welcome back, ${result.user.name}!`);
@@ -221,14 +238,14 @@
             window.location.href = decodeURIComponent(redirectUrl);
           } else if (result.user.role === 'admin') {
             window.location.href = 'admin-dashboard.html';
-          } else if (result.user.role === 'seller') {
-            window.location.href = 'seller-dashboard.html';
-          } else if (result.user.role === 'rider') {
+          } else if (selectedTabRole === 'rider' || result.user.role === 'rider') {
             window.location.href = 'rider-dashboard.html';
+          } else if (selectedTabRole === 'seller' || result.user.role === 'seller') {
+            window.location.href = 'seller-dashboard.html';
           } else {
             window.location.href = 'customer-dashboard.html';
           }
-        }, 1000);
+        }, 800);
       } else {
         notify.error(result.message);
         submitBtn.disabled = false;

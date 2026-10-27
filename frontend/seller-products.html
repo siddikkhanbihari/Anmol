@@ -328,7 +328,7 @@
     import { api } from './js/api.js';
     import { auth } from './js/auth.js';
     import { notify } from './js/notifications.js';
-    import { formatCurrency, getFallbackImage, debounce } from './js/config.js';
+    import { formatCurrency, getFallbackImage, debounce, resolveMediaUrl } from './js/config.js';
 
     auth.requireAuth(['seller', 'admin']);
 
@@ -443,7 +443,15 @@
 
       if (imageUrl) {
         hiddenInput.value = imageUrl;
-        previewImg.src = imageUrl;
+        const resolved = resolveMediaUrl(imageUrl);
+        // Only set src if not already displaying a live blob preview
+        if (!previewImg.src || (!previewImg.src.startsWith('blob:') && previewImg.src !== resolved)) {
+          previewImg.src = resolved;
+        }
+        previewImg.onerror = () => {
+          previewImg.onerror = null;
+          previewImg.src = getFallbackImage('product');
+        };
         emptyState.style.display = 'none';
         uploadingState.style.display = 'none';
         previewState.style.display = 'block';
@@ -521,33 +529,46 @@
       const emptyState = document.getElementById('photo-empty-state');
       const uploadingState = document.getElementById('photo-uploading-state');
       const previewState = document.getElementById('photo-preview-state');
+      const previewImg = document.getElementById('img-product-preview');
 
       emptyState.style.display = 'none';
       previewState.style.display = 'none';
       uploadingState.style.display = 'block';
 
       try {
-        // Compress photo from camera / file
+        // Compress photo up to 8K Ultra HD
         const compressedBlob = await compressImage(file);
 
-        // Immediate preview
+        // Immediate preview: keep blob URL active so preview NEVER shows broken icon!
         const instantUrl = URL.createObjectURL(compressedBlob);
-        document.getElementById('img-product-preview').src = instantUrl;
+        previewImg.src = instantUrl;
+        emptyState.style.display = 'none';
+        uploadingState.style.display = 'none';
+        previewState.style.display = 'block';
 
         // Upload to backend
         const formData = new FormData();
         formData.append('image', compressedBlob, 'product-' + Date.now() + '.jpg');
 
-        const res = await api.post('/upload', formData);
-        if (res.success && res.data?.url) {
-          setPhotoPreview(res.data.url);
-          notify.success('✓ Product photo successfully upload ho gayi!');
-        } else {
-          throw new Error(res.message || 'Upload failed');
+        try {
+          const res = await api.post('/upload', formData);
+          if (res.success && res.data?.url) {
+            document.getElementById('prod-image').value = res.data.url;
+            notify.success('✓ Product photo (8K Ultra HD) successfully upload ho gayi!');
+          } else {
+            throw new Error(res.message || 'Upload failed');
+          }
+        } catch (uploadErr) {
+          console.warn('Backend file upload fallback to data URL:', uploadErr);
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            document.getElementById('prod-image').value = e.target.result;
+            notify.info('Photo local preview save ho gayi.');
+          };
+          reader.readAsDataURL(compressedBlob);
         }
       } catch (err) {
         console.warn('Falling back to local data URL for photo:', err);
-        // Fallback to data URL so product save never fails
         const reader = new FileReader();
         reader.onload = (e) => {
           setPhotoPreview(e.target.result);

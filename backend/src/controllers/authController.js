@@ -177,20 +177,36 @@ export async function registerSeller(req, res, next) {
 
 export async function login(req, res, next) {
   try {
-    const { email, password } = req.body;
+    const rawIdentifier = (req.body.identifier || req.body.email || req.body.phone || '').trim();
+    const { password } = req.body;
 
-    if (!email || !password) {
-      return ApiResponse.badRequest(res, 'Please provide both email and password.');
+    if (!rawIdentifier || !password) {
+      return ApiResponse.badRequest(res, 'Please provide both mobile number or email and password.');
     }
 
-    const user = await User.findOne({ email: email.toLowerCase() }).select('+passwordHash');
+    // Format phone variants for matching
+    const cleanPhone = rawIdentifier.replace(/[^0-9]/g, '');
+    const phoneVariants = [rawIdentifier];
+    if (cleanPhone.length >= 10) {
+      const last10 = cleanPhone.slice(-10);
+      phoneVariants.push(last10, `+91${last10}`, `91${last10}`, `0${last10}`);
+    }
+
+    const query = {
+      $or: [
+        { email: rawIdentifier.toLowerCase() },
+        { phone: { $in: phoneVariants } }
+      ]
+    };
+
+    const user = await User.findOne(query).select('+passwordHash');
     if (!user) {
-      return ApiResponse.unauthorized(res, 'Invalid email or password.');
+      return ApiResponse.unauthorized(res, 'Invalid mobile number, email, or password.');
     }
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return ApiResponse.unauthorized(res, 'Invalid email or password.');
+      return ApiResponse.unauthorized(res, 'Invalid mobile number, email, or password.');
     }
 
     if (user.status === 'suspended') {
@@ -211,6 +227,15 @@ export async function login(req, res, next) {
       shop = await Shop.findOne({ user: user._id });
     }
 
+    // Check Rider profile if any
+    let riderProfile = null;
+    try {
+      const { RiderProfile } = await import('../models/index.js');
+      riderProfile = await RiderProfile.findOne({ user: user._id });
+    } catch (e) {
+      // Ignore if not applicable
+    }
+
     return ApiResponse.success(res, {
       user: {
         id: user._id,
@@ -218,9 +243,12 @@ export async function login(req, res, next) {
         email: user.email,
         phone: user.phone,
         role: user.role,
-        avatar: user.avatar
+        avatar: user.avatar,
+        hasShop: !!shop,
+        hasRiderProfile: !!riderProfile
       },
       shop,
+      riderProfile,
       accessToken
     }, 'Login successful');
   } catch (err) {
@@ -322,11 +350,28 @@ export async function updateProfile(req, res, next) {
 
 export async function forgotPassword(req, res, next) {
   try {
-    const { email } = req.body;
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const rawIdentifier = (req.body.identifier || req.body.email || req.body.phone || '').trim();
+    if (!rawIdentifier) {
+      return ApiResponse.badRequest(res, 'Please provide your registered mobile number or email.');
+    }
+
+    const cleanPhone = rawIdentifier.replace(/[^0-9]/g, '');
+    const phoneVariants = [rawIdentifier];
+    if (cleanPhone.length >= 10) {
+      const last10 = cleanPhone.slice(-10);
+      phoneVariants.push(last10, `+91${last10}`, `91${last10}`, `0${last10}`);
+    }
+
+    const user = await User.findOne({
+      $or: [
+        { email: rawIdentifier.toLowerCase() },
+        { phone: { $in: phoneVariants } }
+      ]
+    });
+
     if (!user) {
       // Return success anyway for security timing protection
-      return ApiResponse.success(res, null, 'If this email is registered, password reset instructions have been sent.');
+      return ApiResponse.success(res, null, 'If this mobile or email is registered, password reset instructions have been generated.');
     }
 
     const resetToken = crypto.randomBytes(32).toString('hex');

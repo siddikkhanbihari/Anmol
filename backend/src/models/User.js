@@ -74,6 +74,24 @@ userSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.passwordHash);
 };
 
+// Set password method
+userSchema.methods.setPassword = async function (newPassword) {
+  this.passwordHash = newPassword;
+};
+
+// Return safe user representation without sensitive fields
+userSchema.methods.toSafeObject = function () {
+  return {
+    id: this._id,
+    name: this.name,
+    email: this.email,
+    phone: this.phone,
+    role: this.role,
+    avatar: this.avatar,
+    status: this.status
+  };
+};
+
 // Generate JWT Access Token
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign(

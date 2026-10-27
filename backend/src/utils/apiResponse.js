@@ -36,4 +36,8 @@ export class ApiResponse {
   static notFound(res, message = 'Resource not found') {
     return this.error(res, message, 404);
   }
+
+  static conflict(res, message = 'Resource already exists', errors = null) {
+    return this.error(res, message, 409, errors);
+  }
 }

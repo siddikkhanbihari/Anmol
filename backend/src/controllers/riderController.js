@@ -23,21 +23,77 @@ export const riderController = {
         return ApiResponse.badRequest(res, 'Name, email, phone, and password are required.');
       }
 
-      // Check existing user
-      const existingUser = await User.findOne({ email: email.toLowerCase() });
-      if (existingUser) {
-        return ApiResponse.conflict(res, 'An account with this email already exists.');
+      // Format phone variants for matching
+      const cleanPhone = (phone || '').replace(/[^0-9]/g, '');
+      const phoneVariants = [phone.trim()];
+      if (cleanPhone.length >= 10) {
+        const last10 = cleanPhone.slice(-10);
+        phoneVariants.push(last10, `+91${last10}`, `91${last10}`, `0${last10}`);
       }
 
-      // Create User with rider role
+      // Check existing user by email or phone
+      const existingUser = await User.findOne({
+        $or: [
+          { email: email.toLowerCase().trim() },
+          { phone: { $in: phoneVariants } }
+        ]
+      }).select('+passwordHash');
+
+      if (existingUser) {
+        // If account exists, verify password
+        const isMatch = await existingUser.comparePassword(password);
+        if (!isMatch) {
+          return ApiResponse.conflict(
+            res,
+            'An account with this mobile number or email already exists. Please enter your correct password or sign in.'
+          );
+        }
+
+        // Account exists and password matches: ensure Rider profile is activated
+        let riderProfile = await RiderProfile.findOne({ user: existingUser._id });
+        if (!riderProfile) {
+          riderProfile = await RiderProfile.create({
+            user: existingUser._id,
+            vehicleType: vehicleType || 'bike',
+            vehicleNumber: vehicleNumber || '',
+            drivingLicenseNumber: drivingLicenseNumber || '',
+            city: city || 'Palanpur',
+            isOnline: true,
+            isApproved: true
+          });
+        }
+
+        // If user was customer, ensure rider role or keep active
+        if (existingUser.role === 'customer') {
+          existingUser.role = 'rider';
+        }
+
+        const accessToken = existingUser.generateAccessToken();
+        const refreshToken = existingUser.generateRefreshToken();
+        existingUser.refreshToken = refreshToken;
+        await existingUser.save();
+
+        return ApiResponse.success(
+          res,
+          {
+            user: existingUser.toSafeObject(),
+            riderProfile,
+            accessToken,
+            refreshToken
+          },
+          'Welcome to ANMOL STORE Fleet! Delivery partner account activated successfully.'
+        );
+      }
+
+      // Create new User with rider role
       const user = new User({
-        name,
-        email: email.toLowerCase(),
-        phone,
+        name: name.trim(),
+        email: email.toLowerCase().trim(),
+        phone: phone.trim(),
         role: 'rider',
-        status: 'active'
+        status: 'active',
+        passwordHash: password
       });
-      await user.setPassword(password);
       await user.save();
 
       // Create Rider Profile
@@ -46,13 +102,15 @@ export const riderController = {
         vehicleType: vehicleType || 'bike',
         vehicleNumber: vehicleNumber || '',
         drivingLicenseNumber: drivingLicenseNumber || '',
-        city: city || 'Kanpur',
+        city: city || 'Palanpur',
         isOnline: true,
         isApproved: true
       });
 
       const accessToken = user.generateAccessToken();
       const refreshToken = user.generateRefreshToken();
+      user.refreshToken = refreshToken;
+      await user.save();
 
       return ApiResponse.created(
         res,

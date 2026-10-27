@@ -34,8 +34,23 @@ class AuthService {
     return this.isAuthenticated() && this.user?.role === 'seller';
   }
 
+  isRider() {
+    return this.isAuthenticated() && this.user?.role === 'rider';
+  }
+
   isAdmin() {
     return this.isAuthenticated() && this.user?.role === 'admin';
+  }
+
+  setSession(user, accessToken, refreshToken = null) {
+    if (accessToken) {
+      api.setToken(accessToken);
+    }
+    this.user = user;
+    if (user) {
+      localStorage.setItem(CONFIG.STORAGE_KEYS.USER_DATA, JSON.stringify(this.user));
+    }
+    this.notifyListeners();
   }
 
   subscribe(callback) {
@@ -49,15 +64,25 @@ class AuthService {
     this.listeners.forEach(cb => cb(this.user));
   }
 
-  async login(email, password) {
+  async login(identifier, password) {
     try {
-      const res = await api.post('/auth/login', { email, password });
+      const res = await api.post('/auth/login', {
+        identifier,
+        email: identifier,
+        phone: identifier,
+        password
+      });
       if (res.success && res.data) {
         api.setToken(res.data.accessToken);
         this.user = res.data.user;
         localStorage.setItem(CONFIG.STORAGE_KEYS.USER_DATA, JSON.stringify(this.user));
         this.notifyListeners();
-        return { success: true, user: this.user };
+        return {
+          success: true,
+          user: this.user,
+          shop: res.data.shop,
+          riderProfile: res.data.riderProfile
+        };
       }
       return { success: false, message: res.message || 'Login failed' };
     } catch (err) {
@@ -144,6 +169,8 @@ class AuthService {
       notify.error('Access denied. You do not have permission to view this page.');
       if (this.user?.role === 'seller') {
         window.location.href = '/seller-dashboard.html';
+      } else if (this.user?.role === 'rider') {
+        window.location.href = '/rider-dashboard.html';
       } else if (this.user?.role === 'admin') {
         window.location.href = '/admin-dashboard.html';
       } else {

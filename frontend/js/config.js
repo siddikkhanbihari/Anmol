@@ -78,6 +78,21 @@ export function formatDate(dateString, includeTime = false) {
 }
 
 /**
+ * Resolve relative or absolute media URL safely
+ */
+export function resolveMediaUrl(url, type = 'product') {
+  if (!url) return getFallbackImage(type);
+  if (url.startsWith('data:') || url.startsWith('blob:') || url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  const cleanPath = url.startsWith('/') ? url : `/${url}`;
+  if (window.location.port === '5000' || !window.location.port) {
+    return cleanPath;
+  }
+  return `${window.location.protocol}//${window.location.hostname}:5000${cleanPath}`;
+}
+
+/**
  * Fallback image provider for products, shops, services, and vehicles
  */
 export function getFallbackImage(type = 'product') {
