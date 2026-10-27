@@ -20,3 +20,4 @@ export { RefundRequest } from './RefundRequest.js';
 export { SupportTicket } from './SupportTicket.js';
 export { AuditLog } from './AuditLog.js';
 export { PlatformSettings } from './PlatformSettings.js';
+export { RiderProfile } from './RiderProfile.js';

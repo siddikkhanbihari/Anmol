@@ -111,6 +111,7 @@
         <div style="margin-top: 4px; display: flex; gap: 8px; flex-wrap: wrap;">
           <button type="button" class="btn btn-sm btn-outline" id="btn-fill-customer" style="padding: 2px 6px; font-size: 0.7rem;">Customer</button>
           <button type="button" class="btn btn-sm btn-outline" id="btn-fill-seller" style="padding: 2px 6px; font-size: 0.7rem;">Seller (Sharma Kirana)</button>
+          <button type="button" class="btn btn-sm btn-outline" id="btn-fill-rider" style="padding: 2px 6px; font-size: 0.7rem; color: #10B981; border-color: #10B981;">🛵 Rider (Raju)</button>
           <button type="button" class="btn btn-sm btn-outline" id="btn-fill-admin" style="padding: 2px 6px; font-size: 0.7rem;">Admin</button>
         </div>
       </div>
@@ -143,7 +144,8 @@
         Don't have an account yet?
         <div style="margin-top: 4px;">
           <a href="register.html" style="font-weight: 600;">Create Customer Account</a> &bull;
-          <a href="seller-register.html" style="font-weight: 600; color: var(--accent-orange);">Register Your Shop (Free)</a>
+          <a href="seller-register.html" style="font-weight: 600; color: var(--accent-orange);">Register Your Shop (Free)</a> &bull;
+          <a href="rider-register.html" style="font-weight: 600; color: #10B981;">Join as Rider Partner 🛵</a>
         </div>
       </div>
     </div>
@@ -190,6 +192,10 @@
       document.getElementById('email').value = 'admin@anmolstore.in';
       document.getElementById('password').value = 'Admin@Anmol2026';
     });
+    document.getElementById('btn-fill-rider')?.addEventListener('click', () => {
+      document.getElementById('email').value = 'rider@anmolstore.in';
+      document.getElementById('password').value = 'Rider@123';
+    });
 
     // Form submission
     const form = document.getElementById('login-form');
@@ -217,6 +223,8 @@
             window.location.href = 'admin-dashboard.html';
           } else if (result.user.role === 'seller') {
             window.location.href = 'seller-dashboard.html';
+          } else if (result.user.role === 'rider') {
+            window.location.href = 'rider-dashboard.html';
           } else {
             window.location.href = 'customer-dashboard.html';
           }

@@ -64,6 +64,9 @@ export class Navigation {
         } else if (user.role === 'admin') {
           targetHref = '/admin-dashboard.html';
           roleLabel = 'Admin Panel';
+        } else if (user.role === 'rider') {
+          targetHref = '/rider-dashboard.html';
+          roleLabel = 'Rider Hub';
         }
 
         link.href = targetHref;

@@ -14,7 +14,8 @@ import {
   VehicleListing,
   PlatformSettings,
   Address,
-  Review
+  Review,
+  RiderProfile
 } from '../src/models/index.js';
 
 export async function seedDatabase() {
@@ -32,7 +33,8 @@ export async function seedDatabase() {
       VehicleListing.deleteMany({}),
       PlatformSettings.deleteMany({}),
       Address.deleteMany({}),
-      Review.deleteMany({})
+      Review.deleteMany({}),
+      RiderProfile.deleteMany({})
     ]);
 
     console.log('✓ Cleared existing records.');
@@ -160,6 +162,34 @@ export async function seedDatabase() {
       isDefault: true
     });
     console.log('✓ Seeded Admin and Customer users.');
+
+    // 4b. Delivery Partner (Rider) User
+    const riderUser = await User.create({
+      name: 'Raju Kumar (Delivery Partner)',
+      email: 'rider@anmolstore.in',
+      phone: '9876500001',
+      passwordHash: 'Rider@123',
+      role: 'rider',
+      status: 'active'
+    });
+
+    await RiderProfile.create({
+      user: riderUser._id,
+      vehicleType: 'bike',
+      vehicleNumber: 'UP 78 CD 4321',
+      drivingLicenseNumber: 'DL-UP78-2023-0099',
+      city: 'Kanpur',
+      serviceAreas: ['Mall Road', 'Civil Lines', 'Swaroop Nagar', 'Gumti No. 5'],
+      isOnline: true,
+      isApproved: true,
+      rating: 4.95,
+      totalRatings: 48,
+      todayEarnings: 240,
+      todayDeliveries: 6,
+      totalEarnings: 6800,
+      totalDeliveries: 170
+    });
+    console.log('✓ Seeded Demo Delivery Partner (rider@anmolstore.in / Rider@123).');
 
     // 5. Sellers & Shops
     // Seller 1: Sharma Kirana & General Store

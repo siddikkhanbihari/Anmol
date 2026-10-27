@@ -39,8 +39,36 @@ const sellerOrderGroupSchema = new mongoose.Schema({
   groupTotal: { type: Number, required: true },
   sellerStatus: {
     type: String,
-    enum: ['pending', 'accepted', 'processing', 'shipped', 'delivered', 'cancelled', 'rejected'],
+    enum: [
+      'pending',
+      'accepted',
+      'processing',
+      'ready_for_pickup',
+      'out_for_delivery',
+      'shipped',
+      'delivered',
+      'cancelled',
+      'rejected'
+    ],
     default: 'pending'
+  },
+  rider: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  riderProfile: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'RiderProfile'
+  },
+  riderAssignedAt: Date,
+  riderPickedUpAt: Date,
+  deliveryOtp: {
+    type: String,
+    default: () => Math.floor(1000 + Math.random() * 9000).toString()
+  },
+  riderPayout: {
+    type: Number,
+    default: 40
   },
   rejectionReason: String,
   trackingNumber: String,
