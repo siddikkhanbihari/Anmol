@@ -42,6 +42,7 @@ export const CONFIG = {
   ],
   STORAGE_KEYS: {
     AUTH_TOKEN: 'anmol_access_token',
+    REFRESH_TOKEN: 'anmol_refresh_token',
     USER_DATA: 'anmol_user',
     USER_LOCATION: 'anmol_user_location',
     GUEST_CART: 'anmol_guest_cart',

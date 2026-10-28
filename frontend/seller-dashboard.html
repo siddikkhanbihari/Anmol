@@ -397,10 +397,15 @@
       await Promise.all([loadDashboard(), fetchNotifications()]);
     }, 4000);
 
-    document.addEventListener('DOMContentLoaded', () => {
+    const startDashboard = () => {
       loadDashboard();
       fetchNotifications();
-    });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', startDashboard);
+    } else {
+      startDashboard();
+    }
   </script>
   <script type="module" src="js/pwa.js"></script>
 </body>

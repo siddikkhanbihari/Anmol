@@ -516,7 +516,7 @@
       await Promise.all([loadOrders(true), fetchNotifications()]);
     }, 5000);
 
-    document.addEventListener('DOMContentLoaded', () => {
+    const startOrders = () => {
       // Auto-scroll the active seller tab into view on mobile
       const activeTab = document.querySelector('.seller-sidebar .dash-nav-item.active');
       if (activeTab) {
@@ -524,7 +524,12 @@
       }
       loadOrders();
       fetchNotifications();
-    });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', startOrders);
+    } else {
+      startOrders();
+    }
   </script>
   <script type="module" src="js/pwa.js"></script>
 </body>

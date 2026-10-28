@@ -46,6 +46,9 @@ class AuthService {
     if (accessToken) {
       api.setToken(accessToken);
     }
+    if (refreshToken) {
+      localStorage.setItem(CONFIG.STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
+    }
     this.user = user;
     if (user) {
       localStorage.setItem(CONFIG.STORAGE_KEYS.USER_DATA, JSON.stringify(this.user));
@@ -74,6 +77,9 @@ class AuthService {
       });
       if (res.success && res.data) {
         api.setToken(res.data.accessToken);
+        if (res.data.refreshToken) {
+          localStorage.setItem(CONFIG.STORAGE_KEYS.REFRESH_TOKEN, res.data.refreshToken);
+        }
         this.user = res.data.user;
         localStorage.setItem(CONFIG.STORAGE_KEYS.USER_DATA, JSON.stringify(this.user));
         this.notifyListeners();
@@ -131,6 +137,7 @@ class AuthService {
       api.setToken(null);
       this.user = null;
       localStorage.removeItem(CONFIG.STORAGE_KEYS.USER_DATA);
+      localStorage.removeItem(CONFIG.STORAGE_KEYS.REFRESH_TOKEN);
       this.notifyListeners();
       window.location.href = '/login.html';
     }

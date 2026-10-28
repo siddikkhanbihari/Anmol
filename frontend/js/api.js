@@ -58,6 +58,18 @@ class ApiService {
             } else {
               this.setToken(null);
               localStorage.removeItem(CONFIG.STORAGE_KEYS.USER_DATA);
+              localStorage.removeItem(CONFIG.STORAGE_KEYS.REFRESH_TOKEN);
+
+              // Auto redirect to login if on any protected page
+              const pathname = window.location.pathname;
+              const isProtected = pathname.includes('seller') ||
+                                  pathname.includes('admin') ||
+                                  pathname.includes('rider') ||
+                                  pathname.includes('customer-dashboard');
+              if (isProtected) {
+                const current = encodeURIComponent(window.location.pathname + window.location.search);
+                window.location.href = `/login.html?redirect=${current}&expired=1`;
+              }
             }
           }
         }
@@ -81,10 +93,12 @@ class ApiService {
 
   async refreshToken() {
     try {
+      const storedRefreshToken = localStorage.getItem(CONFIG.STORAGE_KEYS.REFRESH_TOKEN);
       const response = await fetch(`${this.baseUrl}/auth/refresh`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include'
+        credentials: 'include',
+        body: JSON.stringify({ refreshToken: storedRefreshToken || undefined })
       });
       if (response.ok) {
         const data = await response.json();

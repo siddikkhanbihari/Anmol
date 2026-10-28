@@ -269,7 +269,11 @@
       }
     });
 
-    document.addEventListener('DOMContentLoaded', loadBookings);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadBookings);
+    } else {
+      loadBookings();
+    }
   </script>
   <script type="module" src="js/pwa.js"></script>
 </body>

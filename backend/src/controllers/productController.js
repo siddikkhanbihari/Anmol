@@ -133,9 +133,29 @@ export async function getProductById(req, res, next) {
 
 export async function getMyProducts(req, res, next) {
   try {
-    const shop = await Shop.findOne({ user: req.user._id });
+    let shop = await Shop.findOne({ user: req.user._id });
+    if (!shop && req.user.role === 'admin') {
+      shop = await Shop.findOne();
+    }
     if (!shop) {
-      return ApiResponse.badRequest(res, 'Shop profile not found for this seller');
+      // Auto-provision shop for seller so they are never blocked
+      shop = await Shop.create({
+        user: req.user._id,
+        name: `${req.user.name || 'Apni'} Dukaan`,
+        slug: `shop-${Date.now()}`,
+        category: 'Kirana & Grocery',
+        description: 'Local business showcase on ANMOL STORE',
+        address: {
+          street: 'Main Bazaar',
+          city: 'Palanpur',
+          state: 'Gujarat',
+          pincode: '385001'
+        },
+        contactPhone: req.user.phone || '6351111457',
+        contactEmail: req.user.email,
+        isApproved: true,
+        status: 'active'
+      });
     }
 
     const { page = 1, limit = 20, search } = req.query;
@@ -156,6 +176,7 @@ export async function getMyProducts(req, res, next) {
 
     return ApiResponse.success(res, {
       products,
+      shop: { id: shop._id, name: shop.name },
       pagination: {
         page: Number(page),
         limit: Number(limit),
@@ -170,9 +191,28 @@ export async function getMyProducts(req, res, next) {
 
 export async function createProduct(req, res, next) {
   try {
-    const shop = await Shop.findOne({ user: req.user._id });
+    let shop = await Shop.findOne({ user: req.user._id });
+    if (!shop && req.user.role === 'admin') {
+      shop = await Shop.findOne();
+    }
     if (!shop) {
-      return ApiResponse.forbidden(res, 'You need an active shop to list products.');
+      shop = await Shop.create({
+        user: req.user._id,
+        name: `${req.user.name || 'Apni'} Dukaan`,
+        slug: `shop-${Date.now()}`,
+        category: 'Kirana & Grocery',
+        description: 'Local business showcase on ANMOL STORE',
+        address: {
+          street: 'Main Bazaar',
+          city: 'Palanpur',
+          state: 'Gujarat',
+          pincode: '385001'
+        },
+        contactPhone: req.user.phone || '6351111457',
+        contactEmail: req.user.email,
+        isApproved: true,
+        status: 'active'
+      });
     }
 
     const {

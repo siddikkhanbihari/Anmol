@@ -365,7 +365,11 @@
       }
     });
 
-    document.addEventListener('DOMContentLoaded', loadShop);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadShop);
+    } else {
+      loadShop();
+    }
   </script>
   <script type="module" src="js/pwa.js"></script>
 </body>

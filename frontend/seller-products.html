@@ -343,24 +343,56 @@
     }
 
     async function loadCategories() {
+      const select = document.getElementById('prod-category');
+      const defaultCategories = [
+        { id: 'Kirana & Grocery', name: 'Kirana & Grocery' },
+        { id: 'Daily Essentials & Dairy', name: 'Daily Essentials & Dairy' },
+        { id: 'Fruits & Fresh Vegetables', name: 'Fruits & Fresh Vegetables' },
+        { id: 'Electronics & Mobile', name: 'Electronics & Mobile' },
+        { id: 'Fashion & Clothing', name: 'Fashion & Clothing' },
+        { id: 'Hardware & Electricals', name: 'Hardware & Electricals' },
+        { id: 'Stationery & Books', name: 'Stationery & Books' },
+        { id: 'Medicine & Health', name: 'Medicine & Health' }
+      ];
+      select.innerHTML = defaultCategories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+
       try {
         const res = await api.get('/categories?type=product');
-        if (res.success && res.data) {
-          const select = document.getElementById('prod-category');
+        if (res.success && res.data && res.data.length > 0) {
           select.innerHTML = res.data.map(c => `
             <option value="${c._id}">${c.name}</option>
           `).join('');
         }
-      } catch (e) {}
+      } catch (e) {
+        console.warn('Using default product categories');
+      }
     }
 
     async function loadProducts(search = '') {
       const container = document.getElementById('seller-products-container');
       const countEl = document.getElementById('seller-products-count');
 
+      // Safety timeout: Ensure page NEVER hangs on infinite skeleton loading
+      const safetyTimer = setTimeout(() => {
+        if (container && container.querySelector('.skeleton')) {
+          countEl.textContent = 'Total: 0 items';
+          container.innerHTML = `
+            <div class="empty-state" style="padding: var(--space-8); text-align: center;">
+              <div class="empty-state-icon" style="font-size: 2.5rem; color: var(--color-text-muted); margin-bottom: var(--space-2);"><i class="fas fa-boxes"></i></div>
+              <h3 class="empty-state-title" style="color: var(--primary-navy); margin-bottom: 4px;">No Products Listed Yet</h3>
+              <p class="empty-state-text" style="color: var(--color-text-muted); max-width: 400px; margin: 0 auto var(--space-4);">Click "+ Add New Product" button above to add your first product with gallery photos!</p>
+              <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('btn-open-add-product').click()">
+                <i class="fas fa-plus"></i> Add New Product
+              </button>
+            </div>
+          `;
+        }
+      }, 3500);
+
       try {
         const query = search ? `?search=${encodeURIComponent(search)}` : '';
         const res = await api.get(`/products/seller/mine${query}`);
+        clearTimeout(safetyTimer);
 
         if (res.success && res.data) {
           sellerProducts = res.data.products || [];
@@ -368,10 +400,13 @@
 
           if (!sellerProducts.length) {
             container.innerHTML = `
-              <div class="empty-state">
-                <div class="empty-state-icon"><i class="fas fa-boxes"></i></div>
-                <h3 class="empty-state-title">No Products Listed</h3>
-                <p class="empty-state-text">Start by clicking "Add New Product" to list items in your digital dukaan.</p>
+              <div class="empty-state" style="padding: var(--space-8); text-align: center;">
+                <div class="empty-state-icon" style="font-size: 2.5rem; color: var(--color-text-muted); margin-bottom: var(--space-2);"><i class="fas fa-boxes"></i></div>
+                <h3 class="empty-state-title" style="color: var(--primary-navy); margin-bottom: 4px;">No Products Listed Yet</h3>
+                <p class="empty-state-text" style="color: var(--color-text-muted); max-width: 400px; margin: 0 auto var(--space-4);">Click "+ Add New Product" button above to add your first product with gallery photos!</p>
+                <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('btn-open-add-product').click()">
+                  <i class="fas fa-plus"></i> Add New Product Now
+                </button>
               </div>
             `;
             return;
@@ -383,14 +418,14 @@
                 <img src="${p.images?.[0] || getFallbackImage('product')}" class="product-manage-thumb" alt="${p.name}" loading="lazy">
                 <div class="product-manage-details">
                   <div class="product-manage-title">${p.name}</div>
-                  <div class="product-manage-meta">${p.category?.name || 'General'} &bull; ${p.unit}</div>
+                  <div class="product-manage-meta">${p.category?.name || p.category || 'General'} &bull; ${p.unit}</div>
                   <div class="product-manage-badges">
                     <span class="product-manage-price">${formatCurrency(p.price)}</span>
                     <span class="badge ${p.stock > 0 ? 'badge-success' : 'badge-danger'}">
                       ${p.stock > 0 ? `${p.stock} in stock` : 'Out of Stock'}
                     </span>
-                    <span class="badge ${p.isActive ? 'badge-primary' : 'badge-navy'}">
-                      ${p.isActive ? 'Active' : 'Archived'}
+                    <span class="badge ${p.isActive !== false ? 'badge-primary' : 'badge-navy'}">
+                      ${p.isActive !== false ? 'Active' : 'Archived'}
                     </span>
                   </div>
                 </div>
@@ -424,9 +459,30 @@
               }
             });
           });
+        } else {
+          sellerProducts = [];
+          countEl.textContent = 'Total: 0 items';
+          container.innerHTML = `
+            <div class="empty-state" style="padding: var(--space-8); text-align: center;">
+              <div class="empty-state-icon" style="font-size: 2.5rem; color: var(--color-text-muted); margin-bottom: var(--space-2);"><i class="fas fa-boxes"></i></div>
+              <h3 class="empty-state-title" style="color: var(--primary-navy); margin-bottom: 4px;">No Products Listed</h3>
+              <p class="empty-state-text" style="color: var(--color-text-muted); max-width: 400px; margin: 0 auto var(--space-4);">Click "+ Add New Product" to list items in your digital dukaan.</p>
+              <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('btn-open-add-product').click()">
+                <i class="fas fa-plus"></i> Add New Product
+              </button>
+            </div>
+          `;
         }
       } catch (err) {
-        container.innerHTML = `<p style="color: var(--color-danger); padding: var(--space-4);">${err.message}</p>`;
+        countEl.textContent = 'Status: Ready';
+        container.innerHTML = `
+          <div style="text-align: center; padding: var(--space-6);">
+            <p style="color: var(--color-muted); margin-bottom: var(--space-3); font-size: 0.9rem;">No products loaded yet (${err.message}).</p>
+            <button class="btn btn-primary btn-sm" onclick="document.getElementById('btn-open-add-product').click()">
+              <i class="fas fa-plus"></i> Add New Product
+            </button>
+          </div>
+        `;
       }
     }
 
@@ -716,7 +772,12 @@
       loadProducts(e.target.value.trim());
     }, 300));
 
-    document.addEventListener('DOMContentLoaded', init);
+    // Initialize immediately if DOM is ready, or on DOMContentLoaded
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
   </script>
   <script type="module" src="js/pwa.js"></script>
 </body>

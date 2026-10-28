@@ -249,7 +249,8 @@ export async function login(req, res, next) {
       },
       shop,
       riderProfile,
-      accessToken
+      accessToken,
+      refreshToken
     }, 'Login successful');
   } catch (err) {
     next(err);

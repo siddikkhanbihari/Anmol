@@ -166,6 +166,15 @@
     const urlParams = new URLSearchParams(window.location.search);
     const redirectUrl = urlParams.get('redirect');
 
+    if (urlParams.get('expired')) {
+      notify.info('Aapka login session expire ho gaya tha. Kripya dobara sign in karein.');
+    }
+    if (redirectUrl && redirectUrl.includes('seller')) {
+      setTimeout(() => document.querySelector('[data-role="seller"]')?.click(), 50);
+    } else if (redirectUrl && redirectUrl.includes('rider')) {
+      setTimeout(() => document.querySelector('[data-role="rider"]')?.click(), 50);
+    }
+
     // Tab switching
     let selectedTabRole = 'customer';
     document.querySelectorAll('.auth-tab').forEach(tab => {
