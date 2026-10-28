@@ -1,5 +1,5 @@
 // ANMOL STORE - High Performance Progressive Web App Service Worker
-const CACHE_NAME = 'anmol-store-v2.3.0';
+const CACHE_NAME = 'anmol-store-v2.4.0';
 
 const PRECACHE_ASSETS = [
   '/',
