@@ -967,7 +967,7 @@
         const catRes = await api.get('/categories?featured=true');
         if (catRes.success && catRes.data) {
           const grid = document.getElementById('home-categories-grid');
-          grid.innerHTML = catRes.data.slice(0, 6).map(c => `
+          grid.innerHTML = catRes.data.map(c => `
             <a href="products.html?category=${c.slug}" class="category-card">
               <div class="category-icon-box">
                 <i class="fas ${c.icon || 'fa-store'}"></i>
