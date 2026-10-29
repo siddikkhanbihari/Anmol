@@ -296,7 +296,10 @@
             return;
           }
 
-          container.innerHTML = shops.map(s => `
+          container.innerHTML = shops.map(s => {
+            const sAddr = s.address ? `${s.address.street || ''}, ${s.address.city || 'Palanpur'}${s.address.pincode ? ` (${s.address.pincode})` : ''}` : 'Palanpur, Gujarat';
+            const sRating = (s.rating !== undefined && s.rating !== null) ? Number(s.rating).toFixed(1) : '4.8';
+            return `
             <div class="shop-card">
               <div class="shop-cover">
                 <img src="${resolveMediaUrl(s.coverImage, 'shop')}" alt="${s.name}" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='${FALLBACK_PLACEHOLDER_SVG}';">
@@ -309,20 +312,20 @@
                   <a href="shop-details.html?slug=${s.slug}">${s.name}</a>
                   ${s.isVerified ? '<i class="fas fa-check-circle verified-icon" title="Verified Store"></i>' : ''}
                 </div>
-                <div class="shop-category">${s.category}</div>
+                <div class="shop-category">${s.category || 'Local Business'}</div>
                 <div class="shop-location">
-                  <i class="fas fa-map-marker-alt"></i> ${s.address.street}, ${s.address.city} (${s.address.pincode})
+                  <i class="fas fa-map-marker-alt"></i> ${sAddr}
                 </div>
                 <div style="font-size: var(--font-size-xs); color: var(--color-text-muted); margin-top: 6px;">
                   <i class="fas fa-box-open"></i> ${s.productCount || 0} Products Listed
                 </div>
                 <div class="shop-footer">
-                  <div class="stars"><i class="fas fa-star"></i> ${s.rating.toFixed(1)} (${s.reviewCount || 0})</div>
+                  <div class="stars"><i class="fas fa-star"></i> ${sRating} (${s.reviewCount || 0})</div>
                   <a href="shop-details.html?slug=${s.slug}" class="btn btn-outline btn-sm">Visit Store &rarr;</a>
                 </div>
               </div>
             </div>
-          `).join('');
+          `;}).join('');
 
           // Pagination rendering
           const pagContainer = document.getElementById('shops-pagination');

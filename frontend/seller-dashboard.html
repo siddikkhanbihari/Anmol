@@ -324,12 +324,19 @@
           api.get('/products/seller/mine')
         ]);
 
-        if (meRes.success && meRes.data.shop) {
-          const shop = meRes.data.shop;
-          document.getElementById('seller-shop-title').textContent = shop.name;
-          document.getElementById('seller-category-title').textContent = shop.category;
-          document.getElementById('stat-shop-rating').textContent = `${shop.rating.toFixed(1)} ★`;
-          document.getElementById('view-my-shop-btn').href = `shop-details.html?slug=${shop.slug}`;
+        const shop = meRes.data?.shop || productsRes.data?.shop || null;
+        if (shop) {
+          document.getElementById('seller-shop-title').textContent = shop.name || 'Apni Dukaan';
+          document.getElementById('seller-category-title').textContent = shop.category || 'Local Business';
+          const r = (shop.rating !== undefined && shop.rating !== null) ? Number(shop.rating).toFixed(1) : '5.0';
+          document.getElementById('stat-shop-rating').textContent = `${r} ★`;
+          if (shop.slug) {
+            document.getElementById('view-my-shop-btn').href = `shop-details.html?slug=${shop.slug}`;
+          }
+        } else {
+          document.getElementById('seller-shop-title').textContent = 'My Digital Dukaan';
+          document.getElementById('seller-category-title').textContent = 'Seller Hub';
+          document.getElementById('stat-shop-rating').textContent = '5.0 ★';
         }
 
         if (productsRes.success && productsRes.data) {

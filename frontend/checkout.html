@@ -450,7 +450,10 @@
     });
 
     // Place Order
+    let isSubmittingOrder = false;
     document.getElementById('btn-place-order').addEventListener('click', async () => {
+      if (isSubmittingOrder) return;
+      isSubmittingOrder = true;
       // If no address selected from saved list, auto-check if new address form is filled
       if (!selectedAddress) {
         const name = document.getElementById('new-recipient-name')?.value?.trim();
@@ -523,6 +526,7 @@
           }, 400);
         }
       } catch (err) {
+        isSubmittingOrder = false;
         notify.error(err.message || 'Order place karne me samasya aayi. Kripya punah prayas karein.');
         placeBtn.disabled = false;
         placeBtn.innerHTML = 'Place Order Now';

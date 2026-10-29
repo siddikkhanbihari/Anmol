@@ -22,5 +22,11 @@ export default async function handler(req, res) {
     console.error('[Vercel Serverless] Database initialization notice:', err.message);
   }
 
+  // Restore original request path if rewritten to /api/index.js by Vercel
+  const originalPath = req.headers['x-forwarded-uri'] || req.headers['x-matched-path'];
+  if (originalPath && (req.url === '/api/index.js' || req.url.startsWith('/api/index.js?'))) {
+    req.url = originalPath;
+  }
+
   return app(req, res);
 }

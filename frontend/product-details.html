@@ -431,7 +431,8 @@
             discountBadge.style.display = 'inline-block';
           }
 
-          document.getElementById('product-rating').textContent = product.rating.toFixed(1);
+          const prodRating = (product.rating !== undefined && product.rating !== null) ? Number(product.rating).toFixed(1) : '4.8';
+          document.getElementById('product-rating').textContent = prodRating;
           document.getElementById('product-reviews-count').textContent = product.reviewCount || 0;
 
           // Stock badge

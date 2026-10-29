@@ -86,6 +86,16 @@ export async function createOrder(req, res, next) {
 
     const grandTotal = calculatedSubtotal + calculatedDeliveryFee;
 
+    // Idempotency: Prevent duplicate order creation if double-clicked within 4 seconds
+    const recentDuplicate = await Order.findOne({
+      customer: req.user._id,
+      createdAt: { $gte: new Date(Date.now() - 4000) },
+      totalAmount: grandTotal
+    });
+    if (recentDuplicate) {
+      return ApiResponse.created(res, recentDuplicate, 'Order placed successfully');
+    }
+
     // Generate readable order number
     const randomDigits = Math.floor(1000 + Math.random() * 9000);
     const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');

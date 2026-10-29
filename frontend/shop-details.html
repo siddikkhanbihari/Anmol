@@ -304,24 +304,31 @@
         if (res.success && res.data) {
           const { shop, products, reviews } = res.data;
           currentShop = shop;
-          allProducts = products;
+          allProducts = products || [];
 
-          document.title = `${shop.name} — ANMOL STORE`;
+          document.title = `${shop.name || 'Shop'} — ANMOL STORE`;
           document.getElementById('shop-name').innerHTML = `
-            ${shop.name}
+            ${shop.name || 'Local Shop'}
             ${shop.isVerified ? '<i class="fas fa-check-circle verified-icon" title="Verified Store"></i>' : ''}
           `;
-          document.getElementById('shop-description').textContent = shop.description;
-          document.getElementById('shop-category-badge').textContent = shop.category;
-          document.getElementById('shop-address-text').textContent = `${shop.address.street}, ${shop.address.city} (${shop.address.pincode})`;
+          document.getElementById('shop-description').textContent = shop.description || 'Welcome to our local business storefront on ANMOL STORE.';
+          document.getElementById('shop-category-badge').textContent = shop.category || 'General';
+          
+          const addr = shop.address
+            ? `${shop.address.street || ''}, ${shop.address.city || 'Palanpur'}${shop.address.pincode ? ` (${shop.address.pincode})` : ''}`
+            : 'Palanpur, Gujarat';
+          document.getElementById('shop-address-text').textContent = addr;
+
           document.getElementById('shop-hours-text').textContent = `${shop.businessHours?.days || 'Daily'}: ${shop.businessHours?.open || '09:00 AM'} - ${shop.businessHours?.close || '09:00 PM'}`;
           document.getElementById('shop-delivery-text').textContent = shop.deliveryCharge ? formatCurrency(shop.deliveryCharge) : 'Free';
-          document.getElementById('shop-rating-text').textContent = shop.rating.toFixed(1);
+          
+          const ratingVal = (shop.rating !== undefined && shop.rating !== null) ? Number(shop.rating).toFixed(1) : '4.8';
+          document.getElementById('shop-rating-text').textContent = ratingVal;
           document.getElementById('shop-reviews-count').textContent = shop.reviewCount || 0;
-          document.getElementById('shop-products-count').textContent = products.length;
+          document.getElementById('shop-products-count').textContent = allProducts.length;
 
-          document.getElementById('shop-cover-img').src = shop.coverImage || getFallbackImage('shop');
-          document.getElementById('shop-logo-img').src = shop.logo || getFallbackImage('shop');
+          document.getElementById('shop-cover-img').src = resolveMediaUrl(shop.coverImage, 'shop');
+          document.getElementById('shop-logo-img').src = resolveMediaUrl(shop.logo, 'shop');
 
           const callBtn = document.getElementById('shop-call-btn');
           if (shop.contactPhone) {
@@ -331,10 +338,12 @@
             callBtn.style.display = 'none';
           }
 
-          renderProducts(products);
-          renderReviews(reviews);
+          renderProducts(allProducts);
+          renderReviews(reviews || []);
         }
       } catch (err) {
+        document.getElementById('shop-name').textContent = 'Shop Not Available';
+        document.getElementById('shop-description').textContent = 'The requested shop does not exist or has been deactivated.';
         document.querySelector('main').innerHTML = `
           <div class="empty-state">
             <div class="empty-state-icon"><i class="fas fa-exclamation-triangle"></i></div>

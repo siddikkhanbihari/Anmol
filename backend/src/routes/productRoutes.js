@@ -17,6 +17,7 @@ router.get('/seller/mine', authenticateToken, requireRole('seller', 'admin'), ge
 router.get('/:id', getProductById);
 router.post('/', authenticateToken, requireRole('seller', 'admin'), createProduct);
 router.patch('/:id', authenticateToken, requireRole('seller', 'admin'), updateProduct);
+router.put('/:id', authenticateToken, requireRole('seller', 'admin'), updateProduct);
 router.delete('/:id', authenticateToken, requireRole('seller', 'admin'), deleteProduct);
 
 export default router;
