@@ -177,7 +177,7 @@ export async function registerSeller(req, res, next) {
 
 export async function login(req, res, next) {
   try {
-    const rawIdentifier = (req.body.identifier || req.body.email || req.body.phone || '').trim();
+    const rawIdentifier = (req.body.identifier || req.body.email || req.body.phone || req.body.emailOrPhone || '').trim();
     const { password } = req.body;
 
     if (!rawIdentifier || !password) {

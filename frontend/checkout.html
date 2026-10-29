@@ -274,7 +274,7 @@
     import { auth } from './js/auth.js';
     import { cart } from './js/cart.js';
     import { notify } from './js/notifications.js';
-    import { formatCurrency, getFallbackImage } from './js/config.js';
+    import { formatCurrency, getFallbackImage, resolveMediaUrl, FALLBACK_PLACEHOLDER_SVG } from './js/config.js';
 
     let selectedAddress = null;
     let savedAddresses = [];
@@ -308,7 +308,7 @@
         return `
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: var(--font-size-xs);">
             <div style="display: flex; align-items: center; gap: 8px;">
-              <img src="${p.images?.[0] || getFallbackImage('product')}" style="width: 32px; height: 32px; border-radius: 4px; object-fit: cover;">
+              <img src="${resolveMediaUrl(p.images?.[0], 'product')}" style="width: 32px; height: 32px; border-radius: 4px; object-fit: cover;" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='${FALLBACK_PLACEHOLDER_SVG}';">
               <div>
                 <strong>${p.name}</strong> &times; ${item.quantity}
               </div>

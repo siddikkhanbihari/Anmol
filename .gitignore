@@ -30,3 +30,6 @@ desktop.ini
 # User uploads (keep directory)
 backend/uploads/*
 !backend/uploads/.gitkeep
+
+# Scratch files
+scratch/
