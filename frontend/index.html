@@ -21,7 +21,6 @@
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/responsive.css">
-  <link rel="stylesheet" href="css/quick-commerce.css">
   <style>
     /* Premium Hero Styling */
     .hero-banner {
@@ -305,280 +304,151 @@
     </div>
   </div>
 
-  <!-- Blinkit-Inspired Quick-Commerce Header -->
-  <header class="qc-top-bar">
+  <!-- Premium Main Header -->
+  <header class="main-header">
     <div class="container">
-      <div class="qc-header-inner">
+      <div class="header-inner">
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-btn mobile-menu-toggle" aria-label="Open mobile navigation menu">
+          <i class="fas fa-bars"></i>
+        </button>
+
         <!-- Brand Logo -->
-        <a href="index.html" class="brand-logo" style="text-decoration: none; flex-shrink: 0; display: flex; align-items: center; gap: 8px;">
-          <div class="brand-icon-wrap" style="background: var(--qc-green); color: #FFF; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
-            <i class="fas fa-bolt" style="color: var(--qc-yellow);"></i>
+        <a href="index.html" class="brand-logo">
+          <div class="brand-icon-wrap">
+            <i class="fas fa-store-alt"></i>
           </div>
           <div class="brand-text-wrap">
-            <div class="brand-title" style="font-size: 1.25rem; font-weight: 800; color: var(--primary-navy); line-height: 1;">ANMOL <span style="color: var(--accent-orange);">STORE</span></div>
-            <div class="brand-tagline" style="font-size: 0.65rem; font-weight: 700; color: var(--qc-green); letter-spacing: 0.05em; text-transform: uppercase;">Instant Quick Commerce</div>
+            <div class="brand-title">ANMOL <span>STORE</span></div>
+            <div class="brand-tagline">Local Business, Digital Future</div>
           </div>
         </a>
 
-        <!-- Prominent Delivery ETA & Location Selector -->
-        <div class="qc-delivery-widget" id="qc-location-widget" title="Click to change delivery area in Palanpur">
-          <div class="qc-eta-pill">
-            <i class="fas fa-bolt"></i> 10-15 MINS
-          </div>
-          <div class="qc-location-details">
-            <div class="qc-location-title">
-              Delivery to: Home <i class="fas fa-chevron-down" style="font-size: 0.65rem; color: #64748B;"></i>
-            </div>
-            <div class="qc-location-sub">
-              <span id="qc-display-area">Station Road</span>, Palanpur (<span id="qc-display-pincode">385001</span>)
-            </div>
-          </div>
-        </div>
+        <!-- Location Selector Button -->
+        <button class="location-btn location-picker-btn" title="Choose Location in Palanpur">
+          <i class="fas fa-map-marker-alt"></i>
+          <span class="location-text current-location-display">Palanpur, 385001</span>
+          <i class="fas fa-chevron-down" style="font-size: 0.65rem; color: var(--color-text-muted);"></i>
+        </button>
 
-        <!-- Large Quick-Commerce Search Bar -->
-        <div class="qc-search-wrap">
-          <form class="qc-search-form header-search-form" action="products.html" method="GET">
-            <i class="fas fa-search qc-search-icon-left"></i>
-            <input type="text" name="q" id="qc-main-search-input" class="qc-search-input" placeholder="Search 'Atta, Rice & Dal'..." autocomplete="off">
+        <!-- Search Bar -->
+        <div class="header-search">
+          <form class="header-search-form" action="products.html" method="GET">
+            <i class="fas fa-search search-icon-left"></i>
+            <input type="text" name="q" placeholder="Search grocery, electronics, local shops, mechanics..." data-i18n-placeholder="search_placeholder" autocomplete="off">
+            <button type="submit" data-i18n="search_btn">Search</button>
           </form>
         </div>
 
-        <!-- Header Actions: Account & Quick Cart Pill -->
-        <div class="qc-header-actions">
-          <a href="login.html" class="qc-btn-account user-account-link">
-            <i class="far fa-user" style="font-size: 1.05rem;"></i>
-            <span class="header-action-text">Sign In</span>
+        <!-- Header Actions -->
+        <div class="header-actions">
+          <a href="login.html" class="header-action-item user-account-link">
+            <i class="far fa-user action-icon"></i>
+            <span class="header-action-text" data-i18n="nav_signin">Sign In</span>
           </a>
 
-          <a href="cart.html" class="qc-cart-btn" id="qc-top-cart-btn" title="View Cart">
-            <i class="fas fa-shopping-bag" style="font-size: 1.1rem;"></i>
-            <span class="qc-cart-badge-text">
-              <span class="cart-badge-count">0</span> items
-            </span>
+          <a href="cart.html" class="header-action-item" title="Cart">
+            <i class="fas fa-shopping-bag action-icon">
+              <span class="badge-count cart-badge-count" style="display: none;">0</span>
+            </i>
+            <span class="header-action-text" data-i18n="nav_cart">Cart</span>
           </a>
         </div>
-      </div>
-
-      <!-- Quick Search Suggestions Strip -->
-      <div class="qc-search-tags">
-        <span style="font-size: 0.72rem; font-weight: 700; color: #94A3B8; text-transform: uppercase; margin-right: 4px;">Popular:</span>
-        <a href="products.html?q=Atta" class="qc-search-tag">🌾 Chakki Atta</a>
-        <a href="products.html?q=Tea" class="qc-search-tag">☕ Tata Tea</a>
-        <a href="products.html?q=Oil" class="qc-search-tag">🌻 Sunflower Oil</a>
-        <a href="products.html?q=Rice" class="qc-search-tag">🍚 Basmati Rice</a>
-        <a href="products.html?q=boAt" class="qc-search-tag">🎧 boAt Neckband</a>
-        <a href="products.html?q=Drill" class="qc-search-tag">⚡ Bosch Drill</a>
-        <a href="products.html?q=Motul" class="qc-search-tag">🏍️ Engine Oil</a>
       </div>
     </div>
   </header>
 
-  <!-- Blinkit Category Bubbles Rail -->
-  <section class="qc-category-section">
+  <!-- Secondary Category Navigation -->
+  <nav class="secondary-nav">
     <div class="container">
-      <div class="qc-category-rail">
-        <a href="products.html?category=kirana-grocery" class="qc-category-item">
-          <div class="qc-category-thumb" style="background: #E8F5E9; color: #166534;">
-            <i class="fas fa-shopping-basket"></i>
-          </div>
-          <span class="qc-category-label">Kirana & Atta</span>
-        </a>
-
-        <a href="products.html?category=kirana-grocery" class="qc-category-item">
-          <div class="qc-category-thumb" style="background: #FFF7ED; color: #C2410C;">
-            <i class="fas fa-seedling"></i>
-          </div>
-          <span class="qc-category-label">Oil & Dal</span>
-        </a>
-
-        <a href="products.html?category=electronics-mobile" class="qc-category-item">
-          <div class="qc-category-thumb" style="background: #EFF6FF; color: #1E40AF;">
-            <i class="fas fa-headphones-alt"></i>
-          </div>
-          <span class="qc-category-label">Electronics</span>
-        </a>
-
-        <a href="products.html?category=hardware-machinery" class="qc-category-item">
-          <div class="qc-category-thumb" style="background: #FEF3C7; color: #B45309;">
-            <i class="fas fa-tools"></i>
-          </div>
-          <span class="qc-category-label">Hardware</span>
-        </a>
-
-        <a href="services.html" class="qc-category-item">
-          <div class="qc-category-thumb" style="background: #F0FDF4; color: #15803D;">
-            <i class="fas fa-bolt"></i>
-          </div>
-          <span class="qc-category-label">Electrician</span>
-        </a>
-
-        <a href="services.html" class="qc-category-item">
-          <div class="qc-category-thumb" style="background: #FEE2E2; color: #B91C1C;">
-            <i class="fas fa-wrench"></i>
-          </div>
-          <span class="qc-category-label">Auto Garage</span>
-        </a>
-
-        <a href="services.html" class="qc-category-item">
-          <div class="qc-category-thumb" style="background: #E0E7FF; color: #3730A3;">
-            <i class="fas fa-faucet"></i>
-          </div>
-          <span class="qc-category-label">Plumbing</span>
-        </a>
-
-        <a href="vehicles.html" class="qc-category-item">
-          <div class="qc-category-thumb" style="background: #FAE8FF; color: #86198F;">
-            <i class="fas fa-motorcycle"></i>
-          </div>
-          <span class="qc-category-label">Cars & Bikes</span>
-        </a>
-
-        <a href="shops.html" class="qc-category-item">
-          <div class="qc-category-thumb" style="background: #F1F5F9; color: #334155;">
-            <i class="fas fa-store"></i>
-          </div>
-          <span class="qc-category-label">Local Shops</span>
-        </a>
+      <div class="nav-links-wrap">
+        <div class="main-nav-links">
+          <a href="index.html" class="active"><i class="fas fa-home"></i> <span data-i18n="nav_home">Home</span></a>
+          <a href="shops.html"><i class="fas fa-store"></i> <span data-i18n="nav_shops">Explore Shops</span></a>
+          <a href="products.html"><i class="fas fa-shopping-basket"></i> <span data-i18n="nav_products">All Products</span></a>
+          <a href="services.html"><i class="fas fa-tools"></i> <span data-i18n="nav_services">Doorstep Services</span></a>
+          <a href="vehicles.html"><i class="fas fa-motorcycle"></i> <span data-i18n="nav_vehicles">Cars & Bikes</span></a>
+        </div>
+        <div class="main-nav-links">
+          <a href="seller-register.html" class="seller-promo-link"><i class="fas fa-handshake"></i> <span data-i18n="register_dukaan">Register Your Shop (Free)</span></a>
+        </div>
       </div>
     </div>
-  </section>
+  </nav>
 
-  <!-- Quick-Commerce Promo Banners (Blinkit Style) -->
-  <section class="qc-promo-strip">
-    <div class="container">
-      <div class="qc-banners-slider">
-        <a href="products.html" class="qc-banner-card qc-banner-1">
-          <div>
-            <span class="qc-banner-tag"><i class="fas fa-bolt"></i> 10-15 Mins</span>
-            <div class="qc-banner-title">Express Local Delivery</div>
-            <div class="qc-banner-sub">Dispatched immediately from verified neighbourhood stores across Palanpur.</div>
-          </div>
-          <div class="qc-banner-cta">Order Now <i class="fas fa-arrow-right"></i></div>
-        </a>
-
-        <a href="products.html?category=kirana-grocery" class="qc-banner-card qc-banner-2">
-          <div>
-            <span class="qc-banner-tag">💰 Wholesale Rates</span>
-            <div class="qc-banner-title">Zero Commission Markup</div>
-            <div class="qc-banner-sub">Pay direct physical store prices on Chakki Atta, Basmati Rice, and Sunflower Oil.</div>
-          </div>
-          <div class="qc-banner-cta">Shop Grocery <i class="fas fa-arrow-right"></i></div>
-        </a>
-
-        <a href="seller-register.html" class="qc-banner-card qc-banner-3">
-          <div>
-            <span class="qc-banner-tag">🇮🇳 Vocal For Local</span>
-            <div class="qc-banner-title">100% Free Shop Listing</div>
-            <div class="qc-banner-sub">Are you a shopkeeper in Palanpur? Take your business online today with ₹0 fees.</div>
-          </div>
-          <div class="qc-banner-cta">Register Free <i class="fas fa-arrow-right"></i></div>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Main Quick-Commerce Content Shelves -->
+  <!-- Main Content -->
   <main>
-    <!-- Shelf 1: Daily Kirana & Kitchen Staples (Blinkit Style with In-Place ADD) -->
-    <section class="qc-shelf-section">
+    <!-- Large Premium Hero Section -->
+    <section class="hero-banner">
       <div class="container">
-        <div class="qc-shelf-header">
-          <div class="qc-shelf-title-wrap">
-            <h2 class="qc-shelf-title">
-              <span style="background: #E8F5E9; color: #166534; width: 34px; height: 34px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem;"><i class="fas fa-shopping-basket"></i></span>
-              Daily Kirana & Kitchen Staples
-            </h2>
-            <p class="qc-shelf-sub">Fresh Chakki Atta, Premium Basmati Rice, Cooking Oil & Tea with 12-min delivery</p>
+        <div class="hero-inner">
+          <div class="hero-content">
+            <div class="hero-tagline-chip">
+              <i class="fas fa-bolt" style="color: #FACC15;"></i> <span data-i18n="hero_chip">Palanpur Local Marketplace (385001)</span>
+            </div>
+            <h1 class="hero-title">
+              Aapki Dukaan, <br>
+              <span class="accent-orange">Aapka Business,</span> <span class="accent-blue">Aapki Pehchaan</span>
+            </h1>
+            <p class="hero-subtitle" data-i18n="hero_sub">
+              Directly buy fresh groceries, daily essentials, electronics, or book certified local electricians & garage mechanics across all 24 areas of Palanpur.
+            </p>
+            <div class="hero-actions">
+              <a href="products.html" class="btn btn-primary btn-lg" style="box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);">
+                <i class="fas fa-shopping-cart"></i> <span data-i18n="btn_start_shopping">Start Shopping</span>
+              </a>
+              <a href="shops.html" class="btn btn-outline-white btn-lg">
+                <i class="fas fa-store"></i> <span data-i18n="btn_explore_shops">Explore Local Shops</span>
+              </a>
+            </div>
+            <div class="hero-stats">
+              <div>
+                <div class="stat-number">500+</div>
+                <div class="stat-label">Verified Local Dukaan</div>
+              </div>
+              <div>
+                <div class="stat-number">₹0</div>
+                <div class="stat-label">Registration Charge</div>
+              </div>
+              <div>
+                <div class="stat-number">45 Mins</div>
+                <div class="stat-label">Hyperlocal Delivery</div>
+              </div>
+            </div>
           </div>
-          <a href="products.html?category=kirana-grocery" class="qc-shelf-see-all">
-            see all <i class="fas fa-chevron-right" style="font-size: 0.72rem;"></i>
-          </a>
-        </div>
-        <div class="qc-shelf-row" id="qc-shelf-grocery">
-          <!-- Rendered dynamically by QuickCommerce.js with in-place ADD counter -->
-          <div class="skeleton skeleton-card" style="height: 220px; border-radius: 14px;"></div>
-          <div class="skeleton skeleton-card" style="height: 220px; border-radius: 14px;"></div>
-          <div class="skeleton skeleton-card" style="height: 220px; border-radius: 14px;"></div>
-          <div class="skeleton skeleton-card" style="height: 220px; border-radius: 14px;"></div>
-          <div class="skeleton skeleton-card" style="height: 220px; border-radius: 14px;"></div>
-        </div>
-      </div>
-    </section>
 
-    <!-- Shelf 2: Trending & Best Sellers in Palanpur -->
-    <section class="qc-shelf-section" style="background: #F8FAFC; padding-bottom: 24px;">
-      <div class="container">
-        <div class="qc-shelf-header">
-          <div class="qc-shelf-title-wrap">
-            <h2 class="qc-shelf-title">
-              <span style="background: #FFF7ED; color: #EA580C; width: 34px; height: 34px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem;"><i class="fas fa-fire"></i></span>
-              Trending & Best Sellers
-            </h2>
-            <p class="qc-shelf-sub">Most frequently ordered daily essentials and top reviewed products in Palanpur</p>
-          </div>
-          <a href="products.html" class="qc-shelf-see-all">
-            see all <i class="fas fa-chevron-right" style="font-size: 0.72rem;"></i>
-          </a>
-        </div>
-        <div class="qc-shelf-row" id="qc-shelf-trending">
-          <!-- Rendered dynamically by QuickCommerce.js with in-place ADD counter -->
-          <div class="skeleton skeleton-card" style="height: 220px; border-radius: 14px;"></div>
-          <div class="skeleton skeleton-card" style="height: 220px; border-radius: 14px;"></div>
-          <div class="skeleton skeleton-card" style="height: 220px; border-radius: 14px;"></div>
-          <div class="skeleton skeleton-card" style="height: 220px; border-radius: 14px;"></div>
-          <div class="skeleton skeleton-card" style="height: 220px; border-radius: 14px;"></div>
-        </div>
-      </div>
-    </section>
+          <!-- Hero Right Showcase Card Mockup -->
+          <div class="hero-card-showcase">
+            <div class="hero-store-preview">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="live-pulse-dot"></span>
+                  <strong style="font-size: 0.95rem; color: var(--primary-navy);">Sharma Kirana Store</strong>
+                  <i class="fas fa-check-circle" style="color: var(--brand-blue); font-size: 0.85rem;" title="Verified Store"></i>
+                </div>
+                <span class="badge badge-success" style="font-size: 0.7rem; font-weight: 700;">★ 4.9 (140+)</span>
+              </div>
+              <p style="margin: 0 0 10px 0; font-size: 0.78rem; color: var(--color-text-muted);">
+                Station Road Plaza, Palanpur • Groceries & Daily FMCG
+              </p>
+              <div style="background: var(--color-surface-alt); border-radius: var(--radius-sm); padding: 8px 10px; font-size: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <span style="font-weight: 700; color: var(--primary-navy);">Aashirvaad Shudh Chakki Atta (5kg)</span>
+                  <div style="color: var(--color-text-muted); font-size: 0.7rem;">In Stock • 100% Original</div>
+                </div>
+                <span style="font-weight: 800; color: var(--brand-blue); font-size: 0.9rem;">₹215</span>
+              </div>
+            </div>
 
-    <!-- Shelf 3: Electronics & Mobile Accessories -->
-    <section class="qc-shelf-section">
-      <div class="container">
-        <div class="qc-shelf-header">
-          <div class="qc-shelf-title-wrap">
-            <h2 class="qc-shelf-title">
-              <span style="background: #EFF6FF; color: #2563EB; width: 34px; height: 34px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem;"><i class="fas fa-headphones-alt"></i></span>
-              Electronics & Mobile Accessories
-            </h2>
-            <p class="qc-shelf-sub">Wireless earphones, fast power banks, smartwatches & charging cables delivered to your doorstep</p>
+            <!-- Floating Rider Status Pill -->
+            <div class="hero-delivery-pill">
+              <i class="fas fa-motorcycle" style="color: #34D399; font-size: 1.1rem;"></i>
+              <div>
+                <span style="display: block; font-size: 0.72rem; color: #D1FAE5; text-transform: uppercase; letter-spacing: 0.05em;">Instant Local Delivery</span>
+                <span>Order Dispatched • Arriving in ~25-40 mins</span>
+              </div>
+            </div>
           </div>
-          <a href="products.html?category=electronics-mobile" class="qc-shelf-see-all">
-            see all <i class="fas fa-chevron-right" style="font-size: 0.72rem;"></i>
-          </a>
-        </div>
-        <div class="qc-shelf-row" id="qc-shelf-electronics">
-          <!-- Rendered dynamically by QuickCommerce.js with in-place ADD counter -->
-          <div class="skeleton skeleton-card" style="height: 220px; border-radius: 14px;"></div>
-          <div class="skeleton skeleton-card" style="height: 220px; border-radius: 14px;"></div>
-          <div class="skeleton skeleton-card" style="height: 220px; border-radius: 14px;"></div>
-          <div class="skeleton skeleton-card" style="height: 220px; border-radius: 14px;"></div>
-          <div class="skeleton skeleton-card" style="height: 220px; border-radius: 14px;"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Shelf 4: Hardware, Tools & Auto Care -->
-    <section class="qc-shelf-section" style="background: #F8FAFC; padding-bottom: 24px;">
-      <div class="container">
-        <div class="qc-shelf-header">
-          <div class="qc-shelf-title-wrap">
-            <h2 class="qc-shelf-title">
-              <span style="background: #FEF3C7; color: #B45309; width: 34px; height: 34px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem;"><i class="fas fa-wrench"></i></span>
-              Hardware, Machinery & Bike Care
-            </h2>
-            <p class="qc-shelf-sub">Original Motul 4T engine oil, Bosch professional impact drills, and electrical fixtures</p>
-          </div>
-          <a href="products.html?category=hardware-machinery" class="qc-shelf-see-all">
-            see all <i class="fas fa-chevron-right" style="font-size: 0.72rem;"></i>
-          </a>
-        </div>
-        <div class="qc-shelf-row" id="qc-shelf-hardware">
-          <!-- Rendered dynamically by QuickCommerce.js with in-place ADD counter -->
-          <div class="skeleton skeleton-card" style="height: 220px; border-radius: 14px;"></div>
-          <div class="skeleton skeleton-card" style="height: 220px; border-radius: 14px;"></div>
-          <div class="skeleton skeleton-card" style="height: 220px; border-radius: 14px;"></div>
-          <div class="skeleton skeleton-card" style="height: 220px; border-radius: 14px;"></div>
-          <div class="skeleton skeleton-card" style="height: 220px; border-radius: 14px;"></div>
         </div>
       </div>
     </section>
@@ -628,6 +498,29 @@
       </div>
     </div>
 
+    <!-- Category Grid Section -->
+    <section class="section-categories" style="padding: var(--space-12) 0 var(--space-8) 0;">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-header-title">
+            <span class="section-chip"><i class="fas fa-th-large"></i> Explore Catalog</span>
+            <h2><span data-i18n="sec_categories">Shop by Category</span></h2>
+            <p data-i18n="sec_categories_sub">Everyday groceries, home essentials, and on-demand doorstep services</p>
+          </div>
+          <a href="products.html" class="btn btn-outline btn-sm"><span data-i18n="view_all">View All</span> &rarr;</a>
+        </div>
+        <div class="grid-6" id="home-categories-grid">
+          <!-- Dynamically populated from API -->
+          <div class="skeleton skeleton-card" style="height: 130px; border-radius: 16px;"></div>
+          <div class="skeleton skeleton-card" style="height: 130px; border-radius: 16px;"></div>
+          <div class="skeleton skeleton-card" style="height: 130px; border-radius: 16px;"></div>
+          <div class="skeleton skeleton-card" style="height: 130px; border-radius: 16px;"></div>
+          <div class="skeleton skeleton-card" style="height: 130px; border-radius: 16px;"></div>
+          <div class="skeleton skeleton-card" style="height: 130px; border-radius: 16px;"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- Featured Nearby Shops Section -->
     <section class="section-shops" style="padding: var(--space-10) 0; background-color: var(--color-surface-alt);">
       <div class="container">
@@ -640,6 +533,26 @@
           <a href="shops.html" class="btn btn-outline btn-sm"><span data-i18n="view_all">View All Shops</span> &rarr;</a>
         </div>
         <div class="grid-3" id="home-shops-grid">
+          <div class="skeleton skeleton-card" style="border-radius: 16px;"></div>
+          <div class="skeleton skeleton-card" style="border-radius: 16px;"></div>
+          <div class="skeleton skeleton-card" style="border-radius: 16px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Popular Products Section -->
+    <section class="section-popular-products" style="padding: var(--space-12) 0;">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-header-title">
+            <span class="section-chip"><i class="fas fa-fire"></i> Best Sellers</span>
+            <h2><span data-i18n="sec_products">Daily Essentials & Trending Products</span></h2>
+            <p data-i18n="sec_products_sub">Hand-picked grocery, personal care, and gadgets from verified Palanpur retailers</p>
+          </div>
+          <a href="products.html" class="btn btn-outline btn-sm"><span data-i18n="view_all">View All Products</span> &rarr;</a>
+        </div>
+        <div class="grid-4" id="home-products-grid">
+          <div class="skeleton skeleton-card" style="border-radius: 16px;"></div>
           <div class="skeleton skeleton-card" style="border-radius: 16px;"></div>
           <div class="skeleton skeleton-card" style="border-radius: 16px;"></div>
           <div class="skeleton skeleton-card" style="border-radius: 16px;"></div>
@@ -1047,10 +960,24 @@
       });
     });
 
-    // Load dynamic homepage data (Shops, Services, Vehicles)
+    // Load dynamic homepage data
     async function loadHomepageData() {
       try {
-        // 1. Featured Shops
+        // 1. Categories
+        const catRes = await api.get('/categories?featured=true');
+        if (catRes.success && catRes.data) {
+          const grid = document.getElementById('home-categories-grid');
+          grid.innerHTML = catRes.data.slice(0, 6).map(c => `
+            <a href="products.html?category=${c.slug}" class="category-card">
+              <div class="category-icon-box">
+                <i class="fas ${c.icon || 'fa-store'}"></i>
+              </div>
+              <div class="category-name">${c.name}</div>
+            </a>
+          `).join('');
+        }
+
+        // 2. Featured Shops
         const shopsRes = await api.get('/shops?limit=3');
         if (shopsRes.success && shopsRes.data) {
           const grid = document.getElementById('home-shops-grid');
@@ -1083,7 +1010,58 @@
           `;}).join('');
         }
 
-        // 2. Services
+        // 3. Popular Products
+        const prodRes = await api.get('/products?limit=8');
+        if (prodRes.success && prodRes.data) {
+          const grid = document.getElementById('home-products-grid');
+          grid.innerHTML = prodRes.data.products.map(p => {
+            const hasDiscount = p.originalPrice && p.originalPrice > p.price;
+            const discountPill = hasDiscount
+              ? `<span class="product-badge-discount">${Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100)}% OFF</span>`
+              : '';
+            const ratingVal = (p.rating !== undefined && p.rating !== null) ? Number(p.rating).toFixed(1) : '4.8';
+            
+            return `
+            <div class="product-card" data-id="${p._id}">
+              ${hasDiscount ? `<div class="product-badge-stack">${discountPill}</div>` : ''}
+              <div class="product-thumb">
+                <img src="${resolveMediaUrl(p.images?.[0], 'product')}" alt="${p.name}" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='${FALLBACK_PLACEHOLDER_SVG}';">
+              </div>
+              <div class="product-content">
+                <a href="shop-details.html?slug=${p.shop?.slug}" class="product-shop-tag">
+                  <i class="fas fa-store"></i> ${p.shop?.name || 'Local Seller'}
+                </a>
+                <h3 class="product-title">
+                  <a href="product-details.html?id=${p._id}">${p.name}</a>
+                </h3>
+                <div class="product-rating">
+                  <div class="stars"><i class="fas fa-star"></i> ${ratingVal}</div>
+                  <span>(${p.reviewCount || 0})</span>
+                </div>
+                <div class="product-price-row">
+                  <div class="price-box">
+                    <span class="current-price">${formatCurrency(p.price)}</span>
+                    ${hasDiscount ? `<span class="original-price">${formatCurrency(p.originalPrice)}</span>` : ''}
+                  </div>
+                  <button class="btn-add-cart" data-product='${JSON.stringify({ _id: p._id, name: p.name, price: p.price, shop: p.shop, stock: p.stock })}'>
+                    <i class="fas fa-plus"></i> Add
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;}).join('');
+
+          // Bind Add-to-Cart buttons
+          grid.querySelectorAll('.btn-add-cart').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.preventDefault();
+              const product = JSON.parse(btn.dataset.product);
+              cart.addItem(product, 1);
+            });
+          });
+        }
+
+        // 4. Services
         const servRes = await api.get('/services?limit=4');
         if (servRes.success && servRes.data) {
           const grid = document.getElementById('home-services-grid');
@@ -1110,7 +1088,7 @@
           `).join('');
         }
 
-        // 3. Vehicles
+        // 5. Vehicles
         const vehRes = await api.get('/vehicles?limit=3');
         if (vehRes.success && vehRes.data) {
           const grid = document.getElementById('home-vehicles-grid');
@@ -1146,83 +1124,5 @@
       loadHomepageData();
     }
   </script>
-
-  <!-- Floating Bottom Quick-Commerce Cart Bar (Slides in when items in cart) -->
-  <a href="cart.html" class="qc-floating-cart-bar" id="qc-floating-cart-bar">
-    <div class="qc-float-left">
-      <div class="qc-float-cart-icon">
-        <i class="fas fa-shopping-bag"></i>
-      </div>
-      <div>
-        <div class="qc-float-items">0 ITEMS</div>
-        <div class="qc-float-total">₹0</div>
-      </div>
-    </div>
-    <div class="qc-float-right">
-      <span>View Cart</span>
-      <i class="fas fa-arrow-right"></i>
-    </div>
-  </a>
-
-  <!-- Mobile Bottom Navigation Bar -->
-  <nav class="mobile-bottom-nav">
-    <div class="mobile-bottom-nav-inner">
-      <a href="index.html" class="mobile-nav-item active">
-        <i class="fas fa-home"></i>
-        <span>Home</span>
-      </a>
-      <a href="products.html" class="mobile-nav-item">
-        <i class="fas fa-th-large"></i>
-        <span>Categories</span>
-      </a>
-      <a href="products.html?focus=search" class="mobile-nav-item">
-        <i class="fas fa-search"></i>
-        <span>Search</span>
-      </a>
-      <a href="cart.html" class="mobile-nav-item" style="position: relative;">
-        <i class="fas fa-shopping-bag"></i>
-        <span class="badge-count cart-badge-count" style="display: none; position: absolute; top: 0; right: 12px; font-size: 0.62rem; width: 16px; height: 16px;">0</span>
-        <span>Cart</span>
-      </a>
-      <a href="customer-dashboard.html" class="mobile-nav-item user-account-link">
-        <i class="far fa-user"></i>
-        <span>Account</span>
-      </a>
-    </div>
-  </nav>
-
-  <!-- Location Selection Modal (Palanpur Localities) -->
-  <div class="qc-location-modal" id="qc-location-modal">
-    <div class="qc-location-card">
-      <div class="qc-location-header">
-        <div>
-          <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--qc-text-dark); margin: 0 0 4px 0;">Select Delivery Locality</h3>
-          <p style="font-size: 0.78rem; color: var(--qc-text-muted); margin: 0;">Superfast 10-15 min delivery available across all Palanpur wards</p>
-        </div>
-        <button type="button" class="qc-location-close" id="qc-location-close">&times;</button>
-      </div>
-
-      <button type="button" class="qc-detect-gps-btn" id="qc-btn-detect-gps">
-        <i class="fas fa-crosshairs"></i> Use My Current Location (GPS)
-      </button>
-
-      <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: #94A3B8; margin-bottom: 8px; letter-spacing: 0.05em;">
-        Popular Palanpur Areas:
-      </div>
-
-      <div class="qc-area-list">
-        <div class="qc-area-chip active" data-area="Station Road" data-pincode="385001">📍 Station Road</div>
-        <div class="qc-area-chip" data-area="Aroma Circle" data-pincode="385001">📍 Aroma Circle</div>
-        <div class="qc-area-chip" data-area="Delhi Highway" data-pincode="385001">📍 Delhi Highway</div>
-        <div class="qc-area-chip" data-area="Gadh Road" data-pincode="385001">📍 Gadh Road</div>
-        <div class="qc-area-chip" data-area="Cozy Area" data-pincode="385001">📍 Cozy Area</div>
-        <div class="qc-area-chip" data-area="Deesa Highway" data-pincode="385001">📍 Deesa Highway</div>
-        <div class="qc-area-chip" data-area="Ambaji Road" data-pincode="385001">📍 Ambaji Road</div>
-        <div class="qc-area-chip" data-area="Kanu Circle" data-pincode="385001">📍 Kanu Circle</div>
-      </div>
-    </div>
-  </div>
-
-  <script type="module" src="js/quick-commerce.js"></script>
 </body>
 </html>

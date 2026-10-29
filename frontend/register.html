@@ -58,60 +58,54 @@
 
   <div class="auth-page-wrap">
     <div class="auth-card">
-      <!-- State 1: Registration Form -->
-      <div id="signup-step-form">
-        <div style="text-align: center; margin-bottom: var(--space-6);">
-          <h2 style="font-size: var(--font-size-xl); margin-bottom: 4px; color: var(--primary-navy);">Create Customer Account</h2>
-          <p style="color: var(--color-text-muted); font-size: var(--font-size-sm); margin: 0;">
-            Order from trusted local kirana, electronics, and service providers
-          </p>
+      <div style="text-align: center; margin-bottom: var(--space-6);">
+        <h2 style="font-size: var(--font-size-xl); margin-bottom: 4px;">Create Customer Account</h2>
+        <p style="color: var(--color-text-muted); font-size: var(--font-size-sm); margin: 0;">
+          Order from trusted local kirana, electronics, and service providers
+        </p>
+      </div>
+
+      <form id="register-form">
+        <div class="form-group">
+          <label class="form-label required" for="reg-name">Full Name</label>
+          <input type="text" id="reg-name" class="form-control" placeholder="e.g. Ramesh Kumar" required>
         </div>
 
-        <form id="register-form">
-          <div class="form-group">
-            <label class="form-label required" for="reg-name">Full Name</label>
-            <input type="text" id="reg-name" class="form-control" placeholder="e.g. Ramesh Kumar" required autocomplete="name">
-          </div>
+        <div class="form-group">
+          <label class="form-label required" for="reg-email">Email Address</label>
+          <input type="email" id="reg-email" class="form-control" placeholder="ramesh@example.com" required>
+        </div>
 
-          <div class="form-group">
-            <label class="form-label required" for="reg-email">Email Address</label>
-            <input type="email" id="reg-email" class="form-control" placeholder="ramesh@example.com" required autocomplete="email">
+        <div class="form-group">
+          <label class="form-label required" for="reg-phone">10-Digit Mobile Number</label>
+          <div class="input-group">
+            <span style="display: flex; align-items: center; padding: 0 12px; background: var(--color-surface-alt); border: 1px solid var(--color-border); border-right: none; border-top-left-radius: var(--radius-md); border-bottom-left-radius: var(--radius-md); font-weight: 600; color: var(--color-text-muted);">+91</span>
+            <input type="tel" id="reg-phone" class="form-control" placeholder="98XXXXXXXX" maxlength="10" required>
           </div>
+        </div>
 
-          <div class="form-group">
-            <label class="form-label required" for="reg-phone">10-Digit Mobile Number</label>
-            <div class="input-group">
-              <span style="display: flex; align-items: center; padding: 0 12px; background: var(--color-surface-alt); border: 1px solid var(--color-border); border-right: none; border-top-left-radius: var(--radius-md); border-bottom-left-radius: var(--radius-md); font-weight: 700; color: var(--primary-navy); font-size: 0.95rem;">+91</span>
-              <input type="tel" id="reg-phone" class="form-control" placeholder="98XXXXXXXX" maxlength="10" inputmode="numeric" required autocomplete="tel" style="font-size: 1.05rem; letter-spacing: 0.05em; font-weight: 700;">
-            </div>
-            <div class="form-hint" style="font-size: 0.72rem; color: var(--color-text-muted); margin-top: 4px;">
-              <i class="fas fa-check-circle" style="color: #10B981;"></i> Used for order updates and delivery notifications.
-            </div>
-          </div>
+        <div class="form-group">
+          <label class="form-label required" for="reg-password">Create Password</label>
+          <input type="password" id="reg-password" class="form-control" placeholder="At least 6 characters" minlength="6" required>
+          <div class="form-hint">Must contain at least 6 characters</div>
+        </div>
 
-          <div class="form-group">
-            <label class="form-label required" for="reg-password">Create Password</label>
-            <input type="password" id="reg-password" class="form-control" placeholder="At least 6 characters" minlength="6" required autocomplete="new-password">
-            <div class="form-hint">Must contain at least 6 characters</div>
-          </div>
+        <div class="form-group">
+          <label class="form-label required" for="reg-password-confirm">Confirm Password</label>
+          <input type="password" id="reg-password-confirm" class="form-control" placeholder="Re-enter your password" required>
+        </div>
 
-          <div class="form-group">
-            <label class="form-label required" for="reg-password-confirm">Confirm Password</label>
-            <input type="password" id="reg-password-confirm" class="form-control" placeholder="Re-enter your password" required autocomplete="new-password">
-          </div>
+        <div class="form-group">
+          <label class="filter-option" style="font-size: var(--font-size-xs); align-items: flex-start;">
+            <input type="checkbox" id="terms-check" required style="margin-top: 3px;">
+            <span>I agree to ANMOL STORE's <a href="terms.html" target="_blank">Terms of Service</a> and <a href="privacy.html" target="_blank">Privacy Policy</a>.</span>
+          </label>
+        </div>
 
-          <div class="form-group">
-            <label class="filter-option" style="font-size: var(--font-size-xs); align-items: flex-start;">
-              <input type="checkbox" id="terms-check" required style="margin-top: 3px;" checked>
-              <span>I agree to ANMOL STORE's <a href="terms.html" target="_blank">Terms of Service</a> and <a href="privacy.html" target="_blank">Privacy Policy</a>.</span>
-            </label>
-          </div>
-
-          <button type="submit" id="btn-reg-submit" class="btn btn-primary btn-block btn-lg" style="margin-top: var(--space-4); font-weight: 800;">
-            <i class="fas fa-user-plus" style="margin-right: 6px;"></i> Create Free Account
-          </button>
-        </form>
-      </div>
+        <button type="submit" id="btn-reg-submit" class="btn btn-primary btn-block btn-lg" style="margin-top: var(--space-4);">
+          Create Customer Account
+        </button>
+      </form>
 
       <div style="text-align: center; margin-top: var(--space-6); font-size: var(--font-size-sm); color: var(--color-text-muted);">
         Are you a shop owner or service provider?
@@ -157,7 +151,6 @@
     const form = document.getElementById('register-form');
     const submitBtn = document.getElementById('btn-reg-submit');
 
-    // Direct Account Creation (No OTP)
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = document.getElementById('reg-name').value.trim();
@@ -165,11 +158,6 @@
       const phone = document.getElementById('reg-phone').value.trim();
       const password = document.getElementById('reg-password').value;
       const confirm = document.getElementById('reg-password-confirm').value;
-
-      if (!name || !email || !phone || !password) {
-        notify.warning('Please fill in all required fields.');
-        return;
-      }
 
       if (password !== confirm) {
         notify.warning('Passwords do not match. Please re-enter.');
@@ -184,17 +172,17 @@
       submitBtn.disabled = true;
       submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
 
-      const result = await auth.register({ name, email, phone, password, role: 'customer' });
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Create Free Account';
+      const result = await auth.register({ name, email, phone, password });
 
       if (result.success) {
-        notify.playSuccessSound();
-        notify.success('🎉 Welcome to ANMOL STORE! Account created successfully.');
-
+        notify.success('Welcome to ANMOL STORE! Account created successfully.');
+        
+        // Sync guest cart to new account so checkout has items
         try {
           await cart.syncGuestCart();
-        } catch (err) {}
+        } catch (err) {
+          console.warn('Cart sync notice:', err);
+        }
 
         setTimeout(() => {
           if (safeRedirectUrl) {
@@ -202,9 +190,14 @@
           } else {
             window.location.href = 'customer-dashboard.html';
           }
-        }, 400);
+        }, 800);
       } else {
-        notify.error(result.message || 'Registration failed. Please check your details.');
+        notify.error(result.message);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Create Customer Account';
+      }
+    });
+        submitBtn.innerHTML = 'Create Customer Account';
       }
     });
   </script>

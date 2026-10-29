@@ -1,10 +1,10 @@
 // ANMOL STORE - Order Controller
-import { Order, Product, Shop, Cart, Notification, Payment, User, RiderProfile, PlatformSettings, OtpChallenge } from '../models/index.js';
+import { Order, Product, Shop, Cart, Notification, Payment, User, RiderProfile } from '../models/index.js';
 import { ApiResponse } from '../utils/apiResponse.js';
 
 export async function createOrder(req, res, next) {
   try {
-    const { items, deliveryAddress, paymentMethod = 'cod', couponCode, notes, checkoutVerificationToken } = req.body;
+    const { items, deliveryAddress, paymentMethod = 'cod', couponCode, notes } = req.body;
 
     if (!items || !items.length) {
       return ApiResponse.badRequest(res, 'Order must contain at least one item');
@@ -12,27 +12,6 @@ export async function createOrder(req, res, next) {
 
     if (!deliveryAddress || !deliveryAddress.recipientName || !deliveryAddress.phone || !deliveryAddress.street || !deliveryAddress.pincode) {
       return ApiResponse.badRequest(res, 'Complete delivery address and phone number are required');
-    }
-
-    // Optional / Platform-enforced Checkout OTP Verification
-    let verifiedOtpChallenge = null;
-    if (checkoutVerificationToken) {
-      verifiedOtpChallenge = await OtpChallenge.findOne({
-        verificationToken: checkoutVerificationToken,
-        purpose: 'checkout',
-        userId: req.user._id,
-        isVerified: true,
-        isConsumed: false
-      });
-
-      if (!verifiedOtpChallenge || Date.now() > new Date(verifiedOtpChallenge.verificationTokenExpiresAt).getTime()) {
-        return ApiResponse.badRequest(res, 'Invalid or expired checkout verification token. Please verify your mobile number with OTP.');
-      }
-    } else {
-      const platformSettings = await PlatformSettings.findOne({ key: 'main_settings' });
-      if (platformSettings?.checkoutOtpRequired) {
-        return ApiResponse.badRequest(res, 'Mobile OTP verification is required before placing order.', { requireCheckoutOtp: true });
-      }
     }
 
     // Server-side validation of products and stock
@@ -136,13 +115,6 @@ export async function createOrder(req, res, next) {
       overallStatus: 'placed',
       notes
     });
-
-    // Invalidate checkout OTP verification challenge (single-use token)
-    if (verifiedOtpChallenge) {
-      verifiedOtpChallenge.isConsumed = true;
-      verifiedOtpChallenge.consumedAt = new Date();
-      await verifiedOtpChallenge.save();
-    }
 
     // Atomically decrement stock
     for (const item of items) {

@@ -21,7 +21,6 @@
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/responsive.css">
-  <link rel="stylesheet" href="css/quick-commerce.css">
 </head>
 <body>
 
@@ -270,23 +269,6 @@
     </div>
   </nav>
 
-  <!-- Floating Bottom Quick-Commerce Cart Bar -->
-  <a href="cart.html" class="qc-floating-cart-bar" id="qc-floating-cart-bar">
-    <div class="qc-float-left">
-      <div class="qc-float-cart-icon">
-        <i class="fas fa-shopping-bag"></i>
-      </div>
-      <div>
-        <div class="qc-float-items">0 ITEMS</div>
-        <div class="qc-float-total">₹0</div>
-      </div>
-    </div>
-    <div class="qc-float-right">
-      <span>View Cart</span>
-      <i class="fas fa-arrow-right"></i>
-    </div>
-  </a>
-
   <footer class="site-footer">
     <div class="footer-bottom">
       <div class="container">
@@ -388,95 +370,46 @@
           container.innerHTML = products.map(p => {
             const hasDiscount = p.originalPrice && p.originalPrice > p.price;
             const discountPill = hasDiscount 
-              ? `<span class="qc-discount-tag">${Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100)}% OFF</span>`
+              ? `<span class="product-badge-discount">${Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100)}% OFF</span>`
               : '';
             const ratingVal = (p.rating !== undefined && p.rating !== null) ? Number(p.rating).toFixed(1) : '4.8';
-            let unitLabel = p.unit || '1 pack';
-            if (p.name.includes('5 kg') || p.name.includes('5kg')) unitLabel = '5 kg';
-            else if (p.name.includes('1 kg') || p.name.includes('1kg')) unitLabel = '1 kg';
-            else if (p.name.includes('500g') || p.name.includes('500 g')) unitLabel = '500 g';
-            else if (p.name.includes('1 Litre') || p.name.includes('1L')) unitLabel = '1 Litre';
-
-            const cartItem = (cart.cart?.items || []).find(
-              i => (i.product?._id || i.product?.id || i.productId) === p._id
-            );
-            const inCartQty = cartItem ? cartItem.quantity : 0;
-
-            const actionButtonHtml = inCartQty > 0
-              ? `<div class="blinkit-qty-counter" data-id="${p._id}"><button type="button" class="blinkit-qty-btn btn-prod-dec" data-id="${p._id}">−</button><span class="blinkit-qty-value">${inCartQty}</span><button type="button" class="blinkit-qty-btn btn-prod-inc" data-id="${p._id}">+</button></div>`
-              : `<button type="button" class="blinkit-add-btn btn-prod-add" data-id="${p._id}" data-product='${JSON.stringify({ _id: p._id, name: p.name, price: p.price, shop: p.shop, stock: p.stock })}'>ADD <i class="fas fa-plus" style="font-size: 0.72rem;"></i></button>`;
 
             return `
-            <div class="qc-card" data-id="${p._id}">
-              <div class="qc-card-thumb-wrap">
-                <span class="qc-time-tag"><i class="fas fa-bolt"></i> 12 MINS</span>
-                ${discountPill}
-                <a href="product-details.html?id=${p._id}" style="display: contents;">
-                  <img class="qc-card-img" src="${resolveMediaUrl(p.images?.[0], 'product')}" alt="${p.name}" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='${FALLBACK_PLACEHOLDER_SVG}';">
-                </a>
+            <div class="product-card" data-id="${p._id}">
+              ${hasDiscount ? `<div class="product-badge-stack">${discountPill}</div>` : ''}
+              <div class="product-thumb">
+                <img src="${resolveMediaUrl(p.images?.[0], 'product')}" alt="${p.name}" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='${FALLBACK_PLACEHOLDER_SVG}';">
               </div>
-              <div class="qc-card-content">
-                <a href="shop-details.html?slug=${p.shop?.slug || ''}" class="qc-card-shop">
-                  <i class="fas fa-store" style="font-size: 0.65rem;"></i> ${p.shop?.name || 'Local Seller'}
+              <div class="product-content">
+                <a href="shop-details.html?slug=${p.shop?.slug}" class="product-shop-tag">
+                  <i class="fas fa-store"></i> ${p.shop?.name || 'Local Seller'}
                 </a>
-                <a href="product-details.html?id=${p._id}" class="qc-card-name" title="${p.name}">
-                  ${p.name}
-                </a>
-                <div class="qc-card-unit">${unitLabel}</div>
-                <div class="qc-card-action-row">
-                  <div class="qc-price-block">
-                    <span class="qc-price-current">${formatCurrency(p.price)}</span>
-                    ${p.originalPrice ? `<span class="qc-price-original">${formatCurrency(p.originalPrice)}</span>` : ''}
+                <h3 class="product-title">
+                  <a href="product-details.html?id=${p._id}">${p.name}</a>
+                </h3>
+                <div class="product-rating">
+                  <div class="stars"><i class="fas fa-star"></i> ${ratingVal}</div>
+                  <span>(${p.reviewCount || 0})</span>
+                </div>
+                <div class="product-price-row">
+                  <div class="price-box">
+                    <span class="current-price">${formatCurrency(p.price)}</span>
+                    ${p.originalPrice ? `<span class="original-price">${formatCurrency(p.originalPrice)}</span>` : ''}
                   </div>
-                  <div class="qc-btn-wrap" id="prod-btn-${p._id}">
-                    ${actionButtonHtml}
-                  </div>
+                  <button class="btn-add-cart" data-product='${JSON.stringify({ _id: p._id, name: p.name, price: p.price, shop: p.shop, stock: p.stock })}'>
+                    <i class="fas fa-plus"></i> Add
+                  </button>
                 </div>
               </div>
             </div>
           `;}).join('');
 
-          // Bind Blinkit Add / Stepper buttons
-          container.querySelectorAll('.btn-prod-add').forEach(btn => {
-            btn.addEventListener('click', async (e) => {
+          // Bind cart buttons
+          container.querySelectorAll('.btn-add-cart').forEach(btn => {
+            btn.addEventListener('click', (e) => {
               e.preventDefault();
               const product = JSON.parse(btn.dataset.product);
-              btn.disabled = true;
-              await cart.addItem(product, 1);
-              loadProducts();
-            });
-          });
-
-          container.querySelectorAll('.btn-prod-inc').forEach(btn => {
-            btn.addEventListener('click', async (e) => {
-              e.preventDefault();
-              const pId = btn.dataset.id;
-              const cartItem = (cart.cart?.items || []).find(
-                i => (i.product?._id || i.product?.id || i.productId) === pId
-              );
-              if (cartItem) {
-                await cart.updateQuantity(cartItem._id, (cartItem.quantity || 1) + 1);
-                loadProducts();
-              }
-            });
-          });
-
-          container.querySelectorAll('.btn-prod-dec').forEach(btn => {
-            btn.addEventListener('click', async (e) => {
-              e.preventDefault();
-              const pId = btn.dataset.id;
-              const cartItem = (cart.cart?.items || []).find(
-                i => (i.product?._id || i.product?.id || i.productId) === pId
-              );
-              if (cartItem) {
-                const nextQty = (cartItem.quantity || 1) - 1;
-                if (nextQty <= 0) {
-                  await cart.removeItem(cartItem._id);
-                } else {
-                  await cart.updateQuantity(cartItem._id, nextQty);
-                }
-                loadProducts();
-              }
+              cart.addItem(product, 1);
             });
           });
 
@@ -530,33 +463,9 @@
       loadProducts();
     });
 
-    // Floating Quick-Commerce Bottom Cart Bar Sync
-    function updateFloatingCartBar() {
-      const bar = document.getElementById('qc-floating-cart-bar');
-      if (!bar) return;
-      const count = cart.getItemCount();
-      if (count > 0) {
-        const items = cart.cart?.items || [];
-        const subtotal = items.reduce((sum, item) => {
-          const price = item.product?.price || item.priceSnapshot || 0;
-          return sum + (price * (item.quantity || 1));
-        }, 0);
-        const itemsText = bar.querySelector('.qc-float-items');
-        const totalText = bar.querySelector('.qc-float-total');
-        if (itemsText) itemsText.textContent = `${count} ${count === 1 ? 'ITEM' : 'ITEMS'}`;
-        if (totalText) totalText.textContent = formatCurrency(subtotal);
-        bar.classList.add('active');
-      } else {
-        bar.classList.remove('active');
-      }
-    }
-    cart.subscribe(updateFloatingCartBar);
-    updateFloatingCartBar();
-
     const initProductsPage = async () => {
       await loadCategories();
       loadProducts();
-      updateFloatingCartBar();
     };
 
     if (document.readyState === 'loading') {
