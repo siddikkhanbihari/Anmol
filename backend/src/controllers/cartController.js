@@ -24,6 +24,10 @@ export async function getCart(req, res, next) {
 export async function addItem(req, res, next) {
   try {
     const { productId, quantity = 1, variant } = req.body;
+    const qty = Number(quantity);
+    if (!Number.isInteger(qty) || qty <= 0) {
+      return ApiResponse.badRequest(res, 'Quantity must be a positive integer');
+    }
 
     const product = await Product.findById(productId).populate('shop');
     if (!product || !product.isActive) {
@@ -72,9 +76,14 @@ export async function updateItem(req, res, next) {
   try {
     const { id } = req.params;
     const { quantity } = req.body;
+    const parsedQty = Number(quantity);
 
-    if (Number(quantity) <= 0) {
+    if (parsedQty <= 0) {
       return removeItem(req, res, next);
+    }
+
+    if (!Number.isInteger(parsedQty)) {
+      return ApiResponse.badRequest(res, 'Quantity must be an integer');
     }
 
     const cart = await Cart.findOne({ user: req.user._id });

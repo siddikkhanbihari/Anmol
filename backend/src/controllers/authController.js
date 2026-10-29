@@ -380,7 +380,15 @@ export async function forgotPassword(req, res, next) {
     user.resetPasswordExpires = Date.now() + 60 * 60 * 1000; // 1 hour
     await user.save();
 
-    return ApiResponse.success(res, { resetToken }, 'Password reset instructions generated (use token in development mode).');
+    const isProduction = process.env.NODE_ENV === 'production';
+    const payload = isProduction ? null : { resetToken };
+    return ApiResponse.success(
+      res,
+      payload,
+      isProduction
+        ? 'If this mobile or email is registered, password reset instructions have been generated.'
+        : 'Password reset instructions generated (use token in development mode).'
+    );
   } catch (err) {
     next(err);
   }

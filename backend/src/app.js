@@ -43,9 +43,27 @@ app.use(
   })
 );
 
+const ALLOWED_ORIGIN_PATTERNS = [
+  /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/,
+  /^https?:\/\/10\.\d+\.\d+\.\d+(:\d+)?$/,
+  /^https?:\/\/192\.168\.\d+\.\d+(:\d+)?$/,
+  /^https:\/\/[a-z0-9-]+\.vercel\.app$/,
+  /^https:\/\/(www\.)?anmolstore\.in$/
+];
+
 app.use(
   cors({
-    origin: true, // Echo origin to allow requests from local dev servers & frontends
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (process.env.NODE_ENV !== 'production') {
+        return callback(null, true);
+      }
+      const isAllowed = ALLOWED_ORIGIN_PATTERNS.some(pattern => pattern.test(origin));
+      if (isAllowed) {
+        return callback(null, true);
+      }
+      return callback(new Error('Cross-Origin Request Blocked by ANMOL STORE Security Policy'));
+    },
     credentials: true
   })
 );

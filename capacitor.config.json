@@ -5,11 +5,11 @@
   "bundledWebRuntime": false,
   "server": {
     "url": "https://anmolstore.in",
-    "cleartext": true
+    "cleartext": false
   },
   "android": {
-    "allowMixedContent": true,
+    "allowMixedContent": false,
     "captureInput": true,
-    "webContentsDebuggingEnabled": true
+    "webContentsDebuggingEnabled": false
   }
 }

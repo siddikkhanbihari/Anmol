@@ -34,6 +34,9 @@ export async function createOrder(req, res, next) {
       }
 
       const qty = Number(item.quantity);
+      if (!Number.isInteger(qty) || qty <= 0) {
+        return ApiResponse.badRequest(res, `Invalid quantity for "${product.name}". Must be a positive integer.`);
+      }
       if (product.stock < qty) {
         return ApiResponse.badRequest(res, `Not enough stock for "${product.name}". Only ${product.stock} left.`);
       }
