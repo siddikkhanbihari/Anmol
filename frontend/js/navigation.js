@@ -556,6 +556,10 @@ export class Navigation {
 }
 
 // Auto-initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    Navigation.init();
+  });
+} else {
   Navigation.init();
-});
+}

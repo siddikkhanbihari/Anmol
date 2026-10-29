@@ -1158,7 +1158,11 @@
     }, 3500);
 
     // Initial load
-    document.addEventListener('DOMContentLoaded', loadRiderData);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadRiderData);
+    } else {
+      loadRiderData();
+    }
   </script>
 </body>
 </html>

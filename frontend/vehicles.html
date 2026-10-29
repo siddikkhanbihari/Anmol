@@ -276,7 +276,7 @@
           container.innerHTML = allVehicles.map(v => `
             <div class="vehicle-card">
               <div class="vehicle-thumb">
-                <img src="${v.photos?.[0] || getFallbackImage('vehicle')}" alt="${v.title}">
+                <img src="${v.photos?.[0] || getFallbackImage('vehicle')}" alt="${v.title}" loading="lazy" decoding="async">
                 <span class="badge badge-navy vehicle-badge">${v.vehicleType.toUpperCase()}</span>
               </div>
               <div class="vehicle-content">
@@ -392,7 +392,11 @@
       loadVehicles();
     });
 
-    document.addEventListener('DOMContentLoaded', loadVehicles);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadVehicles);
+    } else {
+      loadVehicles();
+    }
   </script>
 </body>
 </html>

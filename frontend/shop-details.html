@@ -360,7 +360,7 @@
       grid.innerHTML = products.map(p => `
         <div class="product-card" data-id="${p._id}">
           <div class="product-thumb">
-            <img src="${p.images?.[0] || getFallbackImage('product')}" alt="${p.name}" loading="lazy">
+            <img src="${p.images?.[0] || getFallbackImage('product')}" alt="${p.name}" loading="lazy" decoding="async">
           </div>
           <div class="product-content">
             <h3 class="product-title">
@@ -470,7 +470,11 @@
       }
     });
 
-    document.addEventListener('DOMContentLoaded', loadShopDetails);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadShopDetails);
+    } else {
+      loadShopDetails();
+    }
   </script>
 </body>
 </html>

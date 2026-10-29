@@ -281,7 +281,7 @@
           container.innerHTML = allServices.map(s => `
             <div class="service-card">
               <div class="service-thumb">
-                <img src="${s.images?.[0] || getFallbackImage('service')}" alt="${s.title}">
+                <img src="${s.images?.[0] || getFallbackImage('service')}" alt="${s.title}" loading="lazy" decoding="async">
               </div>
               <div class="service-content">
                 <span class="badge badge-primary" style="align-self: flex-start; margin-bottom: 6px;">${s.serviceType}</span>
@@ -404,7 +404,11 @@
       loadServices();
     });
 
-    document.addEventListener('DOMContentLoaded', loadServices);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadServices);
+    } else {
+      loadServices();
+    }
   </script>
 </body>
 </html>

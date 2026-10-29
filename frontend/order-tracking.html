@@ -534,10 +534,16 @@
     }
 
     // Initialize and start live polling every 7 seconds
-    document.addEventListener('DOMContentLoaded', () => {
+    const initTracking = () => {
       fetchTrackingData();
       pollInterval = setInterval(fetchTrackingData, 7000);
-    });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initTracking);
+    } else {
+      initTracking();
+    }
 
     window.addEventListener('beforeunload', () => {
       if (pollInterval) clearInterval(pollInterval);

@@ -11,18 +11,23 @@ class PWAManager {
   init() {
     // 1. Register Service Worker
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
+      const registerSW = () => {
         navigator.serviceWorker
           .register('/sw.js')
           .then((reg) => {
             console.log('[ANMOL PWA] Service Worker registered with scope:', reg.scope);
-            // Ensure worker updates immediately
             reg.update();
           })
           .catch((err) => {
             console.warn('[ANMOL PWA] Service Worker registration failed:', err);
           });
-      });
+      };
+
+      if (document.readyState === 'complete') {
+        registerSW();
+      } else {
+        window.addEventListener('load', registerSW);
+      }
     }
 
     // If already running inside standalone app, do not show install banner

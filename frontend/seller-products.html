@@ -411,7 +411,7 @@
           container.innerHTML = sellerProducts.map(p => `
             <div class="product-manage-row" data-id="${p._id}">
               <div class="product-manage-info">
-                <img src="${p.images?.[0] || getFallbackImage('product')}" class="product-manage-thumb" alt="${p.name}" loading="lazy">
+                <img src="${p.images?.[0] || getFallbackImage('product')}" class="product-manage-thumb" alt="${p.name}" loading="lazy" decoding="async">
                 <div class="product-manage-details">
                   <div class="product-manage-title">${p.name}</div>
                   <div class="product-manage-meta">${p.category?.name || p.category || 'General'} &bull; ${p.unit}</div>

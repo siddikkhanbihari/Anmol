@@ -9,8 +9,11 @@ html {
   font-size: 16px;
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   width: 100%;
   max-width: 100%;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -25,6 +28,75 @@ body {
   width: 100%;
   max-width: 100%;
   position: relative;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fast tap response & eliminate 300ms touch delay across all interactive elements */
+a, button, input, select, textarea, label, [role="button"], .btn, .card {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* GPU Composited Layers for Butter-Smooth 60fps Scrolling & Animations */
+.main-header,
+.mobile-bottom-nav,
+.mobile-drawer,
+.modal-overlay,
+.modal,
+.modal-container,
+.toast,
+#toast-container,
+#seller-live-popup-alert,
+.floating-care-widget,
+.app-download-bar {
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* 60fps Content Containment for Product, Shop, and Order Feeds */
+.product-card,
+.shop-card,
+.service-card,
+.vehicle-card,
+.seller-order-item,
+.product-manage-row,
+.category-card {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 320px;
+}
+
+/* Smooth Touch Scrolling Momentum for scrollable elements */
+.table-responsive,
+.mobile-drawer-body,
+.modal-body,
+.nav-links-wrap,
+.catalog-filter-card,
+.seller-sidebar nav,
+.admin-sidebar nav {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Native Mobile Tactile Feedback (Subtle instant depression on tap) */
+@media (hover: none) and (pointer: coarse) {
+  .btn:active,
+  button:active,
+  .product-card:active,
+  .shop-card:active,
+  .category-card:active,
+  .mobile-nav-item:active,
+  .header-action-item:active,
+  .dash-nav-item:active,
+  .admin-nav-item:active {
+    transform: scale(0.97) !important;
+    transition: transform 0.08s ease-out !important;
+  }
 }
 
 /* Universal text boundary wrapping to prevent overflow across screens */
@@ -93,6 +165,7 @@ img {
   max-width: 100%;
   height: auto;
   display: block;
+  content-visibility: auto;
 }
 
 ul, ol {
@@ -112,10 +185,12 @@ ul, ol {
   border-radius: var(--radius-md);
   border: 1px solid transparent;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
   text-decoration: none;
   line-height: 1.25;
   white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .btn:focus-visible {

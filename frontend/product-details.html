@@ -497,7 +497,7 @@
       grid.innerHTML = products.map(p => `
         <div class="product-card">
           <div class="product-thumb">
-            <img src="${p.images?.[0] || getFallbackImage('product')}" alt="${p.name}">
+            <img src="${p.images?.[0] || getFallbackImage('product')}" alt="${p.name}" loading="lazy" decoding="async">
           </div>
           <div class="product-content">
             <h4 class="product-title"><a href="product-details.html?id=${p._id}">${p.name}</a></h4>
@@ -635,7 +635,11 @@
       }
     });
 
-    document.addEventListener('DOMContentLoaded', loadProduct);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadProduct);
+    } else {
+      loadProduct();
+    }
   </script>
 </body>
 </html>

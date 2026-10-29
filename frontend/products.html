@@ -342,7 +342,7 @@
           container.innerHTML = products.map(p => `
             <div class="product-card" data-id="${p._id}">
               <div class="product-thumb">
-                <img src="${p.images?.[0] || getFallbackImage('product')}" alt="${p.name}" loading="lazy">
+                <img src="${p.images?.[0] || getFallbackImage('product')}" alt="${p.name}" loading="lazy" decoding="async">
               </div>
               <div class="product-content">
                 <a href="shop-details.html?slug=${p.shop?.slug}" class="product-shop-tag">
@@ -427,10 +427,16 @@
       loadProducts();
     });
 
-    document.addEventListener('DOMContentLoaded', async () => {
+    const initProductsPage = async () => {
       await loadCategories();
       loadProducts();
-    });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initProductsPage);
+    } else {
+      initProductsPage();
+    }
   </script>
 </body>
 </html>

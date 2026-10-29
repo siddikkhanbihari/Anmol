@@ -526,7 +526,11 @@
       }
     });
 
-    document.addEventListener('DOMContentLoaded', initCheckout);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCheckout);
+    } else {
+      initCheckout();
+    }
   </script>
   <script type="module" src="js/pwa.js"></script>
 </body>

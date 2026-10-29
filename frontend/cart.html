@@ -309,7 +309,7 @@
 
                 return `
                   <div class="cart-item-row" data-id="${pId}">
-                    <img src="${img}" class="cart-item-thumb" alt="${p.name}">
+                    <img src="${img}" class="cart-item-thumb" alt="${p.name}" loading="lazy" decoding="async">
                     <div>
                       <h4 style="font-size: var(--font-size-sm); margin-bottom: 4px;">
                         <a href="product-details.html?id=${p._id || p.id}">${p.name}</a>
@@ -372,9 +372,15 @@
     }
 
     cart.subscribe(renderCart);
-    document.addEventListener('DOMContentLoaded', () => {
+    const initCart = () => {
       cart.fetchCart().then(renderCart);
-    });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCart);
+    } else {
+      initCart();
+    }
   </script>
 </body>
 </html>
