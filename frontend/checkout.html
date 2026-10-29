@@ -249,6 +249,49 @@
     </div>
   </main>
 
+  <!-- Checkout Mobile OTP Verification Modal -->
+  <div id="checkout-otp-modal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 16px;">
+    <div style="background: #FFF; border-radius: var(--radius-xl); max-width: 440px; width: 100%; padding: var(--space-6); box-shadow: var(--shadow-xl); position: relative;">
+      <button type="button" id="btn-close-checkout-otp" aria-label="Close" style="position: absolute; top: 16px; right: 16px; background: transparent; border: none; font-size: 1.4rem; cursor: pointer; color: var(--color-text-muted);">&times;</button>
+      
+      <div style="text-align: center; margin-bottom: var(--space-5);">
+        <div style="width: 56px; height: 56px; border-radius: 50%; background: #EFF6FF; color: var(--brand-blue); font-size: 1.5rem; display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-3);">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <h3 style="font-size: 1.25rem; color: var(--primary-navy); margin-bottom: 4px;">Order OTP Verification</h3>
+        <p style="font-size: 0.82rem; color: var(--color-text-muted); margin: 0;">
+          Order place karne ke liye verified mobile number par 6-digit OTP bheja gaya hai:
+        </p>
+        <strong id="checkout-otp-masked-phone" style="font-size: 1.05rem; color: var(--brand-blue); display: block; margin-top: 4px;">+91 ******1223</strong>
+      </div>
+
+      <div style="background: #F8FAFC; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-4); margin-bottom: var(--space-5);">
+        <label style="font-size: 0.82rem; font-weight: 700; color: var(--primary-navy); display: block; text-align: center; margin-bottom: 10px;">
+          Enter 6-Digit OTP Code
+        </label>
+        <div style="display: flex; gap: 6px; justify-content: center; margin-bottom: 12px;">
+          <input type="text" class="checkout-otp-box" maxlength="1" inputmode="numeric" data-index="0" style="width: 44px; height: 50px; text-align: center; font-size: 1.3rem; font-weight: 800; border-radius: var(--radius-md); border: 2px solid var(--color-border); color: var(--primary-navy);">
+          <input type="text" class="checkout-otp-box" maxlength="1" inputmode="numeric" data-index="1" style="width: 44px; height: 50px; text-align: center; font-size: 1.3rem; font-weight: 800; border-radius: var(--radius-md); border: 2px solid var(--color-border); color: var(--primary-navy);">
+          <input type="text" class="checkout-otp-box" maxlength="1" inputmode="numeric" data-index="2" style="width: 44px; height: 50px; text-align: center; font-size: 1.3rem; font-weight: 800; border-radius: var(--radius-md); border: 2px solid var(--color-border); color: var(--primary-navy);">
+          <input type="text" class="checkout-otp-box" maxlength="1" inputmode="numeric" data-index="3" style="width: 44px; height: 50px; text-align: center; font-size: 1.3rem; font-weight: 800; border-radius: var(--radius-md); border: 2px solid var(--color-border); color: var(--primary-navy);">
+          <input type="text" class="checkout-otp-box" maxlength="1" inputmode="numeric" data-index="4" style="width: 44px; height: 50px; text-align: center; font-size: 1.3rem; font-weight: 800; border-radius: var(--radius-md); border: 2px solid var(--color-border); color: var(--primary-navy);">
+          <input type="text" class="checkout-otp-box" maxlength="1" inputmode="numeric" data-index="5" style="width: 44px; height: 50px; text-align: center; font-size: 1.3rem; font-weight: 800; border-radius: var(--radius-md); border: 2px solid var(--color-border); color: var(--primary-navy);">
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem;">
+          <span id="checkout-otp-timer-text" style="color: var(--color-text-muted);"><i class="far fa-clock"></i> Resend code in <strong id="checkout-countdown">30</strong>s</span>
+          <button type="button" id="btn-resend-checkout-otp" class="btn btn-ghost btn-sm" disabled style="padding: 2px 8px; font-weight: 700; color: #0284C7; font-size: 0.78rem;">
+            Resend OTP
+          </button>
+        </div>
+      </div>
+
+      <button type="button" id="btn-verify-checkout-otp" class="btn btn-primary btn-block btn-lg" style="background: #10B981; border-color: #10B981; font-weight: 800;">
+        <i class="fas fa-check-circle" style="margin-right: 6px;"></i> Confirm & Place Order
+      </button>
+    </div>
+  </div>
+
   <footer class="site-footer">
     <div class="footer-bottom">
       <div class="container">
@@ -449,11 +492,212 @@
       });
     });
 
-    // Place Order
+    // ==========================================
+    // Checkout OTP Verification Modal Handlers
+    // ==========================================
+    const otpModal = document.getElementById('checkout-otp-modal');
+    const closeOtpModalBtn = document.getElementById('btn-close-checkout-otp');
+    const maskedPhoneText = document.getElementById('checkout-otp-masked-phone');
+    const verifyOtpBtn = document.getElementById('btn-verify-checkout-otp');
+    const resendOtpBtn = document.getElementById('btn-resend-checkout-otp');
+    const timerText = document.getElementById('checkout-otp-timer-text');
+    const countdownEl = document.getElementById('checkout-countdown');
+    const checkoutOtpBoxes = document.querySelectorAll('.checkout-otp-box');
+
+    let checkoutChallengeToken = '';
+    let checkoutVerificationToken = null;
+    let checkoutResendInterval = null;
+
+    closeOtpModalBtn?.addEventListener('click', () => {
+      clearInterval(checkoutResendInterval);
+      otpModal.style.display = 'none';
+      isSubmittingOrder = false;
+      const placeBtn = document.getElementById('btn-place-order');
+      placeBtn.disabled = false;
+      placeBtn.innerHTML = 'Place Order Now';
+    });
+
+    function startCheckoutResendTimer(seconds = 30) {
+      clearInterval(checkoutResendInterval);
+      resendOtpBtn.disabled = true;
+      let left = seconds;
+      countdownEl.textContent = left;
+      timerText.style.display = 'inline-block';
+
+      checkoutResendInterval = setInterval(() => {
+        left--;
+        countdownEl.textContent = left;
+        if (left <= 0) {
+          clearInterval(checkoutResendInterval);
+          resendOtpBtn.disabled = false;
+          timerText.style.display = 'none';
+        }
+      }, 1000);
+    }
+
+    async function promptCheckoutOtp(phone) {
+      otpModal.style.display = 'flex';
+      maskedPhoneText.textContent = `+91 ******${phone ? phone.slice(-4) : '...'}`;
+      checkoutOtpBoxes.forEach(b => { b.value = ''; });
+      checkoutOtpBoxes[0].focus();
+
+      const res = await auth.sendCheckoutOtp(phone);
+      if (res.success && res.data) {
+        checkoutChallengeToken = res.data.challengeToken;
+        maskedPhoneText.textContent = res.data.phoneMasked || `+91 ******${phone.slice(-4)}`;
+        startCheckoutResendTimer(res.data.cooldownSeconds || 30);
+        notify.info('Aapke mobile par checkout verification OTP bhej diya gaya hai.');
+      } else {
+        notify.error(res.message || 'OTP dispatch karne me samasya aayi.');
+      }
+    }
+
+    resendOtpBtn?.addEventListener('click', async () => {
+      resendOtpBtn.disabled = true;
+      resendOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Resending...';
+      const phone = selectedAddress?.phone;
+      const res = await auth.sendCheckoutOtp(phone);
+      resendOtpBtn.innerHTML = 'Resend OTP';
+      if (res.success && res.data) {
+        checkoutChallengeToken = res.data.challengeToken;
+        startCheckoutResendTimer(res.data.cooldownSeconds || 30);
+        notify.success('✓ Naya OTP code bhej diya gaya hai!');
+      } else {
+        notify.error(res.message || 'Resend failed.');
+        resendOtpBtn.disabled = false;
+      }
+    });
+
+    checkoutOtpBoxes.forEach((box, idx) => {
+      box.addEventListener('input', (e) => {
+        const val = e.target.value.replace(/\D/g, '');
+        e.target.value = val ? val[0] : '';
+        if (val && idx < checkoutOtpBoxes.length - 1) {
+          checkoutOtpBoxes[idx + 1].focus();
+        }
+        if (idx === checkoutOtpBoxes.length - 1 && getCheckoutOtpValue().length === 6) {
+          triggerVerifyCheckoutOtp();
+        }
+      });
+
+      box.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !box.value && idx > 0) {
+          checkoutOtpBoxes[idx - 1].focus();
+        }
+      });
+
+      box.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
+        if (pasted) {
+          pasted.split('').forEach((d, i) => {
+            if (checkoutOtpBoxes[i]) checkoutOtpBoxes[i].value = d;
+          });
+          const nextIdx = Math.min(pasted.length, checkoutOtpBoxes.length - 1);
+          checkoutOtpBoxes[nextIdx].focus();
+          if (pasted.length === 6) {
+            triggerVerifyCheckoutOtp();
+          }
+        }
+      });
+    });
+
+    function getCheckoutOtpValue() {
+      return Array.from(checkoutOtpBoxes).map(b => b.value.trim()).join('');
+    }
+
+    async function triggerVerifyCheckoutOtp() {
+      const code = getCheckoutOtpValue();
+      if (code.length !== 6) {
+        notify.warning('Kripya sabhi 6 digits darj karein.');
+        return;
+      }
+
+      verifyOtpBtn.disabled = true;
+      verifyOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+
+      const res = await auth.verifyCheckoutOtp(checkoutChallengeToken, code);
+      verifyOtpBtn.disabled = false;
+      verifyOtpBtn.innerHTML = '<i class="fas fa-check-circle"></i> Confirm & Place Order';
+
+      if (res.success && res.data?.checkoutVerificationToken) {
+        checkoutVerificationToken = res.data.checkoutVerificationToken;
+        clearInterval(checkoutResendInterval);
+        otpModal.style.display = 'none';
+        notify.success('✓ Mobile verified! Order finalize ho raha hai...');
+        executeOrderCreation(checkoutVerificationToken);
+      } else {
+        notify.error(res.message || 'Galat OTP code. Kripya punah check karein.');
+        checkoutOtpBoxes.forEach(b => { b.value = ''; });
+        checkoutOtpBoxes[0].focus();
+      }
+    }
+
+    verifyOtpBtn?.addEventListener('click', triggerVerifyCheckoutOtp);
+
+    // Place Order Execution Function
+    async function executeOrderCreation(verificationToken = null) {
+      const paymentMethod = document.querySelector('input[name="payment-method"]:checked')?.value || 'cod';
+      const items = (cart.cart.items || []).map(i => ({
+        productId: i.product?._id || i.product?.id || i.productId,
+        quantity: i.quantity,
+        variant: i.variant
+      }));
+
+      const placeBtn = document.getElementById('btn-place-order');
+      placeBtn.disabled = true;
+      placeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Placing Order...';
+
+      const orderPayload = {
+        items,
+        deliveryAddress: {
+          recipientName: selectedAddress.recipientName,
+          phone: selectedAddress.phone,
+          street: selectedAddress.street,
+          landmark: selectedAddress.landmark || '',
+          city: selectedAddress.city || 'Palanpur',
+          state: selectedAddress.state || 'Gujarat',
+          pincode: selectedAddress.pincode || '385001',
+          location: selectedAddress.location || (selectedAddress.coords ? { lat: selectedAddress.coords.lat, lng: selectedAddress.coords.lng } : null)
+        },
+        paymentMethod
+      };
+
+      if (verificationToken) {
+        orderPayload.checkoutVerificationToken = verificationToken;
+      }
+
+      try {
+        const res = await api.post('/orders', orderPayload);
+
+        if (res.success && res.data) {
+          notify.playSuccessSound();
+          await cart.clearCart();
+          notify.success('🎉 Order successfully place ho gaya hai!');
+          setTimeout(() => {
+            window.location.href = `order-confirmation.html?id=${res.data._id}`;
+          }, 400);
+        }
+      } catch (err) {
+        isSubmittingOrder = false;
+        placeBtn.disabled = false;
+        placeBtn.innerHTML = 'Place Order Now';
+
+        // If backend specifically requested Checkout OTP Verification
+        if (err.data?.requireCheckoutOtp || err.message?.toLowerCase().includes('otp verification is required')) {
+          promptCheckoutOtp(selectedAddress.phone);
+        } else {
+          notify.error(err.message || 'Order place karne me samasya aayi. Kripya punah prayas karein.');
+        }
+      }
+    }
+
+    // Place Order Button Click Handler
     let isSubmittingOrder = false;
     document.getElementById('btn-place-order').addEventListener('click', async () => {
       if (isSubmittingOrder) return;
       isSubmittingOrder = true;
+
       // If no address selected from saved list, auto-check if new address form is filled
       if (!selectedAddress) {
         const name = document.getElementById('new-recipient-name')?.value?.trim();
@@ -483,6 +727,7 @@
             selectedAddress = { recipientName: name, phone, street, city, state, pincode };
           }
         } else {
+          isSubmittingOrder = false;
           notify.warning('Kripya delivery address bharein ya select karein.');
           document.getElementById('new-address-form').style.display = 'block';
           document.getElementById('new-recipient-name')?.focus();
@@ -490,47 +735,7 @@
         }
       }
 
-      const paymentMethod = document.querySelector('input[name="payment-method"]:checked')?.value || 'cod';
-      const items = (cart.cart.items || []).map(i => ({
-        productId: i.product?._id || i.product?.id || i.productId,
-        quantity: i.quantity,
-        variant: i.variant
-      }));
-
-      const placeBtn = document.getElementById('btn-place-order');
-      placeBtn.disabled = true;
-      placeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Placing Order...';
-
-      try {
-        const res = await api.post('/orders', {
-          items,
-          deliveryAddress: {
-            recipientName: selectedAddress.recipientName,
-            phone: selectedAddress.phone,
-            street: selectedAddress.street,
-            landmark: selectedAddress.landmark || '',
-            city: selectedAddress.city || 'Palanpur',
-            state: selectedAddress.state || 'Gujarat',
-            pincode: selectedAddress.pincode || '385001',
-            location: selectedAddress.location || (selectedAddress.coords ? { lat: selectedAddress.coords.lat, lng: selectedAddress.coords.lng } : null)
-          },
-          paymentMethod
-        });
-
-        if (res.success && res.data) {
-          notify.playSuccessSound();
-          await cart.clearCart();
-          notify.success('🎉 Order successfully place ho gaya hai!');
-          setTimeout(() => {
-            window.location.href = `order-confirmation.html?id=${res.data._id}`;
-          }, 400);
-        }
-      } catch (err) {
-        isSubmittingOrder = false;
-        notify.error(err.message || 'Order place karne me samasya aayi. Kripya punah prayas karein.');
-        placeBtn.disabled = false;
-        placeBtn.innerHTML = 'Place Order Now';
-      }
+      executeOrderCreation(checkoutVerificationToken);
     });
 
     if (document.readyState === 'loading') {

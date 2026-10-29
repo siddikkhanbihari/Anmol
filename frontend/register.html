@@ -58,54 +58,103 @@
 
   <div class="auth-page-wrap">
     <div class="auth-card">
-      <div style="text-align: center; margin-bottom: var(--space-6);">
-        <h2 style="font-size: var(--font-size-xl); margin-bottom: 4px;">Create Customer Account</h2>
-        <p style="color: var(--color-text-muted); font-size: var(--font-size-sm); margin: 0;">
-          Order from trusted local kirana, electronics, and service providers
-        </p>
+      <!-- State 1: Registration Form -->
+      <div id="signup-step-form">
+        <div style="text-align: center; margin-bottom: var(--space-6);">
+          <h2 style="font-size: var(--font-size-xl); margin-bottom: 4px; color: var(--primary-navy);">Create Customer Account</h2>
+          <p style="color: var(--color-text-muted); font-size: var(--font-size-sm); margin: 0;">
+            Order from trusted local kirana, electronics, and service providers
+          </p>
+        </div>
+
+        <form id="register-form">
+          <div class="form-group">
+            <label class="form-label required" for="reg-name">Full Name</label>
+            <input type="text" id="reg-name" class="form-control" placeholder="e.g. Ramesh Kumar" required autocomplete="name">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required" for="reg-email">Email Address</label>
+            <input type="email" id="reg-email" class="form-control" placeholder="ramesh@example.com" required autocomplete="email">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required" for="reg-phone">10-Digit Mobile Number</label>
+            <div class="input-group">
+              <span style="display: flex; align-items: center; padding: 0 12px; background: var(--color-surface-alt); border: 1px solid var(--color-border); border-right: none; border-top-left-radius: var(--radius-md); border-bottom-left-radius: var(--radius-md); font-weight: 700; color: var(--primary-navy); font-size: 0.95rem;">+91</span>
+              <input type="tel" id="reg-phone" class="form-control" placeholder="98XXXXXXXX" maxlength="10" inputmode="numeric" required autocomplete="tel" style="font-size: 1.05rem; letter-spacing: 0.05em; font-weight: 700;">
+            </div>
+            <div class="form-hint" style="font-size: 0.72rem; color: var(--color-text-muted); margin-top: 4px;">
+              <i class="fas fa-shield-alt" style="color: #10B981;"></i> Account creation ke liye is number par SMS OTP aayega.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required" for="reg-password">Create Password</label>
+            <input type="password" id="reg-password" class="form-control" placeholder="At least 6 characters" minlength="6" required autocomplete="new-password">
+            <div class="form-hint">Must contain at least 6 characters</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required" for="reg-password-confirm">Confirm Password</label>
+            <input type="password" id="reg-password-confirm" class="form-control" placeholder="Re-enter your password" required autocomplete="new-password">
+          </div>
+
+          <div class="form-group">
+            <label class="filter-option" style="font-size: var(--font-size-xs); align-items: flex-start;">
+              <input type="checkbox" id="terms-check" required style="margin-top: 3px;" checked>
+              <span>I agree to ANMOL STORE's <a href="terms.html" target="_blank">Terms of Service</a> and <a href="privacy.html" target="_blank">Privacy Policy</a>.</span>
+            </label>
+          </div>
+
+          <button type="submit" id="btn-reg-submit" class="btn btn-primary btn-block btn-lg" style="margin-top: var(--space-4); font-weight: 800;">
+            <i class="fas fa-mobile-alt" style="margin-right: 6px;"></i> Verify Mobile & Create Account
+          </button>
+        </form>
       </div>
 
-      <form id="register-form">
-        <div class="form-group">
-          <label class="form-label required" for="reg-name">Full Name</label>
-          <input type="text" id="reg-name" class="form-control" placeholder="e.g. Ramesh Kumar" required>
+      <!-- State 2: Mobile OTP Verification Screen -->
+      <div id="signup-step-otp" style="display: none;">
+        <div style="text-align: center; margin-bottom: var(--space-5);">
+          <div style="width: 58px; height: 58px; border-radius: 50%; background: #EFF6FF; color: var(--brand-blue); font-size: 1.6rem; display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-3);">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h2 style="font-size: var(--font-size-xl); margin-bottom: 4px; color: var(--primary-navy);">Verify Mobile Number</h2>
+          <p style="color: var(--color-text-muted); font-size: var(--font-size-sm); margin: 0;">
+            Enter the 6-digit code sent via SMS to
+          </p>
+          <strong id="signup-masked-phone" style="font-size: 1.05rem; color: var(--brand-blue); display: block; margin-top: 4px;">+91 ******1223</strong>
         </div>
 
-        <div class="form-group">
-          <label class="form-label required" for="reg-email">Email Address</label>
-          <input type="email" id="reg-email" class="form-control" placeholder="ramesh@example.com" required>
-        </div>
+        <div style="background: #F8FAFC; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-5) var(--space-4); text-align: center; margin-bottom: var(--space-5);">
+          <label style="font-size: 0.85rem; font-weight: 700; color: var(--primary-navy); display: block; margin-bottom: 10px;">
+            6-Digit Verification Code
+          </label>
+          <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 12px;">
+            <input type="text" class="signup-otp-box" maxlength="1" inputmode="numeric" autocomplete="one-time-code" data-index="0" style="width: 44px; height: 52px; text-align: center; font-size: 1.4rem; font-weight: 800; border-radius: var(--radius-md); border: 2px solid var(--color-border); color: var(--primary-navy);">
+            <input type="text" class="signup-otp-box" maxlength="1" inputmode="numeric" data-index="1" style="width: 44px; height: 52px; text-align: center; font-size: 1.4rem; font-weight: 800; border-radius: var(--radius-md); border: 2px solid var(--color-border); color: var(--primary-navy);">
+            <input type="text" class="signup-otp-box" maxlength="1" inputmode="numeric" data-index="2" style="width: 44px; height: 52px; text-align: center; font-size: 1.4rem; font-weight: 800; border-radius: var(--radius-md); border: 2px solid var(--color-border); color: var(--primary-navy);">
+            <input type="text" class="signup-otp-box" maxlength="1" inputmode="numeric" data-index="3" style="width: 44px; height: 52px; text-align: center; font-size: 1.4rem; font-weight: 800; border-radius: var(--radius-md); border: 2px solid var(--color-border); color: var(--primary-navy);">
+            <input type="text" class="signup-otp-box" maxlength="1" inputmode="numeric" data-index="4" style="width: 44px; height: 52px; text-align: center; font-size: 1.4rem; font-weight: 800; border-radius: var(--radius-md); border: 2px solid var(--color-border); color: var(--primary-navy);">
+            <input type="text" class="signup-otp-box" maxlength="1" inputmode="numeric" data-index="5" style="width: 44px; height: 52px; text-align: center; font-size: 1.4rem; font-weight: 800; border-radius: var(--radius-md); border: 2px solid var(--color-border); color: var(--primary-navy);">
+          </div>
 
-        <div class="form-group">
-          <label class="form-label required" for="reg-phone">10-Digit Mobile Number</label>
-          <div class="input-group">
-            <span style="display: flex; align-items: center; padding: 0 12px; background: var(--color-surface-alt); border: 1px solid var(--color-border); border-right: none; border-top-left-radius: var(--radius-md); border-bottom-left-radius: var(--radius-md); font-weight: 600; color: var(--color-text-muted);">+91</span>
-            <input type="tel" id="reg-phone" class="form-control" placeholder="98XXXXXXXX" maxlength="10" required>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem;">
+            <span id="signup-otp-timer-text" style="color: var(--color-text-muted);"><i class="far fa-clock"></i> Resend code in <strong id="signup-countdown">30</strong>s</span>
+            <button type="button" id="btn-resend-signup-otp" class="btn btn-ghost btn-sm" disabled style="padding: 2px 8px; font-weight: 700; color: #0284C7; font-size: 0.78rem;">
+              Resend OTP
+            </button>
           </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label required" for="reg-password">Create Password</label>
-          <input type="password" id="reg-password" class="form-control" placeholder="At least 6 characters" minlength="6" required>
-          <div class="form-hint">Must contain at least 6 characters</div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label required" for="reg-password-confirm">Confirm Password</label>
-          <input type="password" id="reg-password-confirm" class="form-control" placeholder="Re-enter your password" required>
-        </div>
-
-        <div class="form-group">
-          <label class="filter-option" style="font-size: var(--font-size-xs); align-items: flex-start;">
-            <input type="checkbox" id="terms-check" required style="margin-top: 3px;">
-            <span>I agree to ANMOL STORE's <a href="terms.html" target="_blank">Terms of Service</a> and <a href="privacy.html" target="_blank">Privacy Policy</a>.</span>
-          </label>
-        </div>
-
-        <button type="submit" id="btn-reg-submit" class="btn btn-primary btn-block btn-lg" style="margin-top: var(--space-4);">
-          Create Customer Account
+        <button type="button" id="btn-verify-signup-otp" class="btn btn-primary btn-block btn-lg" style="background: #10B981; border-color: #10B981; font-weight: 800; margin-bottom: var(--space-3);">
+          <i class="fas fa-check-circle" style="margin-right: 6px;"></i> Verify & Activate Account
         </button>
-      </form>
+
+        <button type="button" id="btn-back-to-signup" class="btn btn-outline btn-block btn-sm" style="font-weight: 600;">
+          <i class="fas fa-arrow-left" style="margin-right: 6px;"></i> Edit Details / Change Number
+        </button>
+      </div>
 
       <div style="text-align: center; margin-top: var(--space-6); font-size: var(--font-size-sm); color: var(--color-text-muted);">
         Are you a shop owner or service provider?
@@ -148,9 +197,41 @@
 
     const safeRedirectUrl = getSafeRedirectUrl(rawRedirect);
 
+    const stepForm = document.getElementById('signup-step-form');
+    const stepOtp = document.getElementById('signup-step-otp');
     const form = document.getElementById('register-form');
     const submitBtn = document.getElementById('btn-reg-submit');
+    const verifyBtn = document.getElementById('btn-verify-signup-otp');
+    const resendBtn = document.getElementById('btn-resend-signup-otp');
+    const backBtn = document.getElementById('btn-back-to-signup');
+    const maskedPhoneDisplay = document.getElementById('signup-masked-phone');
+    const countdownEl = document.getElementById('signup-countdown');
+    const timerText = document.getElementById('signup-otp-timer-text');
+    const otpBoxes = document.querySelectorAll('.signup-otp-box');
 
+    let activeChallengeToken = '';
+    let resendInterval = null;
+    let cachedFormData = null;
+
+    function startResendTimer(seconds = 30) {
+      clearInterval(resendInterval);
+      resendBtn.disabled = true;
+      let left = seconds;
+      countdownEl.textContent = left;
+      timerText.style.display = 'inline-block';
+
+      resendInterval = setInterval(() => {
+        left--;
+        countdownEl.textContent = left;
+        if (left <= 0) {
+          clearInterval(resendInterval);
+          resendBtn.disabled = false;
+          timerText.style.display = 'none';
+        }
+      }, 1000);
+    }
+
+    // Step 1: Submit Form -> Send SMS OTP
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = document.getElementById('reg-name').value.trim();
@@ -170,19 +251,111 @@
       }
 
       submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending SMS OTP...';
 
-      const result = await auth.register({ name, email, phone, password });
+      cachedFormData = { name, email, phone, password };
+
+      const res = await auth.sendSignupOtp(cachedFormData);
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<i class="fas fa-mobile-alt"></i> Verify Mobile & Create Account';
+
+      if (res.success && res.data) {
+        activeChallengeToken = res.data.challengeToken;
+        maskedPhoneDisplay.textContent = res.data.phoneMasked || `+91 ******${phone.slice(-4)}`;
+        stepForm.style.display = 'none';
+        stepOtp.style.display = 'block';
+        otpBoxes.forEach(b => { b.value = ''; });
+        otpBoxes[0].focus();
+        startResendTimer(res.data.cooldownSeconds || 30);
+        notify.success('✓ Verification OTP sent to your phone!');
+      } else {
+        notify.error(res.message || 'Failed to send OTP. Please check your information.');
+      }
+    });
+
+    // Resend OTP
+    resendBtn.addEventListener('click', async () => {
+      if (!cachedFormData) return;
+      resendBtn.disabled = true;
+      resendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Resending...';
+      const res = await auth.sendSignupOtp(cachedFormData);
+      resendBtn.innerHTML = 'Resend OTP';
+      if (res.success && res.data) {
+        activeChallengeToken = res.data.challengeToken;
+        startResendTimer(res.data.cooldownSeconds || 30);
+        notify.success('✓ New OTP code sent to your phone!');
+      } else {
+        notify.error(res.message || 'Failed to resend OTP.');
+        resendBtn.disabled = false;
+      }
+    });
+
+    // Back to edit
+    backBtn.addEventListener('click', () => {
+      clearInterval(resendInterval);
+      stepOtp.style.display = 'none';
+      stepForm.style.display = 'block';
+    });
+
+    // 6-digit OTP Box Auto-Advance, Backspace & Paste
+    otpBoxes.forEach((box, idx) => {
+      box.addEventListener('input', (e) => {
+        const val = e.target.value.replace(/\D/g, '');
+        e.target.value = val ? val[0] : '';
+        if (val && idx < otpBoxes.length - 1) {
+          otpBoxes[idx + 1].focus();
+        }
+        if (idx === otpBoxes.length - 1 && getEnteredOtp().length === 6) {
+          triggerVerifySignup();
+        }
+      });
+
+      box.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !box.value && idx > 0) {
+          otpBoxes[idx - 1].focus();
+        }
+      });
+
+      box.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
+        if (pasted) {
+          pasted.split('').forEach((digit, i) => {
+            if (otpBoxes[i]) otpBoxes[i].value = digit;
+          });
+          const nextIdx = Math.min(pasted.length, otpBoxes.length - 1);
+          otpBoxes[nextIdx].focus();
+          if (pasted.length === 6) {
+            triggerVerifySignup();
+          }
+        }
+      });
+    });
+
+    function getEnteredOtp() {
+      return Array.from(otpBoxes).map(b => b.value.trim()).join('');
+    }
+
+    // Step 2: Verify OTP -> Activate User & Login
+    async function triggerVerifySignup() {
+      const code = getEnteredOtp();
+      if (code.length !== 6) {
+        notify.warning('Please enter all 6 digits of the OTP.');
+        return;
+      }
+
+      verifyBtn.disabled = true;
+      verifyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Activating Account...';
+
+      const result = await auth.verifySignupOtp(activeChallengeToken, code);
 
       if (result.success) {
-        notify.success('Welcome to ANMOL STORE! Account created successfully.');
-        
-        // Sync guest cart to new account so checkout has items
+        clearInterval(resendInterval);
+        notify.success('🎉 Welcome to ANMOL STORE! Mobile verified successfully.');
+
         try {
           await cart.syncGuestCart();
-        } catch (err) {
-          console.warn('Cart sync notice:', err);
-        }
+        } catch (err) {}
 
         setTimeout(() => {
           if (safeRedirectUrl) {
@@ -190,16 +363,17 @@
           } else {
             window.location.href = 'customer-dashboard.html';
           }
-        }, 800);
+        }, 500);
       } else {
-        notify.error(result.message);
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = 'Create Customer Account';
+        notify.error(result.message || 'Incorrect OTP code. Please check and try again.');
+        verifyBtn.disabled = false;
+        verifyBtn.innerHTML = '<i class="fas fa-check-circle"></i> Verify & Activate Account';
+        otpBoxes.forEach(b => { b.value = ''; });
+        otpBoxes[0].focus();
       }
-    });
-        submitBtn.innerHTML = 'Create Customer Account';
-      }
-    });
+    }
+
+    verifyBtn.addEventListener('click', triggerVerifySignup);
   </script>
   <script type="module" src="js/pwa.js"></script>
 </body>

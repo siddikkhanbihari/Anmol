@@ -29,6 +29,10 @@ const userSchema = new mongoose.Schema(
       trim: true,
       match: [/^[6-9]\d{9}$/, 'Please provide a valid 10-digit Indian phone number']
     },
+    isPhoneVerified: {
+      type: Boolean,
+      default: false
+    },
     passwordHash: {
       type: String,
       required: [true, 'Please provide a password'],
@@ -88,7 +92,8 @@ userSchema.methods.toSafeObject = function () {
     phone: this.phone,
     role: this.role,
     avatar: this.avatar,
-    status: this.status
+    status: this.status,
+    isPhoneVerified: !!this.isPhoneVerified
   };
 };
 

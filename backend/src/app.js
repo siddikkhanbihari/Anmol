@@ -29,6 +29,7 @@ import categoryRoutes from './routes/categoryRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import riderRoutes from './routes/riderRoutes.js';
+import otpRoutes from './routes/otpRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -94,6 +95,8 @@ app.post('/api/v1/upload', authenticateToken, upload.single('image'), async (req
 });
 
 // Mount API Routes
+app.use(['/api/v1/auth/otp', '/api/auth/otp', '/api/v1/otp', '/api/otp'], otpRoutes);
+app.use(['/api/v1/checkout/otp', '/api/checkout/otp'], otpRoutes);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/shops', shopRoutes);
 app.use('/api/v1/products', productRoutes);
