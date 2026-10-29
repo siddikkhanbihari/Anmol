@@ -1,0 +1,1003 @@
+/* ========================================================
+   ANMOL STORE — Blinkit-Inspired Quick-Commerce Stylesheet
+   Modern, Mobile-First, Ultra-Fast Instant Delivery UI
+   ======================================================== */
+
+:root {
+  --qc-green: #0C831F;
+  --qc-green-dark: #075E15;
+  --qc-green-light: #E8F5E9;
+  --qc-yellow: #F7D046;
+  --qc-yellow-bg: #FFF9E6;
+  --qc-card-bg: #FFFFFF;
+  --qc-border: #E8EBF0;
+  --qc-border-hover: #CBD5E1;
+  --qc-text-dark: #1C1C1C;
+  --qc-text-muted: #6B7280;
+  --qc-eta-bg: #F3F4F6;
+  --qc-shadow-card: 0 1px 4px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.02);
+  --qc-shadow-float: 0 8px 24px rgba(12, 131, 31, 0.28);
+}
+
+/* ========================================================
+   1. Quick-Commerce Top Header (Blinkit Style)
+   ======================================================== */
+.qc-top-bar {
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--qc-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.qc-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+}
+
+/* Location & Delivery ETA Widget */
+.qc-delivery-widget {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+  user-select: none;
+}
+.qc-delivery-widget:hover {
+  background: #F8FAFC;
+}
+
+.qc-eta-pill {
+  background: var(--qc-green);
+  color: #FFFFFF;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.qc-eta-pill i {
+  color: var(--qc-yellow);
+}
+
+.qc-location-details {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.qc-location-title {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--qc-text-dark);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.qc-location-sub {
+  font-size: 0.74rem;
+  color: var(--qc-text-muted);
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Quick-Commerce Big Search Bar */
+.qc-search-wrap {
+  flex: 1;
+  max-width: 680px;
+  position: relative;
+}
+
+.qc-search-form {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.qc-search-input {
+  width: 100%;
+  height: 46px;
+  background: #F4F6F8;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 0 44px 0 46px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--qc-text-dark);
+  transition: all 0.2s ease;
+}
+
+.qc-search-input:focus {
+  background: #FFFFFF;
+  border-color: var(--qc-green);
+  box-shadow: 0 0 0 3px rgba(12, 131, 31, 0.12);
+  outline: none;
+}
+
+.qc-search-icon-left {
+  position: absolute;
+  left: 16px;
+  color: #94A3B8;
+  font-size: 1rem;
+  pointer-events: none;
+}
+
+.qc-search-clear {
+  position: absolute;
+  right: 14px;
+  background: none;
+  border: none;
+  color: #94A3B8;
+  cursor: pointer;
+  display: none;
+}
+
+/* Header Actions */
+.qc-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.qc-btn-account {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--qc-text-dark);
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+}
+.qc-btn-account:hover {
+  background: #F1F5F9;
+}
+
+.qc-cart-btn {
+  background: var(--qc-green);
+  color: #FFFFFF !important;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(12, 131, 31, 0.25);
+  white-space: nowrap;
+}
+.qc-cart-btn:hover {
+  background: var(--qc-green-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(12, 131, 31, 0.35);
+}
+
+.qc-cart-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Quick Search Suggestions Strip */
+.qc-search-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 6px 0 10px;
+}
+.qc-search-tags::-webkit-scrollbar {
+  display: none;
+}
+.qc-search-tag {
+  background: #F8FAFC;
+  border: 1px solid var(--qc-border);
+  color: var(--qc-text-dark);
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 99px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+.qc-search-tag:hover {
+  background: var(--qc-green-light);
+  border-color: var(--qc-green);
+  color: var(--qc-green);
+}
+
+/* ========================================================
+   2. Blinkit Quick Category Bubbles Rail
+   ======================================================== */
+.qc-category-section {
+  padding: 16px 0;
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--qc-border);
+}
+
+.qc-category-rail {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: 4px 2px;
+  -webkit-overflow-scrolling: touch;
+}
+.qc-category-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.qc-category-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  text-decoration: none;
+  color: var(--qc-text-dark);
+  min-width: 76px;
+  max-width: 90px;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  transition: transform 0.15s ease;
+  touch-action: manipulation;
+}
+.qc-category-item:active {
+  transform: scale(0.95);
+}
+
+.qc-category-thumb {
+  width: 66px;
+  height: 66px;
+  border-radius: 18px;
+  background: #F1F5F9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+  font-size: 1.6rem;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  position: relative;
+  overflow: hidden;
+}
+.qc-category-item:hover .qc-category-thumb {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+}
+
+.qc-category-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #1E293B;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ========================================================
+   3. Quick-Commerce Promo Banners Slider
+   ======================================================== */
+.qc-promo-strip {
+  padding: 18px 0 10px;
+}
+
+.qc-banners-slider {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.qc-banner-card {
+  border-radius: 16px;
+  padding: 18px 20px;
+  color: #FFFFFF;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 140px;
+  box-shadow: var(--qc-shadow-card);
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.qc-banner-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.12);
+}
+
+.qc-banner-1 {
+  background: linear-gradient(135deg, #0C831F 0%, #16A34A 60%, #22C55E 100%);
+}
+.qc-banner-2 {
+  background: linear-gradient(135deg, #0F294D 0%, #1E3A8A 60%, #2563EB 100%);
+}
+.qc-banner-3 {
+  background: linear-gradient(135deg, #C2410C 0%, #EA580C 60%, #F97316 100%);
+}
+
+.qc-banner-tag {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(255, 255, 255, 0.22);
+  padding: 3px 8px;
+  border-radius: 99px;
+  align-self: flex-start;
+  margin-bottom: 8px;
+}
+
+.qc-banner-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #FFFFFF;
+  margin-bottom: 4px;
+}
+
+.qc-banner-sub {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.35;
+}
+
+.qc-banner-cta {
+  align-self: flex-start;
+  margin-top: 10px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  background: #FFFFFF;
+  color: var(--qc-text-dark);
+  padding: 5px 12px;
+  border-radius: 99px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ========================================================
+   4. Blinkit Product Shelf & Product Card
+   ======================================================== */
+.qc-shelf-section {
+  padding: 24px 0 12px;
+}
+
+.qc-shelf-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.qc-shelf-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.qc-shelf-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--qc-text-dark);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.qc-shelf-sub {
+  font-size: 0.78rem;
+  color: var(--qc-text-muted);
+  margin: 0;
+}
+
+.qc-shelf-see-all {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--qc-green);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: gap 0.15s ease;
+}
+.qc-shelf-see-all:hover {
+  gap: 7px;
+  color: var(--qc-green-dark);
+}
+
+/* Shelf Scroll Track (Mobile & Desktop) */
+.qc-shelf-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+
+/* Blinkit-Style Product Card */
+.qc-card {
+  background: var(--qc-card-bg);
+  border: 1px solid var(--qc-border);
+  border-radius: 14px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: all 0.2s ease;
+  box-shadow: var(--qc-shadow-card);
+  min-width: 0;
+}
+.qc-card:hover {
+  border-color: var(--qc-border-hover);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+/* Thumb & Time Badge */
+.qc-card-thumb-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #F8FAFC;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qc-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 8px;
+  transition: transform 0.25s ease;
+}
+.qc-card:hover .qc-card-img {
+  transform: scale(1.06);
+}
+
+.qc-time-tag {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #15803D;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  z-index: 2;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.qc-discount-tag {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: #2563EB;
+  color: #FFFFFF;
+  font-size: 0.62rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
+  z-index: 2;
+}
+
+/* Card Content */
+.qc-card-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.qc-card-shop {
+  font-size: 0.68rem;
+  color: #64748B;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+  text-decoration: none;
+}
+.qc-card-shop:hover {
+  color: var(--qc-green);
+}
+
+.qc-card-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--qc-text-dark);
+  line-height: 1.3;
+  margin-bottom: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 2.35rem;
+  text-decoration: none;
+}
+.qc-card-name:hover {
+  color: var(--qc-green);
+}
+
+.qc-card-unit {
+  font-size: 0.72rem;
+  color: var(--qc-text-muted);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* Card Price & Blinkit ADD Button Row */
+.qc-card-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  gap: 6px;
+}
+
+.qc-price-block {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.qc-price-current {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--qc-text-dark);
+}
+
+.qc-price-original {
+  font-size: 0.72rem;
+  color: #94A3B8;
+  text-decoration: line-through;
+  margin-top: 1px;
+}
+
+/* Blinkit Interactive ADD Button */
+.blinkit-add-btn {
+  background: #FFFFFF;
+  color: var(--qc-green);
+  border: 1.5px solid var(--qc-green);
+  border-radius: 8px;
+  height: 32px;
+  min-width: 66px;
+  padding: 0 10px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.blinkit-add-btn:hover {
+  background: var(--qc-green);
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(12, 131, 31, 0.25);
+}
+.blinkit-add-btn:active {
+  transform: scale(0.94);
+}
+
+/* Blinkit Quantity Stepper (Active In-Cart state) */
+.blinkit-qty-counter {
+  background: var(--qc-green);
+  color: #FFFFFF;
+  border-radius: 8px;
+  height: 32px;
+  min-width: 72px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+  box-shadow: 0 2px 8px rgba(12, 131, 31, 0.28);
+  user-select: none;
+}
+
+.blinkit-qty-btn {
+  background: none;
+  border: none;
+  color: #FFFFFF;
+  font-size: 1.1rem;
+  font-weight: 800;
+  width: 24px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  touch-action: manipulation;
+  border-radius: 4px;
+}
+.blinkit-qty-btn:active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.blinkit-qty-value {
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 0 4px;
+  min-width: 18px;
+  text-align: center;
+}
+
+/* ========================================================
+   5. Floating Quick-Commerce Sticky Cart Bar
+   ======================================================== */
+.qc-floating-cart-bar {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(120px);
+  z-index: 990;
+  width: calc(100% - 32px);
+  max-width: 480px;
+  background: var(--qc-green);
+  color: #FFFFFF;
+  border-radius: 16px;
+  padding: 12px 18px;
+  box-shadow: var(--qc-shadow-float);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-decoration: none;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.qc-floating-cart-bar.active {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.qc-float-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.qc-float-cart-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.qc-float-items {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  opacity: 0.9;
+}
+
+.qc-float-total {
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.qc-float-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+/* ========================================================
+   6. Location Selection Drawer / Modal
+   ======================================================== */
+.qc-location-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 16px;
+}
+.qc-location-modal.active {
+  display: flex;
+}
+
+.qc-location-card {
+  background: #FFFFFF;
+  border-radius: 20px;
+  max-width: 480px;
+  width: 100%;
+  padding: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  animation: slideDownModal 0.25s ease;
+}
+@keyframes slideDownModal {
+  from { opacity: 0; transform: translateY(-16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.qc-location-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.qc-location-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #94A3B8;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.qc-detect-gps-btn {
+  width: 100%;
+  background: var(--qc-green-light);
+  color: var(--qc-green);
+  border: 1.5px dashed var(--qc-green);
+  border-radius: 12px;
+  padding: 12px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: all 0.15s ease;
+}
+.qc-detect-gps-btn:hover {
+  background: #DCFCE7;
+}
+
+.qc-area-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 2px;
+}
+.qc-area-chip {
+  background: #F8FAFC;
+  border: 1px solid var(--qc-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--qc-text-dark);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.qc-area-chip:hover, .qc-area-chip.active {
+  background: var(--qc-green-light);
+  border-color: var(--qc-green);
+  color: var(--qc-green);
+  font-weight: 700;
+}
+
+/* ========================================================
+   7. Mobile-First Responsive Breakpoints
+   ======================================================== */
+
+/* Large Desktop (1280px to 1440px+) */
+@media (min-width: 1280px) {
+  .qc-shelf-row {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+/* Standard Laptop / Desktop (1024px to 1279px) */
+@media (max-width: 1279px) and (min-width: 1024px) {
+  .qc-shelf-row {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Tablets (768px to 1023px) */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .qc-banners-slider {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .qc-banner-card:last-child {
+    grid-column: span 2;
+  }
+  .qc-shelf-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Mobile Devices (320px to 767px) */
+@media (max-width: 767px) {
+  .qc-top-bar {
+    padding: 6px 0 10px;
+  }
+  .qc-header-inner {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0;
+  }
+  .qc-delivery-widget {
+    order: 1;
+    padding: 0;
+  }
+  .qc-header-actions {
+    order: 2;
+    margin-left: auto;
+  }
+  .qc-btn-account span {
+    display: none;
+  }
+  .qc-cart-btn {
+    display: none; /* Replaced by Floating Bottom Cart Pill on Mobile */
+  }
+
+  .qc-search-wrap {
+    order: 3;
+    max-width: 100%;
+    margin-top: 4px;
+  }
+  .qc-search-input {
+    height: 42px;
+    font-size: 0.85rem;
+    padding-left: 40px;
+  }
+  .qc-search-icon-left {
+    left: 12px;
+    font-size: 0.9rem;
+  }
+
+  /* Horizontal scrolling product row on mobile */
+  .qc-shelf-row {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    gap: 10px;
+    padding: 4px 2px 8px;
+  }
+  .qc-shelf-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .qc-shelf-row .qc-card {
+    min-width: 148px;
+    max-width: 156px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    padding: 8px;
+  }
+
+  .qc-card-name {
+    font-size: 0.78rem;
+    height: 2.15rem;
+  }
+  .qc-price-current {
+    font-size: 0.88rem;
+  }
+  .blinkit-add-btn {
+    height: 28px;
+    min-width: 58px;
+    font-size: 0.72rem;
+    padding: 0 6px;
+  }
+  .blinkit-qty-counter {
+    height: 28px;
+    min-width: 64px;
+  }
+
+  /* Banners horizontal scroll on mobile */
+  .qc-banners-slider {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    gap: 12px;
+    padding: 2px;
+  }
+  .qc-banners-slider::-webkit-scrollbar {
+    display: none;
+  }
+  .qc-banner-card {
+    min-width: 260px;
+    max-width: 280px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    min-height: 120px;
+    padding: 14px 16px;
+  }
+  .qc-banner-title {
+    font-size: 0.98rem;
+  }
+
+  /* Floating cart bar positioned just above mobile bottom navigation */
+  .qc-floating-cart-bar {
+    bottom: 64px;
+    width: calc(100% - 20px);
+    padding: 10px 14px;
+    border-radius: 12px;
+  }
+
+  .qc-location-modal {
+    padding: 16px;
+    align-items: flex-end;
+  }
+  .qc-location-card {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    padding: 20px 16px;
+  }
+}
+
+/* Small Screens (320px to 374px - e.g. iPhone SE) */
+@media (max-width: 374px) {
+  .qc-location-sub {
+    max-width: 140px;
+  }
+  .qc-shelf-row .qc-card {
+    min-width: 138px;
+    max-width: 142px;
+    padding: 6px;
+  }
+  .blinkit-add-btn {
+    min-width: 50px;
+  }
+  .blinkit-qty-counter {
+    min-width: 56px;
+  }
+  .qc-area-list {
+    grid-template-columns: 1fr;
+  }
+}
