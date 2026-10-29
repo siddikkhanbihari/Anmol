@@ -154,6 +154,35 @@
               <span>Total Paid / Payable:</span>
               <span style="color: var(--primary-navy);">${formatCurrency(order.totalAmount)}</span>
             </div>
+            ${(order.paymentMethod === 'cod' || order.paymentStatus !== 'paid') ? `
+              <div class="doorstep-qr-container" style="margin-top: var(--space-6); text-align: center;">
+                <div class="doorstep-qr-header">
+                  <span class="doorstep-qr-badge"><i class="fas fa-qrcode"></i> PAY ON DELIVERY VIA PHONEPE / UPI</span>
+                </div>
+                <div style="font-size: 1.15rem; font-weight: 800; color: #581C87; margin: 6px 0 4px 0;">
+                  Doorstep Payable: <span style="color: #9333EA;">${formatCurrency(order.totalAmount)}</span>
+                </div>
+                <p style="font-size: 0.8rem; color: #6B21A8; max-width: 480px; margin: 0 auto 12px auto; line-height: 1.4;">
+                  Delivery partner aapke ghar aane par aap cash de sakte hain ya yeh QR code PhonePe, Google Pay, Paytm se scan karke pay kar sakte hain.
+                </p>
+                <div class="doorstep-qr-box">
+                  <img src="assets/images/merchant-qr.jpg" alt="ANMOL STORE PhonePe QR" class="doorstep-qr-img" onerror="this.onerror=null; this.src='/uploads/merchant-qr.jpg';">
+                </div>
+                <div class="doorstep-merchant-name">ARMAN MAHAMADARIFBHAI PIPRANI</div>
+                <div class="doorstep-merchant-sub">ANMOL STORE Official Verified Merchant Standee</div>
+                <div class="doorstep-app-pills">
+                  <span class="doorstep-app-pill"><i class="fas fa-mobile-alt" style="color: #5F259F;"></i> PhonePe</span>
+                  <span class="doorstep-app-pill"><i class="fab fa-google-pay" style="color: #EA4335;"></i> Google Pay</span>
+                  <span class="doorstep-app-pill"><i class="fas fa-wallet" style="color: #00BAF2;"></i> Paytm</span>
+                  <span class="doorstep-app-pill"><i class="fas fa-university" style="color: #10B981;"></i> Any UPI App</span>
+                </div>
+                <div style="display: flex; gap: 8px; justify-content: center; margin-top: 12px; flex-wrap: wrap;">
+                  <a href="assets/images/merchant-qr.jpg" download="ANMOL-STORE-Pay-QR.jpg" class="btn btn-outline btn-sm" style="border-color: #5F259F; color: #5F259F;">
+                    <i class="fas fa-download"></i> Save / Download QR
+                  </a>
+                </div>
+              </div>
+            ` : ''}
           `;
         }
       } catch (err) {

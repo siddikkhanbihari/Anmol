@@ -546,6 +546,9 @@ export async function getOrderLiveTracking(req, res, next) {
       orderId: order._id,
       orderNumber: order.orderNumber,
       overallStatus: order.overallStatus,
+      paymentMethod: order.paymentMethod,
+      paymentStatus: order.paymentStatus,
+      totalAmount: order.totalAmount,
       deliveryAddress: {
         recipientName: order.deliveryAddress?.recipientName,
         phone: order.deliveryAddress?.phone,
