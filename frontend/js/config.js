@@ -78,35 +78,28 @@ export function formatDate(dateString, includeTime = false) {
   return date.toLocaleDateString('en-IN', options);
 }
 
+export const FALLBACK_PLACEHOLDER_SVG = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300' fill='%23F1F5F9'%3E%3Crect width='400' height='300'/%3E%3Ccircle cx='130' cy='110' r='28' fill='%23CBD5E1'/%3E%3Cpath d='M70 230l80-90 60 60 50-65 70 95z' fill='%23CBD5E1'/%3E%3Ctext x='200' y='270' font-family='sans-serif' font-size='15' font-weight='700' fill='%2394A3B8' text-anchor='middle'%3EANMOL STORE%3C/text%3E%3C/svg%3E";
+
 /**
  * Resolve relative or absolute media URL safely
  */
 export function resolveMediaUrl(url, type = 'product') {
-  if (!url) return getFallbackImage(type);
-  if (url.startsWith('data:') || url.startsWith('blob:') || url.startsWith('http://') || url.startsWith('https://')) {
-    return url;
+  if (!url || typeof url !== 'string' || !url.trim()) {
+    return getFallbackImage(type);
   }
-  const cleanPath = url.startsWith('/') ? url : `/${url}`;
-  if (window.location.port === '5000' || !window.location.port) {
-    return cleanPath;
+  const clean = url.trim();
+  if (clean.startsWith('data:') || clean.startsWith('blob:') || clean.startsWith('http://') || clean.startsWith('https://')) {
+    return clean;
   }
-  return `${window.location.protocol}//${window.location.hostname}:5000${cleanPath}`;
+  return clean.startsWith('/') ? clean : `/${clean}`;
 }
 
 /**
  * Fallback image provider for products, shops, services, and vehicles
+ * Returns high-availability self-contained vector placeholder that never fails
  */
 export function getFallbackImage(type = 'product') {
-  const fallbacks = {
-    product: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80',
-    grocery: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80',
-    electronics: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80',
-    shop: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80',
-    service: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=600&q=80',
-    vehicle: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=600&q=80',
-    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80'
-  };
-  return fallbacks[type] || fallbacks.product;
+  return FALLBACK_PLACEHOLDER_SVG;
 }
 
 /**

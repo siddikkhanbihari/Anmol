@@ -266,7 +266,7 @@
   <script type="module" src="js/navigation.js"></script>
   <script type="module">
     import { cart } from './js/cart.js';
-    import { formatCurrency, getFallbackImage } from './js/config.js';
+    import { formatCurrency, getFallbackImage, resolveMediaUrl, FALLBACK_PLACEHOLDER_SVG } from './js/config.js';
 
     function renderCart() {
       const groups = cart.getSellerGroups();
@@ -309,7 +309,7 @@
 
                 return `
                   <div class="cart-item-row" data-id="${pId}">
-                    <img src="${img}" class="cart-item-thumb" alt="${p.name}" loading="lazy" decoding="async">
+                    <img src="${resolveMediaUrl(img, 'product')}" class="cart-item-thumb" alt="${p.name}" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='${FALLBACK_PLACEHOLDER_SVG}';">
                     <div>
                       <h4 style="font-size: var(--font-size-sm); margin-bottom: 4px;">
                         <a href="product-details.html?id=${p._id || p.id}">${p.name}</a>

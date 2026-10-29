@@ -1,11 +1,21 @@
 // ANMOL STORE - Global Navigation, Location Selector & Layout Controller
 import { auth } from './auth.js';
 import { cart } from './cart.js';
-import { CONFIG } from './config.js';
+import { CONFIG, FALLBACK_PLACEHOLDER_SVG } from './config.js';
 import { notify } from './notifications.js';
 import { i18n } from './i18n.js';
 import './pwa.js';
 import './app-download-modal.js';
+
+// Universal Broken Image Protection (Capture phase catches all <img> errors before browser can show broken icon)
+window.addEventListener('error', (e) => {
+  if (e.target && e.target.tagName === 'IMG') {
+    const img = e.target;
+    if (img.dataset.hasFallback) return;
+    img.dataset.hasFallback = 'true';
+    img.src = FALLBACK_PLACEHOLDER_SVG;
+  }
+}, true);
 
 export class Navigation {
   static init() {

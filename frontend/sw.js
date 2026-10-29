@@ -1,5 +1,7 @@
 // ANMOL STORE - High Performance Progressive Web App Service Worker
-const CACHE_NAME = 'anmol-store-v2.5.0';
+const CACHE_NAME = 'anmol-store-v2.6.0';
+
+const FALLBACK_SVG = `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300' fill='%23F1F5F9'><rect width='400' height='300'/><circle cx='130' cy='110' r='28' fill='%23CBD5E1'/><path d='M70 230l80-90 60 60 50-65 70 95z' fill='%23CBD5E1'/><text x='200' y='270' font-family='sans-serif' font-size='15' font-weight='700' fill='%2394A3B8' text-anchor='middle'>ANMOL STORE</text></svg>`;
 
 const PRECACHE_ASSETS = [
   '/',
@@ -104,7 +106,29 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 3. Static Assets (CSS, JS, Fonts, Images) -> Stale-While-Revalidate
+  // 3. Image Requests (/uploads/ or request.destination === 'image' or headers image/*)
+  if (url.pathname.startsWith('/uploads/') || request.destination === 'image' || request.headers.get('accept')?.includes('image/')) {
+    event.respondWith(
+      fetch(request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, responseToCache));
+          }
+          return networkResponse;
+        })
+        .catch(async () => {
+          const cached = await caches.match(request);
+          if (cached) return cached;
+          return new Response(FALLBACK_SVG, {
+            headers: { 'Content-Type': 'image/svg+xml' }
+          });
+        })
+    );
+    return;
+  }
+
+  // 4. Static Assets (CSS, JS, Fonts) -> Stale-While-Revalidate
   event.respondWith(
     caches.match(request).then((cachedResponse) => {
       const fetchPromise = fetch(request).then((networkResponse) => {

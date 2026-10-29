@@ -320,7 +320,7 @@
     import { api } from './js/api.js';
     import { auth } from './js/auth.js';
     import { notify } from './js/notifications.js';
-    import { formatCurrency, getFallbackImage, debounce, resolveMediaUrl } from './js/config.js';
+    import { formatCurrency, getFallbackImage, debounce, resolveMediaUrl, FALLBACK_PLACEHOLDER_SVG } from './js/config.js';
 
     auth.requireAuth(['seller', 'admin']);
 
@@ -411,7 +411,7 @@
           container.innerHTML = sellerProducts.map(p => `
             <div class="product-manage-row" data-id="${p._id}">
               <div class="product-manage-info">
-                <img src="${p.images?.[0] || getFallbackImage('product')}" class="product-manage-thumb" alt="${p.name}" loading="lazy" decoding="async">
+                <img src="${resolveMediaUrl(p.images?.[0], 'product')}" class="product-manage-thumb" alt="${p.name}" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='${FALLBACK_PLACEHOLDER_SVG}';">
                 <div class="product-manage-details">
                   <div class="product-manage-title">${p.name}</div>
                   <div class="product-manage-meta">${p.category?.name || p.category || 'General'} &bull; ${p.unit}</div>
@@ -498,7 +498,7 @@
         }
         previewImg.onerror = () => {
           previewImg.onerror = null;
-          previewImg.src = getFallbackImage('product');
+          previewImg.src = FALLBACK_PLACEHOLDER_SVG;
         };
         emptyState.style.display = 'none';
         uploadingState.style.display = 'none';

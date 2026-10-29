@@ -265,7 +265,7 @@
   <script type="module">
     import { api } from './js/api.js';
     import { cart } from './js/cart.js';
-    import { formatCurrency, getFallbackImage, debounce } from './js/config.js';
+    import { formatCurrency, getFallbackImage, debounce, resolveMediaUrl, FALLBACK_PLACEHOLDER_SVG } from './js/config.js';
 
     let currentPage = 1;
     const urlParams = new URLSearchParams(window.location.search);
@@ -342,7 +342,7 @@
           container.innerHTML = products.map(p => `
             <div class="product-card" data-id="${p._id}">
               <div class="product-thumb">
-                <img src="${p.images?.[0] || getFallbackImage('product')}" alt="${p.name}" loading="lazy" decoding="async">
+                <img src="${resolveMediaUrl(p.images?.[0], 'product')}" alt="${p.name}" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='${FALLBACK_PLACEHOLDER_SVG}';">
               </div>
               <div class="product-content">
                 <a href="shop-details.html?slug=${p.shop?.slug}" class="product-shop-tag">

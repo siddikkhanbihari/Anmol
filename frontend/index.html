@@ -783,7 +783,7 @@
   <script type="module">
     import { api } from './js/api.js';
     import { cart } from './js/cart.js';
-    import { formatCurrency, getFallbackImage } from './js/config.js';
+    import { formatCurrency, getFallbackImage, resolveMediaUrl, FALLBACK_PLACEHOLDER_SVG } from './js/config.js';
 
     // Accordion toggle
     document.querySelectorAll('.faq-question').forEach(q => {
@@ -817,9 +817,9 @@
           grid.innerHTML = shopsRes.data.shops.map(s => `
             <div class="shop-card">
               <div class="shop-cover">
-                <img src="${s.coverImage || getFallbackImage('shop')}" alt="${s.name}" loading="lazy" decoding="async">
+                <img src="${resolveMediaUrl(s.coverImage, 'shop')}" alt="${s.name}" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='${FALLBACK_PLACEHOLDER_SVG}';">
                 <div class="shop-logo-wrap">
-                  <img src="${s.logo || getFallbackImage('shop')}" alt="${s.name}" loading="lazy" decoding="async">
+                  <img src="${resolveMediaUrl(s.logo, 'shop')}" alt="${s.name}" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='${FALLBACK_PLACEHOLDER_SVG}';">
                 </div>
               </div>
               <div class="shop-card-body">
@@ -847,7 +847,7 @@
           grid.innerHTML = prodRes.data.products.map(p => `
             <div class="product-card" data-id="${p._id}">
               <div class="product-thumb">
-                <img src="${p.images?.[0] || getFallbackImage('product')}" alt="${p.name}" loading="lazy" decoding="async">
+                <img src="${resolveMediaUrl(p.images?.[0], 'product')}" alt="${p.name}" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='${FALLBACK_PLACEHOLDER_SVG}';">
               </div>
               <div class="product-content">
                 <a href="shop-details.html?slug=${p.shop?.slug}" class="product-shop-tag">
@@ -890,7 +890,7 @@
           grid.innerHTML = servRes.data.services.map(s => `
             <div class="service-card">
               <div class="service-thumb">
-                <img src="${s.images?.[0] || getFallbackImage('service')}" alt="${s.title}" loading="lazy" decoding="async">
+                <img src="${resolveMediaUrl(s.images?.[0], 'service')}" alt="${s.title}" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='${FALLBACK_PLACEHOLDER_SVG}';">
               </div>
               <div class="service-content">
                 <span class="badge badge-primary" style="align-self: flex-start; margin-bottom: 6px;">${s.serviceType}</span>
@@ -917,7 +917,7 @@
           grid.innerHTML = vehRes.data.vehicles.map(v => `
             <div class="vehicle-card">
               <div class="vehicle-thumb">
-                <img src="${v.photos?.[0] || getFallbackImage('vehicle')}" alt="${v.title}" loading="lazy" decoding="async">
+                <img src="${resolveMediaUrl(v.photos?.[0], 'vehicle')}" alt="${v.title}" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='${FALLBACK_PLACEHOLDER_SVG}';">
                 <span class="badge badge-navy vehicle-badge">${v.vehicleType.toUpperCase()}</span>
               </div>
               <div class="vehicle-content">

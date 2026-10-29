@@ -394,7 +394,7 @@
     import { auth } from './js/auth.js';
     import { cart } from './js/cart.js';
     import { notify } from './js/notifications.js';
-    import { formatCurrency, formatDate, getFallbackImage } from './js/config.js';
+    import { formatCurrency, formatDate, getFallbackImage, resolveMediaUrl, FALLBACK_PLACEHOLDER_SVG } from './js/config.js';
 
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('id');
@@ -458,9 +458,10 @@
           const thumbsList = document.getElementById('gallery-thumbs-list');
           const images = product.images && product.images.length ? product.images : [getFallbackImage('product')];
 
-          mainImg.src = images[0];
+          mainImg.src = resolveMediaUrl(images[0], 'product');
+          mainImg.onerror = () => { mainImg.onerror = null; mainImg.src = FALLBACK_PLACEHOLDER_SVG; };
           thumbsList.innerHTML = images.map((img, idx) => `
-            <img src="${img}" class="gallery-thumb ${idx === 0 ? 'active' : ''}" data-src="${img}" alt="Thumbnail">
+            <img src="${resolveMediaUrl(img, 'product')}" class="gallery-thumb ${idx === 0 ? 'active' : ''}" data-src="${resolveMediaUrl(img, 'product')}" alt="Thumbnail" onerror="this.onerror=null; this.src='${FALLBACK_PLACEHOLDER_SVG}';">
           `).join('');
 
           thumbsList.querySelectorAll('.gallery-thumb').forEach(thumb => {
@@ -497,7 +498,7 @@
       grid.innerHTML = products.map(p => `
         <div class="product-card">
           <div class="product-thumb">
-            <img src="${p.images?.[0] || getFallbackImage('product')}" alt="${p.name}" loading="lazy" decoding="async">
+            <img src="${resolveMediaUrl(p.images?.[0], 'product')}" alt="${p.name}" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='${FALLBACK_PLACEHOLDER_SVG}';">
           </div>
           <div class="product-content">
             <h4 class="product-title"><a href="product-details.html?id=${p._id}">${p.name}</a></h4>

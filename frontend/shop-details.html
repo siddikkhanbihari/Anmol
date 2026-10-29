@@ -290,7 +290,7 @@
     import { auth } from './js/auth.js';
     import { cart } from './js/cart.js';
     import { notify } from './js/notifications.js';
-    import { formatCurrency, formatDate, getFallbackImage, debounce } from './js/config.js';
+    import { formatCurrency, formatDate, getFallbackImage, debounce, resolveMediaUrl, FALLBACK_PLACEHOLDER_SVG } from './js/config.js';
 
     const urlParams = new URLSearchParams(window.location.search);
     const slug = urlParams.get('slug') || 'sharma-kirana-store';
@@ -360,7 +360,7 @@
       grid.innerHTML = products.map(p => `
         <div class="product-card" data-id="${p._id}">
           <div class="product-thumb">
-            <img src="${p.images?.[0] || getFallbackImage('product')}" alt="${p.name}" loading="lazy" decoding="async">
+            <img src="${resolveMediaUrl(p.images?.[0], 'product')}" alt="${p.name}" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='${FALLBACK_PLACEHOLDER_SVG}';">
           </div>
           <div class="product-content">
             <h3 class="product-title">

@@ -255,7 +255,7 @@
   <script type="module" src="js/navigation.js"></script>
   <script type="module">
     import { api } from './js/api.js';
-    import { getFallbackImage, debounce } from './js/config.js';
+    import { getFallbackImage, debounce, resolveMediaUrl, FALLBACK_PLACEHOLDER_SVG } from './js/config.js';
 
     let currentPage = 1;
 
@@ -299,9 +299,9 @@
           container.innerHTML = shops.map(s => `
             <div class="shop-card">
               <div class="shop-cover">
-                <img src="${s.coverImage || getFallbackImage('shop')}" alt="${s.name}" loading="lazy" decoding="async">
+                <img src="${resolveMediaUrl(s.coverImage, 'shop')}" alt="${s.name}" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='${FALLBACK_PLACEHOLDER_SVG}';">
                 <div class="shop-logo-wrap">
-                  <img src="${s.logo || getFallbackImage('shop')}" alt="${s.name}" loading="lazy" decoding="async">
+                  <img src="${resolveMediaUrl(s.logo, 'shop')}" alt="${s.name}" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='${FALLBACK_PLACEHOLDER_SVG}';">
                 </div>
               </div>
               <div class="shop-card-body">
