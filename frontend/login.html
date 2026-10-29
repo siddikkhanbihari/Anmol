@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#123B70">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -23,12 +23,14 @@
   <link rel="stylesheet" href="css/responsive.css">
   <style>
     .auth-page-wrap {
-      min-height: calc(100vh - 120px);
+      min-height: calc(100vh - 80px);
+      min-height: calc(100dvh - 80px);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: var(--space-8) var(--space-4);
+      padding: var(--space-6) var(--space-4);
       background-color: var(--color-bg);
+      box-sizing: border-box;
     }
     .auth-card {
       background: #FFF;
@@ -38,16 +40,18 @@
       max-width: 460px;
       width: 100%;
       padding: var(--space-8);
+      box-sizing: border-box;
+      transition: all var(--transition-fast);
     }
     .auth-tabs {
       display: flex;
       border-bottom: 2px solid var(--color-border);
-      margin-bottom: var(--space-6);
+      margin-bottom: var(--space-5);
     }
     .auth-tab {
       flex: 1;
       text-align: center;
-      padding: var(--space-3);
+      padding: var(--space-3) var(--space-2);
       font-weight: var(--font-weight-semibold);
       font-size: var(--font-size-sm);
       color: var(--color-text-muted);
@@ -55,6 +59,9 @@
       border-bottom: 2px solid transparent;
       margin-bottom: -2px;
       transition: all var(--transition-fast);
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
     .auth-tab.active {
       color: var(--brand-blue);
@@ -68,60 +75,126 @@
       font-size: var(--font-size-xs);
       margin-bottom: var(--space-5);
     }
-    .demo-credentials-box code {
-      font-weight: bold;
-      color: var(--primary-navy);
+    .demo-credentials-box button {
+      touch-action: manipulation;
+    }
+    .checkout-flow-badge {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: #EFF6FF;
+      border: 1px solid #BFDBFE;
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      margin-bottom: var(--space-4);
+      color: #1E40AF;
+      font-size: var(--font-size-xs);
+      line-height: 1.4;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    #btn-toggle-password {
+      border: 1px solid var(--color-border);
+      border-left: none;
+      min-width: 46px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: manipulation;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #btn-login-submit {
+      min-height: 48px;
+      touch-action: manipulation;
+      font-weight: 700;
+    }
+    @media (max-width: 480px) {
+      .auth-card {
+        padding: var(--space-5) var(--space-4) !important;
+        border-radius: var(--radius-lg) !important;
+      }
+      .auth-page-wrap {
+        padding: var(--space-4) var(--space-3) !important;
+      }
+      .auth-tab {
+        padding: var(--space-2) 2px !important;
+        font-size: 0.78rem !important;
+      }
+      .brand-title {
+        font-size: 1.1rem !important;
+      }
+      .brand-tagline {
+        display: none;
+      }
+      .auth-header-text {
+        display: none;
+      }
     }
   </style>
 </head>
 <body>
 
   <!-- Minimal Header -->
-  <header style="background: #FFF; border-bottom: 1px solid var(--color-border); padding: var(--space-4) 0;">
+  <header style="background: #FFF; border-bottom: 1px solid var(--color-border); padding: var(--space-3) 0;">
     <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-      <a href="index.html" class="brand-logo">
+      <a href="index.html" class="brand-logo" style="text-decoration: none;">
         <div class="brand-icon-wrap"><i class="fas fa-store-alt"></i></div>
         <div class="brand-text-wrap">
           <div class="brand-title">ANMOL <span>STORE</span></div>
           <div class="brand-tagline">Local Business, Digital Future</div>
         </div>
       </a>
-      <a href="index.html" class="btn btn-ghost btn-sm"><i class="fas fa-home"></i> Back to Store</a>
+      <a href="index.html" class="btn btn-ghost btn-sm" style="touch-action: manipulation;">
+        <i class="fas fa-home"></i> <span class="auth-header-text">Back to Store</span>
+      </a>
     </div>
   </header>
 
   <div class="auth-page-wrap">
     <div class="auth-card">
-      <div style="text-align: center; margin-bottom: var(--space-6);">
-        <h2 style="font-size: var(--font-size-xl); margin-bottom: 4px;">Welcome Back!</h2>
+      <div style="text-align: center; margin-bottom: var(--space-5);">
+        <h2 style="font-size: var(--font-size-xl); margin-bottom: 4px; color: var(--primary-navy);">Welcome Back!</h2>
         <p style="color: var(--color-text-muted); font-size: var(--font-size-sm); margin: 0;">
           Sign in to your ANMOL STORE account
         </p>
       </div>
 
+      <!-- Context banner when redirected from checkout -->
+      <div id="checkout-context-banner" class="checkout-flow-badge">
+        <i class="fas fa-shopping-bag" style="font-size: 1.3rem; color: var(--brand-blue); flex-shrink: 0;"></i>
+        <div>
+          <strong>Order Complete Karein:</strong> Sign in ya account banate hi aap sidhe checkout par order place kar payenge.
+        </div>
+      </div>
+
       <!-- Customer / Seller / Rider Tabs -->
-      <div class="auth-tabs">
-        <div class="auth-tab active" data-role="customer"><i class="fas fa-user"></i> Customer</div>
-        <div class="auth-tab" data-role="seller"><i class="fas fa-store"></i> Seller Hub</div>
-        <div class="auth-tab" data-role="rider"><i class="fas fa-motorcycle"></i> Rider Fleet</div>
+      <div class="auth-tabs" role="tablist">
+        <div class="auth-tab active" data-role="customer" role="tab"><i class="fas fa-user"></i> Customer</div>
+        <div class="auth-tab" data-role="seller" role="tab"><i class="fas fa-store"></i> Seller Hub</div>
+        <div class="auth-tab" data-role="rider" role="tab"><i class="fas fa-motorcycle"></i> Rider Fleet</div>
       </div>
 
       <!-- Demo Credentials Quick-Fill helper for convenience -->
       <div class="demo-credentials-box">
-        <strong>Quick Sign-In Helpers:</strong>
-        <div style="margin-top: 4px; display: flex; gap: 6px; flex-wrap: wrap;">
-          <button type="button" class="btn btn-sm btn-outline" id="btn-fill-phone" style="padding: 2px 6px; font-size: 0.7rem; color: #0284C7; border-color: #0284C7;">📱 6351111457 (Mobile)</button>
-          <button type="button" class="btn btn-sm btn-outline" id="btn-fill-customer" style="padding: 2px 6px; font-size: 0.7rem;">Customer</button>
-          <button type="button" class="btn btn-sm btn-outline" id="btn-fill-seller" style="padding: 2px 6px; font-size: 0.7rem;">Seller (Sharma Kirana)</button>
-          <button type="button" class="btn btn-sm btn-outline" id="btn-fill-rider" style="padding: 2px 6px; font-size: 0.7rem; color: #10B981; border-color: #10B981;">🛵 Rider (Raju)</button>
-          <button type="button" class="btn btn-sm btn-outline" id="btn-fill-admin" style="padding: 2px 6px; font-size: 0.7rem;">Admin</button>
+        <strong>⚡ 1-Click Fast Sign-In:</strong>
+        <div style="margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap;">
+          <button type="button" class="btn btn-sm btn-outline" id="btn-fill-cust-phone" style="padding: 3px 8px; font-size: 0.72rem; color: #0284C7; border-color: #0284C7;">📱 9820011223 (Customer)</button>
+          <button type="button" class="btn btn-sm btn-outline" id="btn-fill-customer" style="padding: 3px 8px; font-size: 0.72rem;">Customer Email</button>
+          <button type="button" class="btn btn-sm btn-outline" id="btn-fill-seller" style="padding: 3px 8px; font-size: 0.72rem; color: var(--accent-orange); border-color: var(--accent-orange);">Seller (Sharma)</button>
+          <button type="button" class="btn btn-sm btn-outline" id="btn-fill-rider" style="padding: 3px 8px; font-size: 0.72rem; color: #10B981; border-color: #10B981;">🛵 Rider (Raju)</button>
+          <button type="button" class="btn btn-sm btn-outline" id="btn-fill-admin" style="padding: 3px 8px; font-size: 0.72rem;">Admin</button>
         </div>
       </div>
 
-      <form id="login-form">
+      <form id="login-form" novalidate>
         <div class="form-group">
           <label class="form-label required" for="email">Mobile Number or Email Address</label>
-          <input type="text" id="email" class="form-control" placeholder="Mobile Number or Email (e.g. 6351111457)" required autocomplete="username">
+          <input type="text" id="email" class="form-control" placeholder="Enter Mobile Number or Email" required autocomplete="username" inputmode="email">
         </div>
 
         <div class="form-group">
@@ -131,7 +204,7 @@
           </div>
           <div class="input-group">
             <input type="password" id="password" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
-            <button type="button" class="btn btn-ghost" id="btn-toggle-password" style="border: 1px solid var(--color-border); border-left: none;">
+            <button type="button" id="btn-toggle-password" aria-label="Toggle password visibility">
               <i class="far fa-eye" id="toggle-pwd-icon"></i>
             </button>
           </div>
@@ -144,10 +217,10 @@
 
       <div style="text-align: center; margin-top: var(--space-6); font-size: var(--font-size-sm); color: var(--color-text-muted);">
         Don't have an account yet?
-        <div style="margin-top: 4px;">
-          <a href="register.html" style="font-weight: 600;">Create Customer Account</a> &bull;
-          <a href="seller-register.html" style="font-weight: 600; color: var(--accent-orange);">Register Your Shop (Free)</a> &bull;
-          <a href="rider-register.html" style="font-weight: 600; color: #10B981;">Join as Rider Partner 🛵</a>
+        <div style="margin-top: 6px;">
+          <a href="register.html" id="link-create-customer" style="font-weight: 600;">Create Customer Account</a> &bull;
+          <a href="seller-register.html" style="font-weight: 600; color: var(--accent-orange);">Register Shop</a> &bull;
+          <a href="rider-register.html" style="font-weight: 600; color: #10B981;">Join as Rider 🛵</a>
         </div>
       </div>
     </div>
@@ -164,14 +237,56 @@
     import { notify } from './js/notifications.js';
 
     const urlParams = new URLSearchParams(window.location.search);
-    const redirectUrl = urlParams.get('redirect');
+    const rawRedirect = urlParams.get('redirect');
 
+    function getSafeRedirectUrl(raw) {
+      if (!raw) return null;
+      try {
+        const decoded = decodeURIComponent(raw).trim();
+        // Disallow protocol-relative or cross-domain redirects
+        if (decoded.startsWith('//') || decoded.includes('://')) {
+          const u = new URL(decoded, window.location.origin);
+          if (u.origin === window.location.origin) {
+            return u.pathname + u.search + u.hash;
+          }
+          return null;
+        }
+        if (decoded.startsWith('/')) return decoded;
+        if (decoded.endsWith('.html') || decoded.includes('.html?')) return '/' + decoded;
+      } catch (e) {}
+      return null;
+    }
+
+    const safeRedirectUrl = getSafeRedirectUrl(rawRedirect);
+
+    // 1. If user is ALREADY authenticated, smoothly auto-forward without showing login form
+    if (auth.isAuthenticated()) {
+      const destination = safeRedirectUrl || (
+        auth.isAdmin() ? 'admin-dashboard.html' :
+        auth.isRider() ? 'rider-dashboard.html' :
+        auth.isSeller() ? 'seller-dashboard.html' : 'customer-dashboard.html'
+      );
+      window.location.replace(destination);
+    }
+
+    // 2. Contextual UI indicators
     if (urlParams.get('expired')) {
       notify.info('Aapka login session expire ho gaya tha. Kripya dobara sign in karein.');
     }
-    if (redirectUrl && redirectUrl.includes('seller')) {
+
+    if (safeRedirectUrl && (safeRedirectUrl.includes('checkout') || safeRedirectUrl.includes('cart'))) {
+      const banner = document.getElementById('checkout-context-banner');
+      if (banner) banner.style.display = 'flex';
+      // Forward redirect to customer register link so users who create account still checkout smoothly
+      const custRegLink = document.getElementById('link-create-customer');
+      if (custRegLink) {
+        custRegLink.href = `register.html?redirect=${encodeURIComponent(safeRedirectUrl)}`;
+      }
+    }
+
+    if (safeRedirectUrl && safeRedirectUrl.includes('seller')) {
       setTimeout(() => document.querySelector('[data-role="seller"]')?.click(), 50);
-    } else if (redirectUrl && redirectUrl.includes('rider')) {
+    } else if (safeRedirectUrl && safeRedirectUrl.includes('rider')) {
       setTimeout(() => document.querySelector('[data-role="rider"]')?.click(), 50);
     }
 
@@ -190,7 +305,7 @@
     const toggleBtn = document.getElementById('btn-toggle-password');
     const toggleIcon = document.getElementById('toggle-pwd-icon');
 
-    toggleBtn.addEventListener('click', () => {
+    toggleBtn?.addEventListener('click', () => {
       if (pwdInput.type === 'password') {
         pwdInput.type = 'text';
         toggleIcon.className = 'far fa-eye-slash';
@@ -201,26 +316,34 @@
     });
 
     // Quick demo fills
-    document.getElementById('btn-fill-phone')?.addEventListener('click', () => {
-      document.getElementById('email').value = '6351111457';
-      document.getElementById('password').value = '';
-      document.getElementById('password').focus();
+    document.getElementById('btn-fill-cust-phone')?.addEventListener('click', () => {
+      document.getElementById('email').value = '9820011223';
+      document.getElementById('password').value = 'Customer@123';
+      document.querySelector('[data-role="customer"]')?.click();
+      notify.info('Customer mobile credentials filled!');
     });
+
     document.getElementById('btn-fill-customer')?.addEventListener('click', () => {
       document.getElementById('email').value = 'customer@anmolstore.in';
       document.getElementById('password').value = 'Customer@123';
+      document.querySelector('[data-role="customer"]')?.click();
     });
+
     document.getElementById('btn-fill-seller')?.addEventListener('click', () => {
       document.getElementById('email').value = 'sharma.kirana@anmolstore.in';
       document.getElementById('password').value = 'Seller@123';
+      document.querySelector('[data-role="seller"]')?.click();
     });
+
     document.getElementById('btn-fill-admin')?.addEventListener('click', () => {
       document.getElementById('email').value = 'admin@anmolstore.in';
       document.getElementById('password').value = 'Admin@Anmol2026';
     });
+
     document.getElementById('btn-fill-rider')?.addEventListener('click', () => {
       document.getElementById('email').value = 'rider@anmolstore.in';
       document.getElementById('password').value = 'Rider@123';
+      document.querySelector('[data-role="rider"]')?.click();
     });
 
     // Form submission
@@ -232,6 +355,11 @@
       const identifier = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
 
+      if (!identifier || !password) {
+        notify.warning('Please enter both mobile number / email and password.');
+        return;
+      }
+
       submitBtn.disabled = true;
       submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
 
@@ -239,12 +367,17 @@
 
       if (result.success) {
         notify.success(`Welcome back, ${result.user.name}!`);
-        // Sync cart after login
-        await cart.fetchCart();
+        
+        // Sync guest cart to user account in database so checkout has items ready!
+        try {
+          await cart.syncGuestCart();
+        } catch (err) {
+          console.warn('Cart sync notice:', err);
+        }
 
         setTimeout(() => {
-          if (redirectUrl) {
-            window.location.href = decodeURIComponent(redirectUrl);
+          if (safeRedirectUrl) {
+            window.location.href = safeRedirectUrl;
           } else if (result.user.role === 'admin') {
             window.location.href = 'admin-dashboard.html';
           } else if (selectedTabRole === 'rider' || result.user.role === 'rider') {
@@ -254,9 +387,9 @@
           } else {
             window.location.href = 'customer-dashboard.html';
           }
-        }, 800);
+        }, 500);
       } else {
-        notify.error(result.message);
+        notify.error(result.message || 'Login failed. Please check credentials.');
         submitBtn.disabled = false;
         submitBtn.innerHTML = 'Sign In to ANMOL STORE';
       }

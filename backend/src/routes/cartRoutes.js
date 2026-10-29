@@ -5,7 +5,8 @@ import {
   addItem,
   updateItem,
   removeItem,
-  clearCart
+  clearCart,
+  syncCart
 } from '../controllers/cartController.js';
 import { authenticateToken } from '../middleware/auth.js';
 
@@ -14,6 +15,7 @@ const router = express.Router();
 router.use(authenticateToken);
 
 router.get('/', getCart);
+router.post('/sync', syncCart);
 router.post('/items', addItem);
 router.patch('/items/:id', updateItem);
 router.delete('/items/:id', removeItem);

@@ -290,7 +290,10 @@
       await cart.fetchCart();
       const items = cart.cart.items || [];
       if (!items.length) {
-        window.location.href = 'cart.html';
+        notify.info('Aapka cart khali hai. Kripya pehle cart me items add karein.');
+        setTimeout(() => {
+          window.location.href = 'cart.html';
+        }, 1200);
         return;
       }
 

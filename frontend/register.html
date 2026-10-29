@@ -120,9 +120,33 @@
   <script type="module" src="js/notifications.js"></script>
   <script type="module" src="js/api.js"></script>
   <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/cart.js"></script>
   <script type="module">
     import { auth } from './js/auth.js';
+    import { cart } from './js/cart.js';
     import { notify } from './js/notifications.js';
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const rawRedirect = urlParams.get('redirect');
+
+    function getSafeRedirectUrl(raw) {
+      if (!raw) return null;
+      try {
+        const decoded = decodeURIComponent(raw).trim();
+        if (decoded.startsWith('//') || decoded.includes('://')) {
+          const u = new URL(decoded, window.location.origin);
+          if (u.origin === window.location.origin) {
+            return u.pathname + u.search + u.hash;
+          }
+          return null;
+        }
+        if (decoded.startsWith('/')) return decoded;
+        if (decoded.endsWith('.html') || decoded.includes('.html?')) return '/' + decoded;
+      } catch (e) {}
+      return null;
+    }
+
+    const safeRedirectUrl = getSafeRedirectUrl(rawRedirect);
 
     const form = document.getElementById('register-form');
     const submitBtn = document.getElementById('btn-reg-submit');
@@ -152,12 +176,27 @@
 
       if (result.success) {
         notify.success('Welcome to ANMOL STORE! Account created successfully.');
+        
+        // Sync guest cart to new account so checkout has items
+        try {
+          await cart.syncGuestCart();
+        } catch (err) {
+          console.warn('Cart sync notice:', err);
+        }
+
         setTimeout(() => {
-          window.location.href = 'customer-dashboard.html';
-        }, 1200);
+          if (safeRedirectUrl) {
+            window.location.href = safeRedirectUrl;
+          } else {
+            window.location.href = 'customer-dashboard.html';
+          }
+        }, 800);
       } else {
         notify.error(result.message);
         submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Create Customer Account';
+      }
+    });
         submitBtn.innerHTML = 'Create Customer Account';
       }
     });

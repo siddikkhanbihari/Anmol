@@ -69,6 +69,35 @@ class CartManager {
     return this.cart;
   }
 
+  async syncGuestCart() {
+    if (!auth.isAuthenticated()) {
+      return this.fetchCart();
+    }
+    const guestCart = this.loadLocalCart();
+    if (guestCart?.items?.length > 0) {
+      try {
+        const items = guestCart.items.map(item => ({
+          productId: item.product?._id || item.product?.id || item.productId,
+          quantity: item.quantity || 1,
+          variant: item.variant || null
+        })).filter(i => !!i.productId);
+
+        if (items.length > 0) {
+          const res = await api.post('/cart/sync', { items });
+          if (res.success && res.data) {
+            this.cart = res.data;
+            localStorage.removeItem(CONFIG.STORAGE_KEYS.GUEST_CART);
+            this.notifyChange();
+            return this.cart;
+          }
+        }
+      } catch (err) {
+        console.warn('Guest cart sync error:', err);
+      }
+    }
+    return this.fetchCart();
+  }
+
   async addItem(product, quantity = 1, variant = null) {
     if (auth.isAuthenticated()) {
       try {

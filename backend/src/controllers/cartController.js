@@ -127,3 +127,49 @@ export async function clearCart(req, res, next) {
     next(err);
   }
 }
+
+export async function syncCart(req, res, next) {
+  try {
+    const { items = [] } = req.body;
+    let cart = await Cart.findOne({ user: req.user._id });
+    if (!cart) {
+      cart = new Cart({ user: req.user._id, items: [] });
+    }
+
+    if (Array.isArray(items) && items.length > 0) {
+      for (const item of items) {
+        const pId = item.productId || item.product?._id || item.product;
+        const qty = Math.max(1, Number(item.quantity) || 1);
+        const variant = item.variant || null;
+        if (!pId) continue;
+
+        const product = await Product.findById(pId).populate('shop');
+        if (!product || !product.isActive) continue;
+
+        const existingIndex = cart.items.findIndex(
+          (i) => i.product.toString() === pId.toString() &&
+                 JSON.stringify(i.variant) === JSON.stringify(variant)
+        );
+
+        if (existingIndex > -1) {
+          cart.items[existingIndex].quantity = Math.min(product.stock, cart.items[existingIndex].quantity + qty);
+          cart.items[existingIndex].priceSnapshot = product.price;
+        } else {
+          cart.items.push({
+            product: product._id,
+            shop: product.shop?._id,
+            quantity: Math.min(product.stock, qty),
+            variant,
+            priceSnapshot: product.price
+          });
+        }
+      }
+      await cart.save();
+    }
+
+    return getCart(req, res, next);
+  } catch (err) {
+    next(err);
+  }
+}
+
