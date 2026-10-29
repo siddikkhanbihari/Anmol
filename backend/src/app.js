@@ -159,7 +159,7 @@ app.use(express.static(path.join(__dirname, '../../frontend'), {
 }));
 
 // Health check endpoint
-app.get('/api/health', (req, res) => {
+app.get(['/api/health', '/api/v1/health'], (req, res) => {
   res.json({
     status: 'online',
     app: 'ANMOL STORE API',
