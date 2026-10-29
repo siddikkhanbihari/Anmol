@@ -243,28 +243,6 @@
       <div id="leaflet-map" style="width: 100%; height: 100%;"></div>
     </div>
 
-    <!-- Doorstep UPI Payment Card (Active for COD orders) -->
-    <div id="tracking-qr-card" class="doorstep-qr-container" style="display: none; margin-top: var(--space-4);">
-      <div class="doorstep-qr-header">
-        <span class="doorstep-qr-badge"><i class="fas fa-qrcode"></i> PAY ON DELIVERY VIA PHONEPE / UPI</span>
-        <span id="tracking-qr-due-text" style="font-weight: 800; color: #581C87;"></span>
-      </div>
-      <p style="font-size: 0.78rem; color: #6B21A8; margin: 4px auto 8px auto; max-width: 440px; line-height: 1.4;">
-        Rider aapke ghar pahuche tab aap cash de sakte hain ya niche diye gaye Arman Bhai ke PhonePe QR code ko scan karke payment complete kar sakte hain.
-      </p>
-      <div class="doorstep-qr-box">
-        <img src="assets/images/merchant-qr.jpg" alt="ANMOL STORE PhonePe QR" class="doorstep-qr-img" onerror="this.onerror=null; this.src='/uploads/merchant-qr.jpg';">
-      </div>
-      <div class="doorstep-merchant-name">ARMAN MAHAMADARIFBHAI PIPRANI</div>
-      <div class="doorstep-merchant-sub">ANMOL STORE Official Verified Merchant Standee</div>
-      <div class="doorstep-app-pills">
-        <span class="doorstep-app-pill"><i class="fas fa-mobile-alt" style="color: #5F259F;"></i> PhonePe</span>
-        <span class="doorstep-app-pill"><i class="fab fa-google-pay" style="color: #EA4335;"></i> Google Pay</span>
-        <span class="doorstep-app-pill"><i class="fas fa-wallet" style="color: #00BAF2;"></i> Paytm</span>
-        <span class="doorstep-app-pill"><i class="fas fa-university" style="color: #10B981;"></i> Any UPI App</span>
-      </div>
-    </div>
-
     <!-- Fulfillment Partner & Rider Details -->
     <div class="grid-2" style="margin-top: var(--space-4);" id="details-grid">
       <!-- Rider Card -->
@@ -459,21 +437,6 @@
         document.getElementById('rider-name-display').textContent = 'Assigning Nearest Rider...';
         document.getElementById('rider-vehicle-display').textContent = 'Palanpur Local Fleet';
         riderCall.style.display = 'none';
-      }
-
-      // 5.5 Doorstep QR Display for COD / Pending Payment
-      const isCod = (data.paymentMethod === 'cod' || data.paymentStatus !== 'paid');
-      const qrCard = document.getElementById('tracking-qr-card');
-      if (qrCard) {
-        if (isCod) {
-          qrCard.style.display = 'block';
-          const dueText = document.getElementById('tracking-qr-due-text');
-          if (dueText && data.totalAmount) {
-            dueText.textContent = `Amount Due: ₹${Number(data.totalAmount).toLocaleString('en-IN')}`;
-          }
-        } else {
-          qrCard.style.display = 'none';
-        }
       }
 
       // 6. Map Markers Update

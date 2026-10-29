@@ -47,13 +47,6 @@ export const CONFIG = {
     USER_LOCATION: 'anmol_user_location',
     GUEST_CART: 'anmol_guest_cart',
     WISHLIST: 'anmol_guest_wishlist'
-  },
-  UPI_PAYMENT: {
-    merchantName: 'ARMAN MAHAMADARIFBHAI PIPRANI',
-    storeName: 'ANMOL STORE',
-    merchantPhone: '+91 6351111457',
-    qrImageUrl: 'assets/images/merchant-qr.jpg',
-    backupQrUrl: '/uploads/merchant-qr.jpg'
   }
 };
 
@@ -122,40 +115,4 @@ export function debounce(func, wait = 300) {
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
   };
-}
-
-
-/**
- * Generate reusable HTML for Doorstep UPI QR display
- */
-export function getDoorstepQrHtml(amount = null) {
-  const amountHtml = amount ? `
-    <div style="font-size: 1.15rem; font-weight: 800; color: #581C87; margin: 4px 0 8px 0;">
-      Amount Payable: <span style="color: #9333EA;">${formatCurrency(amount)}</span>
-    </div>
-  ` : '';
-
-  return `
-    <div class="doorstep-qr-container">
-      <div class="doorstep-qr-header">
-        <span class="doorstep-qr-badge"><i class="fas fa-qrcode"></i> PhonePe & UPI QR</span>
-        <span>Doorstep Payment Accepted</span>
-      </div>
-      <p style="font-size: 0.78rem; color: #6B21A8; margin: 4px auto 8px auto; max-width: 440px; line-height: 1.4;">
-        Delivery aane par aap cash de sakte hain ya niche diye gaye QR code ko kisi bhi UPI app se scan karke pay kar sakte hain.
-      </p>
-      ${amountHtml}
-      <div class="doorstep-qr-box">
-        <img src="assets/images/merchant-qr.jpg" alt="ANMOL STORE PhonePe QR" class="doorstep-qr-img" onerror="this.onerror=null; this.src='/uploads/merchant-qr.jpg';">
-      </div>
-      <div class="doorstep-merchant-name">ARMAN MAHAMADARIFBHAI PIPRANI</div>
-      <div class="doorstep-merchant-sub">ANMOL STORE Verified PhonePe Merchant Standee</div>
-      <div class="doorstep-app-pills">
-        <span class="doorstep-app-pill"><i class="fas fa-mobile-alt" style="color: #5F259F;"></i> PhonePe</span>
-        <span class="doorstep-app-pill"><i class="fab fa-google-pay" style="color: #EA4335;"></i> Google Pay</span>
-        <span class="doorstep-app-pill"><i class="fas fa-wallet" style="color: #00BAF2;"></i> Paytm</span>
-        <span class="doorstep-app-pill"><i class="fas fa-university" style="color: #10B981;"></i> Any UPI App</span>
-      </div>
-    </div>
-  `;
 }
