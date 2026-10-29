@@ -14,7 +14,7 @@
   <title>Shop Storefront — ANMOL STORE</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/base.css">
@@ -264,6 +264,34 @@
     </div>
   </div>
 
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="mobile-bottom-nav">
+    <div class="mobile-bottom-nav-inner">
+      <a href="index.html" class="mobile-nav-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="shops.html" class="mobile-nav-item active">
+        <i class="fas fa-store"></i>
+        <span>Shops</span>
+      </a>
+      <a href="products.html" class="mobile-nav-item">
+        <i class="fas fa-th-large"></i>
+        <span>Catalog</span>
+      </a>
+      <a href="cart.html" class="mobile-nav-item">
+        <i class="fas fa-shopping-bag" style="position: relative;">
+          <span class="badge-count cart-badge-count" style="display: none; top: -4px; right: -6px;">0</span>
+        </i>
+        <span>Cart</span>
+      </a>
+      <a href="login.html" class="mobile-nav-item user-account-link">
+        <i class="far fa-user"></i>
+        <span>Account</span>
+      </a>
+    </div>
+  </nav>
+
   <footer class="site-footer">
     <div class="footer-bottom">
       <div class="container">
@@ -366,8 +394,16 @@
         return;
       }
 
-      grid.innerHTML = products.map(p => `
+      grid.innerHTML = products.map(p => {
+        const hasDiscount = p.originalPrice && p.originalPrice > p.price;
+        const discountPill = hasDiscount 
+          ? `<span class="product-badge-discount">${Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100)}% OFF</span>`
+          : '';
+        const ratingVal = (p.rating !== undefined && p.rating !== null) ? Number(p.rating).toFixed(1) : '4.8';
+
+        return `
         <div class="product-card" data-id="${p._id}">
+          ${hasDiscount ? `<div class="product-badge-stack">${discountPill}</div>` : ''}
           <div class="product-thumb">
             <img src="${resolveMediaUrl(p.images?.[0], 'product')}" alt="${p.name}" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='${FALLBACK_PLACEHOLDER_SVG}';">
           </div>
@@ -376,13 +412,13 @@
               <a href="product-details.html?id=${p._id}">${p.name}</a>
             </h3>
             <div class="product-rating">
-              <div class="stars"><i class="fas fa-star"></i> ${p.rating.toFixed(1)}</div>
+              <div class="stars"><i class="fas fa-star"></i> ${ratingVal}</div>
               <span>(${p.reviewCount || 0})</span>
             </div>
             <div class="product-price-row">
               <div class="price-box">
                 <span class="current-price">${formatCurrency(p.price)}</span>
-                ${p.originalPrice ? `<span class="original-price">${formatCurrency(p.originalPrice)}</span>` : ''}
+                ${hasDiscount ? `<span class="original-price">${formatCurrency(p.originalPrice)}</span>` : ''}
               </div>
               <button class="btn-add-cart" data-product='${JSON.stringify({ _id: p._id, name: p.name, price: p.price, shop: currentShop, stock: p.stock })}'>
                 <i class="fas fa-plus"></i> Add
@@ -390,7 +426,7 @@
             </div>
           </div>
         </div>
-      `).join('');
+      `;}).join('');
 
       grid.querySelectorAll('.btn-add-cart').forEach(btn => {
         btn.addEventListener('click', (e) => {

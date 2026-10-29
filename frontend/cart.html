@@ -14,7 +14,7 @@
   <title>Shopping Cart — ANMOL STORE</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/base.css">
@@ -242,6 +242,34 @@
       <a href="products.html" class="btn btn-primary btn-lg">Start Shopping Now</a>
     </div>
   </main>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="mobile-bottom-nav">
+    <div class="mobile-bottom-nav-inner">
+      <a href="index.html" class="mobile-nav-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="shops.html" class="mobile-nav-item">
+        <i class="fas fa-store"></i>
+        <span>Shops</span>
+      </a>
+      <a href="products.html" class="mobile-nav-item">
+        <i class="fas fa-th-large"></i>
+        <span>Catalog</span>
+      </a>
+      <a href="cart.html" class="mobile-nav-item active">
+        <i class="fas fa-shopping-bag" style="position: relative;">
+          <span class="badge-count cart-badge-count" style="display: none; top: -4px; right: -6px;">0</span>
+        </i>
+        <span>Cart</span>
+      </a>
+      <a href="login.html" class="mobile-nav-item user-account-link">
+        <i class="far fa-user"></i>
+        <span>Account</span>
+      </a>
+    </div>
+  </nav>
 
   <footer class="site-footer">
     <div class="footer-bottom">
