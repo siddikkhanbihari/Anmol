@@ -1163,6 +1163,7 @@
     margin-right: calc(-1 * var(--space-3)) !important;
     -webkit-overflow-scrolling: touch !important;
     scroll-behavior: smooth !important;
+    scroll-snap-type: x proximity !important;
     scrollbar-width: none !important;
     touch-action: pan-x pan-y !important;
     cursor: grab !important;
@@ -1171,6 +1172,8 @@
     display: none !important;
   }
   #home-categories-grid .category-card {
+    scroll-snap-align: start !important;
+    scroll-snap-stop: normal !important;
     flex: 0 0 94px !important;
     width: 94px !important;
     max-width: 94px !important;

@@ -1242,6 +1242,7 @@ body.is-standalone-app {
   overflow-y: hidden !important;
   -webkit-overflow-scrolling: touch !important;
   scroll-behavior: smooth !important;
+  scroll-snap-type: x proximity;
   gap: 14px !important;
   padding: 6px 4px 16px 4px !important;
   scrollbar-width: none !important;
@@ -1261,6 +1262,8 @@ body.is-standalone-app {
 }
 
 .categories-scroll-track .category-card {
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
   flex: 0 0 108px !important;
   width: 108px !important;
   min-width: 108px !important;
@@ -1357,6 +1360,8 @@ body.is-standalone-app {
 }
 
 .mobile-acc-carousel-track .product-card {
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
   flex: 0 0 220px !important;
   width: 220px !important;
   min-width: 220px !important;
@@ -1384,5 +1389,58 @@ body.is-standalone-app {
     width: 150px !important;
     min-width: 150px !important;
     max-width: 150px !important;
+  }
+}
+
+
+/* ==========================================================================
+   SMOOTH SCROLLING & BACK TO TOP BUTTON
+   ========================================================================== */
+.anmol-back-to-top-btn {
+  position: fixed;
+  bottom: 84px;
+  left: 16px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--brand-blue), var(--primary-navy));
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  cursor: pointer;
+  z-index: 990;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(16px) scale(0.85);
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease, background 0.2s ease, box-shadow 0.2s ease;
+  touch-action: manipulation;
+}
+.anmol-back-to-top-btn.visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+.anmol-back-to-top-btn:hover {
+  background: linear-gradient(135deg, var(--brand-blue-hover), var(--primary-navy-dark));
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+  transform: translateY(-2px) scale(1.05);
+}
+.anmol-back-to-top-btn:active {
+  transform: translateY(1px) scale(0.95);
+}
+@media (min-width: 769px) {
+  .anmol-back-to-top-btn {
+    bottom: 24px;
+    right: 84px;
+    left: auto;
+    width: 46px;
+    height: 46px;
+    font-size: 1rem;
   }
 }

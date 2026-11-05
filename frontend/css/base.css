@@ -7,7 +7,7 @@
 
 html {
   font-size: 16px;
-  scroll-behavior: smooth;
+  scroll-behavior: smooth !important;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   width: 100%;
@@ -30,6 +30,8 @@ body {
   width: 100%;
   max-width: 100%;
   position: relative;
+  overflow-x: hidden;
+  scroll-behavior: smooth !important;
   -webkit-overflow-scrolling: touch;
   touch-action: pan-y;
   text-rendering: optimizeLegibility;

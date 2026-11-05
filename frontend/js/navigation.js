@@ -22,6 +22,7 @@ export class Navigation {
     this.initLocation();
     this.initLanguage();
     this.initCustomerCare();
+    this.initSmoothScroll();
     this.updateUserNav();
     this.bindSearchForms();
     this.bindMobileDrawer();
@@ -563,6 +564,143 @@ export class Navigation {
     modal.addEventListener('click', (e) => {
       if (e.target === modal) closeModal();
     });
+  }
+
+  static initSmoothScroll() {
+    // 1. Smooth scroll for all hash/anchor links with header offset
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a[href^="#"]');
+      if (!link) return;
+      const href = link.getAttribute('href');
+      if (!href) return;
+      if (href === '#' || href === '#top') {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      try {
+        const target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          const header = document.querySelector('.main-header');
+          const headerHeight = header ? header.offsetHeight : 70;
+          const elementPosition = target.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerHeight - 12;
+          window.scrollTo({
+            top: Math.max(0, offsetPosition),
+            behavior: 'smooth'
+          });
+        }
+      } catch (err) {
+        // Invalid selector, let default browser behavior handle
+      }
+    });
+
+    // 2. Floating Back to Top Button
+    this.initBackToTopButton();
+
+    // 3. Desktop Kinetic Wheel Smoothing (only on non-touch desktop screens when motion is allowed)
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+      const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+      if (!isTouch) {
+        this.initDesktopWheelSmoothing();
+      }
+    }
+  }
+
+  static initBackToTopButton() {
+    if (document.getElementById('anmol-back-to-top')) return;
+    const btn = document.createElement('button');
+    btn.id = 'anmol-back-to-top';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Scroll to top');
+    btn.setAttribute('title', 'Scroll to top');
+    btn.innerHTML = '<i class="fas fa-chevron-up"></i>';
+    btn.className = 'anmol-back-to-top-btn';
+    document.body.appendChild(btn);
+
+    const checkScroll = () => {
+      if (window.scrollY > 280) {
+        btn.classList.add('visible');
+      } else {
+        btn.classList.remove('visible');
+      }
+    };
+
+    window.addEventListener('scroll', checkScroll, { passive: true });
+    checkScroll();
+
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  static initDesktopWheelSmoothing() {
+    let targetY = window.scrollY;
+    let currentY = window.scrollY;
+    let isRunning = false;
+    let wheelTimeout = null;
+
+    const onWheel = (e) => {
+      // If user holds Ctrl (e.g. zooming page) or Alt, do not intercept
+      if (e.ctrlKey || e.altKey) return;
+
+      // Allow horizontal or nested scrollable containers to scroll natively
+      const nestedScrollable = e.target.closest('.modal-body, .mobile-drawer-body, .carousel-track, .mobile-acc-carousel-track, .categories-scroll-track, .table-responsive, textarea, select, [data-native-scroll]');
+      if (nestedScrollable) {
+        const canScrollVertically = nestedScrollable.scrollHeight > nestedScrollable.clientHeight;
+        if (canScrollVertically) return;
+      }
+
+      // If wheel delta is predominantly horizontal (e.g. horizontal trackpad swipe), don't intercept
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+
+      const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      if (maxScroll <= 0) return;
+
+      e.preventDefault();
+      const delta = e.deltaY;
+      targetY = Math.min(Math.max(0, targetY + delta * 1.15), maxScroll);
+
+      if (!isRunning) {
+        isRunning = true;
+        currentY = window.scrollY;
+        requestAnimationFrame(updateScroll);
+      }
+
+      clearTimeout(wheelTimeout);
+      wheelTimeout = setTimeout(() => {
+        targetY = window.scrollY;
+      }, 200);
+    };
+
+    const updateScroll = () => {
+      if (!isRunning) return;
+      const diff = targetY - currentY;
+      const step = diff * 0.14;
+
+      if (Math.abs(diff) < 0.6) {
+        currentY = targetY;
+        window.scrollTo(0, currentY);
+        isRunning = false;
+        return;
+      }
+
+      currentY += step;
+      window.scrollTo(0, currentY);
+      requestAnimationFrame(updateScroll);
+    };
+
+    window.addEventListener('wheel', onWheel, { passive: false });
+
+    // Keep synced when user drags native scrollbar or page resizes
+    window.addEventListener('scroll', () => {
+      if (!isRunning) {
+        targetY = window.scrollY;
+        currentY = window.scrollY;
+      }
+    }, { passive: true });
   }
 }
 
