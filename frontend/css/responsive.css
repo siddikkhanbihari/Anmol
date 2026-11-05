@@ -1154,14 +1154,16 @@
   #home-categories-grid {
     display: flex !important;
     overflow-x: auto !important;
-    overflow-y: hidden !important;
+    overflow-y: visible !important;
     gap: 12px !important;
     padding: 6px 12px 14px 12px !important;
     margin-left: calc(-1 * var(--space-3)) !important;
     margin-right: calc(-1 * var(--space-3)) !important;
     -webkit-overflow-scrolling: touch !important;
-    scroll-snap-type: x mandatory !important;
+    scroll-behavior: smooth !important;
     scrollbar-width: none !important;
+    touch-action: pan-x pan-y !important;
+    cursor: grab !important;
   }
   #home-categories-grid::-webkit-scrollbar {
     display: none !important;
@@ -1171,7 +1173,6 @@
     width: 94px !important;
     max-width: 94px !important;
     min-width: 94px !important;
-    scroll-snap-align: start !important;
     padding: 12px 6px !important;
     border-radius: var(--radius-lg) !important;
     background: #FFFFFF !important;
@@ -1181,7 +1182,7 @@
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    touch-action: pan-x pan-y !important;
+    user-select: none !important;
   }
   #home-categories-grid .category-icon-box {
     width: 48px !important;

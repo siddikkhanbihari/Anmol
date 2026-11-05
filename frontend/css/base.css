@@ -13,7 +13,6 @@ html {
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
-  touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -28,10 +27,9 @@ body {
   flex-direction: column;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   position: relative;
   -webkit-overflow-scrolling: touch;
-  overscroll-behavior-y: contain;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -39,7 +37,6 @@ body {
 
 /* Fast tap response & eliminate 300ms touch delay across all interactive elements */
 a, button, input, select, textarea, label, [role="button"], .btn, .card {
-  touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
 

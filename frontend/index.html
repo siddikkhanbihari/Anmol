@@ -511,24 +511,65 @@
     </div>
 
     <!-- Category Grid Section -->
-    <section class="section-categories" style="padding: var(--space-12) 0 var(--space-8) 0;">
+    <section class="section-categories" style="padding: var(--space-10) 0 var(--space-6) 0;">
       <div class="container">
         <div class="section-header">
           <div class="section-header-title">
             <span class="section-chip"><i class="fas fa-th-large"></i> Explore Catalog</span>
             <h2><span data-i18n="sec_categories">Shop by Category</span></h2>
-            <p data-i18n="sec_categories_sub">Everyday groceries, home essentials, and on-demand doorstep services</p>
+            <p data-i18n="sec_categories_sub">Everyday groceries, mobile accessories, home essentials & local services</p>
           </div>
-          <a href="products.html" class="btn btn-outline btn-sm"><span data-i18n="view_all">View All</span> &rarr;</a>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button class="carousel-arrow-btn" id="cat-scroll-left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button>
+            <button class="carousel-arrow-btn" id="cat-scroll-right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button>
+            <a href="products.html" class="btn btn-outline btn-sm"><span data-i18n="view_all">View All</span> &rarr;</a>
+          </div>
         </div>
-        <div class="grid-6" id="home-categories-grid">
+        <div class="categories-scroll-track" id="home-categories-grid">
           <!-- Dynamically populated from API -->
-          <div class="skeleton skeleton-card" style="height: 130px; border-radius: 16px;"></div>
-          <div class="skeleton skeleton-card" style="height: 130px; border-radius: 16px;"></div>
-          <div class="skeleton skeleton-card" style="height: 130px; border-radius: 16px;"></div>
-          <div class="skeleton skeleton-card" style="height: 130px; border-radius: 16px;"></div>
-          <div class="skeleton skeleton-card" style="height: 130px; border-radius: 16px;"></div>
-          <div class="skeleton skeleton-card" style="height: 130px; border-radius: 16px;"></div>
+          <div class="skeleton skeleton-card" style="flex: 0 0 100px; height: 110px; border-radius: 16px;"></div>
+          <div class="skeleton skeleton-card" style="flex: 0 0 100px; height: 110px; border-radius: 16px;"></div>
+          <div class="skeleton skeleton-card" style="flex: 0 0 100px; height: 110px; border-radius: 16px;"></div>
+          <div class="skeleton skeleton-card" style="flex: 0 0 100px; height: 110px; border-radius: 16px;"></div>
+          <div class="skeleton skeleton-card" style="flex: 0 0 100px; height: 110px; border-radius: 16px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dedicated Mobile & Accessories Super Store Section -->
+    <section class="section-mobile-showcase" style="padding: var(--space-10) 0; background: #FFFFFF; border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border);">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-header-title">
+            <span class="section-chip orange"><i class="fas fa-mobile-alt"></i> Mobile Accessories Super Store</span>
+            <h2>Phone Covers, Fast Chargers & Audio</h2>
+            <p>100% Genuine mobile essentials directly from verified local shops in Palanpur with 45-min doorstep delivery</p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button class="carousel-arrow-btn" id="mobile-scroll-left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button>
+            <button class="carousel-arrow-btn" id="mobile-scroll-right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button>
+            <a href="products.html?category=mobile-accessories" class="btn btn-outline btn-sm">Explore All (37+) &rarr;</a>
+          </div>
+        </div>
+
+        <!-- Filter Pills for Mobile Accessories -->
+        <div class="mobile-acc-filter-pills" id="mobile-acc-filters" style="display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 12px 0; margin-bottom: 8px; scrollbar-width: none; -webkit-overflow-scrolling: touch;">
+          <button class="btn-acc-pill active" data-filter="all">All Items</button>
+          <button class="btn-acc-pill" data-filter="cover">Covers & Cases</button>
+          <button class="btn-acc-pill" data-filter="charger">Fast Chargers</button>
+          <button class="btn-acc-pill" data-filter="glass">Tempered Glass</button>
+          <button class="btn-acc-pill" data-filter="earbuds">TWS & Audio</button>
+          <button class="btn-acc-pill" data-filter="cable">Cables & OTG</button>
+          <button class="btn-acc-pill" data-filter="holder">Holders & Mounts</button>
+          <button class="btn-acc-pill" data-filter="powerbank">Power Banks</button>
+        </div>
+
+        <!-- Horizontal Scrollable Products Carousel -->
+        <div class="mobile-acc-carousel-track" id="home-mobile-accessories-carousel">
+          <div class="skeleton skeleton-card" style="flex: 0 0 200px; height: 260px; border-radius: 16px;"></div>
+          <div class="skeleton skeleton-card" style="flex: 0 0 200px; height: 260px; border-radius: 16px;"></div>
+          <div class="skeleton skeleton-card" style="flex: 0 0 200px; height: 260px; border-radius: 16px;"></div>
+          <div class="skeleton skeleton-card" style="flex: 0 0 200px; height: 260px; border-radius: 16px;"></div>
         </div>
       </div>
     </section>
@@ -977,11 +1018,57 @@
     // Load dynamic homepage data
     async function loadHomepageData() {
       try {
+        // Horizontal scroll utility (handles arrow buttons, mouse-wheel, and drag-to-scroll)
+        function makeScrollable(container, prevBtn, nextBtn) {
+          if (!container) return;
+          if (prevBtn) {
+            prevBtn.addEventListener('click', (e) => {
+              e.preventDefault();
+              container.scrollBy({ left: -280, behavior: 'smooth' });
+            });
+          }
+          if (nextBtn) {
+            nextBtn.addEventListener('click', (e) => {
+              e.preventDefault();
+              container.scrollBy({ left: 280, behavior: 'smooth' });
+            });
+          }
+          container.addEventListener('wheel', (e) => {
+            if (e.deltaY !== 0 && Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+              e.preventDefault();
+              container.scrollLeft += e.deltaY;
+            }
+          }, { passive: false });
+
+          let isDown = false, startX, scrollLeft;
+          container.addEventListener('mousedown', (e) => {
+            if (e.button !== 0 || e.target.closest('button, a')) return;
+            isDown = true;
+            container.classList.add('grabbing');
+            startX = e.pageX - container.offsetLeft;
+            scrollLeft = container.scrollLeft;
+          });
+          window.addEventListener('mouseup', () => {
+            isDown = false;
+            container.classList.remove('grabbing');
+          });
+          container.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - container.offsetLeft;
+            container.scrollLeft = scrollLeft - (x - startX) * 1.5;
+          });
+        }
+
         // 1. Categories
+        const catGrid = document.getElementById('home-categories-grid');
+        const catPrev = document.getElementById('cat-scroll-left');
+        const catNext = document.getElementById('cat-scroll-right');
+        makeScrollable(catGrid, catPrev, catNext);
+
         const catRes = await api.get('/categories?featured=true');
         if (catRes.success && catRes.data) {
-          const grid = document.getElementById('home-categories-grid');
-          grid.innerHTML = catRes.data.map(c => `
+          catGrid.innerHTML = catRes.data.map(c => `
             <a href="products.html?category=${c.slug}" class="category-card">
               <div class="category-icon-box">
                 <i class="fas ${c.icon || 'fa-store'}"></i>
@@ -990,6 +1077,97 @@
             </a>
           `).join('');
         }
+
+        // 2. Mobile Accessories Carousel
+        const mobileCarousel = document.getElementById('home-mobile-accessories-carousel');
+        const mobilePrev = document.getElementById('mobile-scroll-left');
+        const mobileNext = document.getElementById('mobile-scroll-right');
+        makeScrollable(mobileCarousel, mobilePrev, mobileNext);
+
+        let allMobileProducts = [];
+        const mobRes = await api.get('/products?category=mobile-accessories&limit=40');
+        if (mobRes.success && mobRes.data && mobRes.data.products) {
+          allMobileProducts = mobRes.data.products;
+          renderMobileAccessories(allMobileProducts);
+        }
+
+        function renderMobileAccessories(prods) {
+          if (!mobileCarousel) return;
+          if (!prods.length) {
+            mobileCarousel.innerHTML = '<p style="color: var(--color-text-muted); padding: 16px;">No mobile accessories found.</p>';
+            return;
+          }
+          mobileCarousel.innerHTML = prods.map(p => {
+            const hasDiscount = p.originalPrice && p.originalPrice > p.price;
+            const discountPill = hasDiscount
+              ? `<span class="product-badge-discount">${Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100)}% OFF</span>`
+              : '';
+            const ratingVal = (p.rating !== undefined && p.rating !== null) ? Number(p.rating).toFixed(1) : '4.8';
+            return `
+              <div class="product-card" data-id="${p._id}">
+                ${hasDiscount ? `<div class="product-badge-stack">${discountPill}</div>` : ''}
+                <div class="product-thumb">
+                  <img src="${resolveMediaUrl(p.images?.[0], 'product')}" alt="${p.name}" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='${FALLBACK_PLACEHOLDER_SVG}';">
+                </div>
+                <div class="product-content">
+                  <a href="shop-details.html?slug=${p.shop?.slug}" class="product-shop-tag">
+                    <i class="fas fa-store"></i> ${p.shop?.name || 'Verma Electronics & Mobile'}
+                  </a>
+                  <h3 class="product-title">
+                    <a href="product-details.html?id=${p._id}">${p.name}</a>
+                  </h3>
+                  <div class="product-rating">
+                    <div class="stars"><i class="fas fa-star"></i> ${ratingVal}</div>
+                    <span>(${p.reviewCount || 0})</span>
+                  </div>
+                  <div class="product-price-row">
+                    <div class="price-box">
+                      <span class="current-price">${formatCurrency(p.price)}</span>
+                      ${hasDiscount ? `<span class="original-price">${formatCurrency(p.originalPrice)}</span>` : ''}
+                    </div>
+                    <button class="btn-add-cart" data-product='${JSON.stringify({ _id: p._id, name: p.name, price: p.price, shop: p.shop, stock: p.stock })}'>
+                      <i class="fas fa-plus"></i> Add
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          mobileCarousel.querySelectorAll('.btn-add-cart').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.preventDefault();
+              const product = JSON.parse(btn.dataset.product);
+              cart.addItem(product, 1);
+            });
+          });
+        }
+
+        // Filter Pills for Mobile Accessories
+        const filterPills = document.querySelectorAll('#mobile-acc-filters .btn-acc-pill');
+        filterPills.forEach(pill => {
+          pill.addEventListener('click', () => {
+            filterPills.forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+            const f = pill.dataset.filter;
+            if (f === 'all') {
+              renderMobileAccessories(allMobileProducts);
+            } else {
+              const filtered = allMobileProducts.filter(p => {
+                const combined = (p.name + ' ' + (p.tags || []).join(' ') + ' ' + (p.description || '')).toLowerCase();
+                if (f === 'cover') return combined.includes('cover') || combined.includes('case');
+                if (f === 'charger') return combined.includes('charger') || combined.includes('adapter') || combined.includes('supervooc');
+                if (f === 'glass') return combined.includes('tempered') || combined.includes('glass') || combined.includes('protector');
+                if (f === 'earbuds') return combined.includes('earbuds') || combined.includes('tws') || combined.includes('neckband') || combined.includes('earphone');
+                if (f === 'cable') return combined.includes('cable') || combined.includes('otg');
+                if (f === 'holder') return combined.includes('holder') || combined.includes('mount') || combined.includes('stand') || combined.includes('tripod');
+                if (f === 'powerbank') return combined.includes('powerbank') || combined.includes('power bank') || combined.includes('battery');
+                return true;
+              });
+              renderMobileAccessories(filtered);
+            }
+          });
+        });
 
         // 2. Featured Shops
         const shopsRes = await api.get('/shops?limit=3');
