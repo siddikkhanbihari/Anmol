@@ -1018,7 +1018,7 @@
     // Load dynamic homepage data
     async function loadHomepageData() {
       try {
-        // Horizontal scroll utility (handles arrow buttons, mouse-wheel, and drag-to-scroll)
+        // Horizontal scroll utility (handles arrow buttons and desktop drag-to-scroll)
         function makeScrollable(container, prevBtn, nextBtn) {
           if (!container) return;
           if (prevBtn) {
@@ -1033,12 +1033,6 @@
               container.scrollBy({ left: 280, behavior: 'smooth' });
             });
           }
-          container.addEventListener('wheel', (e) => {
-            if (e.deltaY !== 0 && Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-              e.preventDefault();
-              container.scrollLeft += e.deltaY;
-            }
-          }, { passive: false });
 
           let isDown = false, startX, scrollLeft;
           container.addEventListener('mousedown', (e) => {
@@ -1049,6 +1043,10 @@
             scrollLeft = container.scrollLeft;
           });
           window.addEventListener('mouseup', () => {
+            isDown = false;
+            container.classList.remove('grabbing');
+          });
+          container.addEventListener('mouseleave', () => {
             isDown = false;
             container.classList.remove('grabbing');
           });

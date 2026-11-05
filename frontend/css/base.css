@@ -13,6 +13,7 @@ html {
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
+  overflow-y: auto;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -23,13 +24,14 @@ body {
   line-height: var(--line-height-normal);
   font-weight: var(--font-weight-regular);
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   width: 100%;
   max-width: 100%;
-  overflow-x: clip;
   position: relative;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -404,12 +406,14 @@ ul, ol {
   padding: var(--space-4);
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
   transition: opacity var(--transition-normal), visibility var(--transition-normal);
 }
 
 .modal-backdrop.active {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
 }
 
 .modal-container {

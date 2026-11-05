@@ -825,8 +825,14 @@
 
 /* Standalone App mode tweaks */
 body.is-standalone-app {
-  user-select: none;
   -webkit-touch-callout: none;
+}
+.is-standalone-app .mobile-bottom-nav,
+.is-standalone-app .main-header,
+.is-standalone-app .btn,
+.is-standalone-app .badge {
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 /* ==========================================================================
@@ -936,12 +942,14 @@ body.is-standalone-app {
   padding: var(--space-4);
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
   transition: all var(--transition-normal);
 }
 
 .app-modal-backdrop.active {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
 }
 
 .app-modal-dialog {
@@ -1231,7 +1239,7 @@ body.is-standalone-app {
 .categories-scroll-track {
   display: flex !important;
   overflow-x: auto !important;
-  overflow-y: visible !important;
+  overflow-y: hidden !important;
   -webkit-overflow-scrolling: touch !important;
   scroll-behavior: smooth !important;
   gap: 14px !important;
