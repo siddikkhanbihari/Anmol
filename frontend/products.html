@@ -165,6 +165,28 @@
 
         <!-- Product Listing Grid -->
         <section>
+          <!-- Horizontal Category Filter Pills Strip (Mobile & Desktop) -->
+          <div class="products-category-pills" id="catalog-category-pills">
+            <button type="button" class="products-category-pill active" data-category="">
+              <i class="fas fa-th-large"></i> All Categories (119)
+            </button>
+            <button type="button" class="products-category-pill" data-category="mobile-accessories">
+              <i class="fas fa-mobile-alt"></i> Mobile Accessories (82)
+            </button>
+            <button type="button" class="products-category-pill" data-category="kirana-grocery">
+              <i class="fas fa-shopping-basket"></i> Kirana & Grocery (26)
+            </button>
+            <button type="button" class="products-category-pill" data-category="electronics-mobile">
+              <i class="fas fa-laptop"></i> Electronics & Gadgets (3)
+            </button>
+            <button type="button" class="products-category-pill" data-category="hardware-machinery">
+              <i class="fas fa-tools"></i> Hardware & Tools (5)
+            </button>
+            <button type="button" class="products-category-pill" data-category="home-stationery">
+              <i class="fas fa-book-open"></i> Home & Stationery (3)
+            </button>
+          </div>
+
           <!-- Toolbar -->
           <div style="background: #FFF; padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--color-border); margin-bottom: var(--space-4); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3);">
             <div id="products-count-label" style="font-size: var(--font-size-sm); color: var(--color-text-muted);">
@@ -302,8 +324,38 @@
     const initialQuery = urlParams.get('q') || '';
     const initialCategory = urlParams.get('category') || '';
 
+    function syncCategoryPills(catSlug) {
+      document.querySelectorAll('#catalog-category-pills .products-category-pill').forEach(pill => {
+        if (pill.dataset.category === (catSlug || '')) {
+          pill.classList.add('active');
+        } else {
+          pill.classList.remove('active');
+        }
+      });
+    }
+
     async function loadCategories() {
       try {
+        // Wire top category pills
+        document.querySelectorAll('#catalog-category-pills .products-category-pill').forEach(pill => {
+          pill.addEventListener('click', () => {
+            const cat = pill.dataset.category;
+            syncCategoryPills(cat);
+            const radio = document.querySelector(`input[name="product-category"][value="${cat}"]`);
+            if (radio) radio.checked = true;
+            const newUrl = new URL(window.location);
+            if (cat) newUrl.searchParams.set('category', cat);
+            else newUrl.searchParams.delete('category');
+            window.history.pushState({}, '', newUrl);
+            currentPage = 1;
+            loadProducts();
+          });
+        });
+
+        if (initialCategory) {
+          syncCategoryPills(initialCategory);
+        }
+
         const res = await api.get('/categories?type=product');
         if (res.success && res.data) {
           const list = document.getElementById('category-filter-list');
@@ -316,11 +368,28 @@
               ${c.name}
             `;
             label.querySelector('input').addEventListener('change', () => {
+              syncCategoryPills(c.slug);
+              const newUrl = new URL(window.location);
+              newUrl.searchParams.set('category', c.slug);
+              window.history.pushState({}, '', newUrl);
               currentPage = 1;
               loadProducts();
             });
             list.appendChild(label);
           });
+
+          // Also handle the "All Categories" radio
+          const allRadio = list.querySelector('input[value=""]');
+          if (allRadio) {
+            allRadio.addEventListener('change', () => {
+              syncCategoryPills('');
+              const newUrl = new URL(window.location);
+              newUrl.searchParams.delete('category');
+              window.history.pushState({}, '', newUrl);
+              currentPage = 1;
+              loadProducts();
+            });
+          }
         }
       } catch (e) {}
     }
@@ -461,6 +530,10 @@
       document.querySelector('input[name="rating-filter"][value=""]').checked = true;
       document.getElementById('instock-only-check').checked = false;
       document.getElementById('sort-select').value = 'popularity';
+      syncCategoryPills('');
+      const newUrl = new URL(window.location);
+      newUrl.searchParams.delete('category');
+      window.history.pushState({}, '', newUrl);
       currentPage = 1;
       loadProducts();
     });

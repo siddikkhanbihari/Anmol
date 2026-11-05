@@ -1236,6 +1236,7 @@ body.is-standalone-app {
 }
 .carousel-track,
 .mobile-acc-carousel-track,
+.category-carousel-track,
 .categories-scroll-track {
   display: flex !important;
   overflow-x: auto !important;
@@ -1251,12 +1252,14 @@ body.is-standalone-app {
 }
 .carousel-track.grabbing,
 .mobile-acc-carousel-track.grabbing,
+.category-carousel-track.grabbing,
 .categories-scroll-track.grabbing {
   cursor: grabbing !important;
   user-select: none !important;
 }
 .carousel-track::-webkit-scrollbar,
 .mobile-acc-carousel-track::-webkit-scrollbar,
+.category-carousel-track::-webkit-scrollbar,
 .categories-scroll-track::-webkit-scrollbar {
   display: none !important;
 }
@@ -1359,7 +1362,8 @@ body.is-standalone-app {
   box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
 }
 
-.mobile-acc-carousel-track .product-card {
+.mobile-acc-carousel-track .product-card,
+.category-carousel-track .product-card {
   scroll-snap-align: start;
   scroll-snap-stop: normal;
   flex: 0 0 220px !important;
@@ -1376,7 +1380,8 @@ body.is-standalone-app {
   transition: transform 0.15s ease, box-shadow 0.15s ease !important;
 }
 @media (max-width: 768px) {
-  .mobile-acc-carousel-track .product-card {
+  .mobile-acc-carousel-track .product-card,
+  .category-carousel-track .product-card {
     flex: 0 0 168px !important;
     width: 168px !important;
     min-width: 168px !important;
@@ -1384,7 +1389,8 @@ body.is-standalone-app {
   }
 }
 @media (max-width: 360px) {
-  .mobile-acc-carousel-track .product-card {
+  .mobile-acc-carousel-track .product-card,
+  .category-carousel-track .product-card {
     flex: 0 0 150px !important;
     width: 150px !important;
     min-width: 150px !important;
@@ -1554,4 +1560,109 @@ body.is-standalone-app {
 .btn-addon-add:active {
   background: var(--brand-blue);
   color: #FFFFFF;
+}
+
+/* ==========================================================================
+   CATEGORY SPECIFIC BADGES, JUMP NAV & FILTER PILLS
+   ========================================================================== */
+.section-chip.green {
+  background: #ECFDF5 !important;
+  color: #059669 !important;
+  border-color: #A7F3D0 !important;
+}
+.section-chip.purple {
+  background: #F5F3FF !important;
+  color: #7C3AED !important;
+  border-color: #DDD6FE !important;
+}
+.section-chip.slate {
+  background: #F1F5F9 !important;
+  color: #475569 !important;
+  border-color: #CBD5E1 !important;
+}
+
+.category-jump-nav {
+  position: sticky;
+  top: 60px;
+  z-index: 80;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 4px 14px rgba(15, 41, 77, 0.05);
+  padding: 8px 0;
+}
+.category-jump-track {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding: 2px 4px;
+}
+.category-jump-track::-webkit-scrollbar {
+  display: none;
+}
+.category-jump-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 99px;
+  background: #F8FAFC;
+  color: var(--primary-navy);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1px solid var(--color-border);
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+.category-jump-pill:hover,
+.category-jump-pill.active {
+  background: var(--brand-blue);
+  color: #FFFFFF;
+  border-color: var(--brand-blue);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+}
+.category-jump-pill i {
+  font-size: 0.82rem;
+}
+
+.products-category-pills {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding: 6px 0 14px 0;
+  margin-bottom: var(--space-4);
+}
+.products-category-pills::-webkit-scrollbar {
+  display: none;
+}
+.products-category-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border-radius: 99px;
+  background: #FFFFFF;
+  color: var(--primary-navy);
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-xs);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+.products-category-pill:hover,
+.products-category-pill.active {
+  background: var(--brand-blue);
+  color: #FFFFFF;
+  border-color: var(--brand-blue);
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.28);
 }
