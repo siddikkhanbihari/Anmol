@@ -548,7 +548,7 @@
           <div style="display: flex; align-items: center; gap: 8px;">
             <button class="carousel-arrow-btn" id="mobile-scroll-left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button>
             <button class="carousel-arrow-btn" id="mobile-scroll-right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button>
-            <a href="products.html?category=mobile-accessories" class="btn btn-outline btn-sm">Explore All (37+) &rarr;</a>
+            <a href="products.html?category=mobile-accessories" class="btn btn-outline btn-sm">Explore All (50+) &rarr;</a>
           </div>
         </div>
 
@@ -562,6 +562,8 @@
           <button class="btn-acc-pill" data-filter="cable">Cables & OTG</button>
           <button class="btn-acc-pill" data-filter="holder">Holders & Mounts</button>
           <button class="btn-acc-pill" data-filter="powerbank">Power Banks</button>
+          <button class="btn-acc-pill" data-filter="addon"><i class="fas fa-magic"></i> Smart Add-ons</button>
+          <button class="btn-acc-pill" data-filter="under99"><i class="fas fa-tag"></i> Under ₹99 Store</button>
         </div>
 
         <!-- Horizontal Scrollable Products Carousel -->
@@ -1083,7 +1085,7 @@
         makeScrollable(mobileCarousel, mobilePrev, mobileNext);
 
         let allMobileProducts = [];
-        const mobRes = await api.get('/products?category=mobile-accessories&limit=40');
+        const mobRes = await api.get('/products?category=mobile-accessories&limit=60');
         if (mobRes.success && mobRes.data && mobRes.data.products) {
           allMobileProducts = mobRes.data.products;
           renderMobileAccessories(allMobileProducts);
@@ -1160,6 +1162,8 @@
                 if (f === 'cable') return combined.includes('cable') || combined.includes('otg');
                 if (f === 'holder') return combined.includes('holder') || combined.includes('mount') || combined.includes('stand') || combined.includes('tripod');
                 if (f === 'powerbank') return combined.includes('powerbank') || combined.includes('power bank') || combined.includes('battery');
+                if (f === 'addon') return (p.tags || []).includes('add-on') || combined.includes('sleeve') || combined.includes('ring') || combined.includes('pin') || combined.includes('stylus') || combined.includes('spray') || combined.includes('lanyard') || combined.includes('plug') || combined.includes('slider');
+                if (f === 'under99') return p.price <= 99;
                 return true;
               });
               renderMobileAccessories(filtered);

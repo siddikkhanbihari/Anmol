@@ -194,9 +194,28 @@
     </div>
 
     <div class="cart-layout" id="cart-main-layout">
-      <!-- Left: Grouped Cart Items -->
-      <div id="cart-groups-container">
-        <!-- Rendered via JS -->
+      <!-- Left: Grouped Cart Items & Add-on Essentials -->
+      <div>
+        <div id="cart-groups-container">
+          <!-- Rendered via JS -->
+        </div>
+
+        <!-- Quick Add-On Essentials Strip (Frequently Added Together) -->
+        <div id="cart-addons-section" class="cart-addons-box">
+          <div class="cart-addons-header">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="addon-badge-sparkle"><i class="fas fa-sparkles"></i> Popular Add-ons</span>
+              <h3 style="font-size: 0.92rem; font-weight: 700; color: var(--primary-navy); margin: 0;">Frequently Added Together</h3>
+            </div>
+            <span style="font-size: 0.72rem; color: var(--accent-orange); font-weight: 600;">₹49 – ₹199 Deals</span>
+          </div>
+          <div class="cart-addons-scroll" id="cart-addons-list">
+            <!-- Dynamically populated from API -->
+            <div class="skeleton" style="flex: 0 0 150px; height: 160px; border-radius: 12px;"></div>
+            <div class="skeleton" style="flex: 0 0 150px; height: 160px; border-radius: 12px;"></div>
+            <div class="skeleton" style="flex: 0 0 150px; height: 160px; border-radius: 12px;"></div>
+          </div>
+        </div>
       </div>
 
       <!-- Right: Summary Card -->
@@ -294,6 +313,8 @@
   <script type="module" src="js/navigation.js"></script>
   <script type="module">
     import { cart } from './js/cart.js';
+    import { api } from './js/api.js';
+    import { notify } from './js/notifications.js';
     import { formatCurrency, getFallbackImage, resolveMediaUrl, FALLBACK_PLACEHOLDER_SVG } from './js/config.js';
 
     function renderCart() {
@@ -400,8 +421,63 @@
     }
 
     cart.subscribe(renderCart);
+    
+    // Load and render Quick Add-On Essentials
+    async function loadCartAddons() {
+      const addonContainer = document.getElementById('cart-addons-list');
+      if (!addonContainer) return;
+      try {
+        const res = await api.get('/products?category=mobile-accessories&limit=50');
+        if (res.success && res.data && res.data.products) {
+          const prods = res.data.products;
+          // Filter products under ₹199 or with tag 'add-on'
+          const addons = prods.filter(p => p.price <= 199 || (p.tags && p.tags.includes('add-on'))).slice(0, 10);
+          if (!addons.length) {
+            document.getElementById('cart-addons-section').style.display = 'none';
+            return;
+          }
+          addonContainer.innerHTML = addons.map(p => {
+            const img = p.images?.[0] || getFallbackImage('product');
+            return `
+              <div class="cart-addon-card">
+                <img src="${resolveMediaUrl(img, 'product')}" class="cart-addon-thumb" alt="${p.name}" loading="lazy" onerror="this.onerror=null; this.src='${FALLBACK_PLACEHOLDER_SVG}';">
+                <div class="cart-addon-name" title="${p.name}">${p.name}</div>
+                <div class="cart-addon-price-row">
+                  <span class="cart-addon-price">${formatCurrency(p.price)}</span>
+                  <button type="button" class="btn-addon-add" data-product='${JSON.stringify({ _id: p._id, name: p.name, price: p.price, shop: p.shop, stock: p.stock })}'>
+                    + Add
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          addonContainer.querySelectorAll('.btn-addon-add').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.preventDefault();
+              const product = JSON.parse(btn.dataset.product);
+              cart.addItem(product, 1);
+              btn.innerHTML = '<i class="fas fa-check"></i> Added';
+              btn.style.background = '#10B981';
+              btn.style.color = '#FFF';
+              btn.style.borderColor = '#10B981';
+              setTimeout(() => {
+                btn.innerHTML = '+ Add';
+                btn.style.background = '';
+                btn.style.color = '';
+                btn.style.borderColor = '';
+              }, 1800);
+            });
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load cart addons:', err);
+      }
+    }
+
     const initCart = () => {
       cart.fetchCart().then(renderCart);
+      loadCartAddons();
     };
 
     if (document.readyState === 'loading') {

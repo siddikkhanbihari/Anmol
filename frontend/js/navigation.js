@@ -23,6 +23,7 @@ export class Navigation {
     this.initLanguage();
     this.initCustomerCare();
     this.initSmoothScroll();
+    this.initAppAddons();
     this.updateUserNav();
     this.bindSearchForms();
     this.bindMobileDrawer();
@@ -358,6 +359,7 @@ export class Navigation {
               <li><a href="seller-register.html" style="color: #D97706; font-weight: 700;"><i class="fas fa-store-alt"></i> Register as Seller</a></li>
               <li><a href="rider-register.html" style="color: #059669; font-weight: 700;"><i class="fas fa-biking"></i> Join as Rider Partner</a></li>
               <li><a href="contact.html"><i class="fas fa-headset"></i> Customer Care</a></li>
+              <li style="margin-top: 8px; border-top: 1px solid var(--color-border); padding-top: 8px;"><a href="#" class="btn-share-app" style="color: var(--brand-blue); font-weight: 700;"><i class="fas fa-share-alt"></i> Share ANMOL STORE</a></li>
             </ul>
           </div>
         </div>
@@ -563,6 +565,42 @@ export class Navigation {
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => {
       if (e.target === modal) closeModal();
+    });
+  }
+
+  static initAppAddons() {
+    // 1. Tactile Haptic Feedback for Native App feel
+    document.addEventListener('click', (e) => {
+      const interactive = e.target.closest('button, .btn, .btn-add-cart, .btn-addon-add, .mobile-nav-item, .btn-acc-pill, .carousel-arrow-btn, .anmol-back-to-top-btn');
+      if (interactive && typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+        try { navigator.vibrate(15); } catch (_) {}
+      }
+    }, { passive: true });
+
+    // 2. Online / Offline network alerts
+    window.addEventListener('offline', () => {
+      notify.warning('You are currently offline. Showing cached catalog.');
+    });
+    window.addEventListener('online', () => {
+      notify.success('Back online! Syncing live prices and stock.');
+    });
+
+    // 3. Web Share API for App & Store sharing
+    document.addEventListener('click', (e) => {
+      const shareBtn = e.target.closest('.btn-share-app');
+      if (!shareBtn) return;
+      e.preventDefault();
+      const shareData = {
+        title: 'ANMOL STORE — Instant Local Delivery in Palanpur',
+        text: 'Order fresh groceries, genuine mobile accessories, and book local services with 45-min delivery from ANMOL STORE!',
+        url: window.location.origin
+      };
+      if (navigator.share) {
+        navigator.share(shareData).catch(() => {});
+      } else {
+        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareData.text + ' ' + shareData.url)}`;
+        window.open(whatsappUrl, '_blank');
+      }
     });
   }
 
