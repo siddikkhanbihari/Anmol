@@ -548,21 +548,21 @@
           <div style="display: flex; align-items: center; gap: 8px;">
             <button class="carousel-arrow-btn" id="mobile-scroll-left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button>
             <button class="carousel-arrow-btn" id="mobile-scroll-right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button>
-            <a href="products.html?category=mobile-accessories" class="btn btn-outline btn-sm">Explore All (50+) &rarr;</a>
+            <a href="products.html?category=mobile-accessories" class="btn btn-outline btn-sm">Explore All (80+) &rarr;</a>
           </div>
         </div>
 
         <!-- Filter Pills for Mobile Accessories -->
         <div class="mobile-acc-filter-pills" id="mobile-acc-filters" style="display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 12px 0; margin-bottom: 8px; scrollbar-width: none; -webkit-overflow-scrolling: touch;">
-          <button class="btn-acc-pill active" data-filter="all">All Items</button>
-          <button class="btn-acc-pill" data-filter="cover">Covers & Cases</button>
-          <button class="btn-acc-pill" data-filter="charger">Fast Chargers</button>
-          <button class="btn-acc-pill" data-filter="glass">Tempered Glass</button>
-          <button class="btn-acc-pill" data-filter="earbuds">TWS & Audio</button>
-          <button class="btn-acc-pill" data-filter="cable">Cables & OTG</button>
-          <button class="btn-acc-pill" data-filter="holder">Holders & Mounts</button>
-          <button class="btn-acc-pill" data-filter="powerbank">Power Banks</button>
+          <button class="btn-acc-pill active" data-filter="all">All Items (80+)</button>
+          <button class="btn-acc-pill" data-filter="earbuds"><i class="fas fa-headphones-alt"></i> Earbuds (Burds)</button>
+          <button class="btn-acc-pill" data-filter="cable"><i class="fas fa-plug"></i> Charging Cables</button>
+          <button class="btn-acc-pill" data-filter="glass"><i class="fas fa-shield-alt"></i> Tuffon Glass</button>
+          <button class="btn-acc-pill" data-filter="cover"><i class="fas fa-mobile-alt"></i> Mobile Covers</button>
+          <button class="btn-acc-pill" data-filter="charger"><i class="fas fa-bolt"></i> Fast Chargers</button>
           <button class="btn-acc-pill" data-filter="addon"><i class="fas fa-magic"></i> Smart Add-ons</button>
+          <button class="btn-acc-pill" data-filter="holder">Mounts & Stands</button>
+          <button class="btn-acc-pill" data-filter="powerbank">Power Banks</button>
           <button class="btn-acc-pill" data-filter="under99"><i class="fas fa-tag"></i> Under ₹99 Store</button>
         </div>
 
@@ -1085,7 +1085,7 @@
         makeScrollable(mobileCarousel, mobilePrev, mobileNext);
 
         let allMobileProducts = [];
-        const mobRes = await api.get('/products?category=mobile-accessories&limit=60');
+        const mobRes = await api.get('/products?category=mobile-accessories&limit=100');
         if (mobRes.success && mobRes.data && mobRes.data.products) {
           allMobileProducts = mobRes.data.products;
           renderMobileAccessories(allMobileProducts);
@@ -1155,10 +1155,10 @@
             } else {
               const filtered = allMobileProducts.filter(p => {
                 const combined = (p.name + ' ' + (p.tags || []).join(' ') + ' ' + (p.description || '')).toLowerCase();
-                if (f === 'cover') return combined.includes('cover') || combined.includes('case');
+                if (f === 'cover') return combined.includes('cover') || combined.includes('case') || combined.includes('bumper');
                 if (f === 'charger') return combined.includes('charger') || combined.includes('adapter') || combined.includes('supervooc');
-                if (f === 'glass') return combined.includes('tempered') || combined.includes('glass') || combined.includes('protector');
-                if (f === 'earbuds') return combined.includes('earbuds') || combined.includes('tws') || combined.includes('neckband') || combined.includes('earphone');
+                if (f === 'glass') return combined.includes('tempered') || combined.includes('tuffon') || combined.includes('glass') || combined.includes('protector');
+                if (f === 'earbuds') return combined.includes('earbuds') || combined.includes('burds') || combined.includes('tws') || combined.includes('neckband') || combined.includes('earphone') || combined.includes('airpods') || combined.includes('airbass');
                 if (f === 'cable') return combined.includes('cable') || combined.includes('otg');
                 if (f === 'holder') return combined.includes('holder') || combined.includes('mount') || combined.includes('stand') || combined.includes('tripod');
                 if (f === 'powerbank') return combined.includes('powerbank') || combined.includes('power bank') || combined.includes('battery');
@@ -1205,7 +1205,7 @@
         }
 
         // 3. Popular Products
-        const prodRes = await api.get('/products?limit=8');
+        const prodRes = await api.get('/products?limit=12');
         if (prodRes.success && prodRes.data) {
           const grid = document.getElementById('home-products-grid');
           grid.innerHTML = prodRes.data.products.map(p => {
