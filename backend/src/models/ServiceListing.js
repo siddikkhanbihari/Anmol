@@ -30,6 +30,8 @@ const serviceListingSchema = new mongoose.Schema(
         'Spare Parts Installation',
         'Labour & Loading Service',
         'Carpenter & Painter',
+        'Mobile & Device Repair',
+        'Mobile Accessories & Lamination',
         'Other Service'
       ]
     },

@@ -349,6 +349,7 @@ export class Navigation {
             <ul class="mobile-nav-links">
               <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
               <li><a href="products.html"><i class="fas fa-boxes"></i> All Products</a></li>
+              <li><a href="products.html?category=mobile-accessories"><i class="fas fa-mobile-alt"></i> Mobile Accessories</a></li>
               <li><a href="shops.html"><i class="fas fa-store"></i> Local Shops</a></li>
               <li><a href="services.html"><i class="fas fa-tools"></i> Book Services</a></li>
               <li><a href="vehicles.html"><i class="fas fa-motorcycle"></i> Vehicles & Motors</a></li>

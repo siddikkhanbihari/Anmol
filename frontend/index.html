@@ -335,7 +335,7 @@
         <div class="header-search">
           <form class="header-search-form" action="products.html" method="GET">
             <i class="fas fa-search search-icon-left"></i>
-            <input type="text" name="q" placeholder="Search grocery, electronics, local shops, mechanics..." data-i18n-placeholder="search_placeholder" autocomplete="off">
+            <input type="text" name="q" placeholder="Search mobile covers, chargers, earbuds, groceries..." data-i18n-placeholder="search_placeholder" autocomplete="off">
             <button type="submit" data-i18n="search_btn">Search</button>
           </form>
         </div>
@@ -366,6 +366,7 @@
           <a href="index.html" class="active"><i class="fas fa-home"></i> <span data-i18n="nav_home">Home</span></a>
           <a href="shops.html"><i class="fas fa-store"></i> <span data-i18n="nav_shops">Explore Shops</span></a>
           <a href="products.html"><i class="fas fa-shopping-basket"></i> <span data-i18n="nav_products">All Products</span></a>
+          <a href="products.html?category=mobile-accessories"><i class="fas fa-mobile-alt"></i> Mobile Accessories</a>
           <a href="services.html"><i class="fas fa-tools"></i> <span data-i18n="nav_services">Doorstep Services</span></a>
           <a href="vehicles.html"><i class="fas fa-motorcycle"></i> <span data-i18n="nav_vehicles">Cars & Bikes</span></a>
         </div>
@@ -391,15 +392,26 @@
               <span class="accent-orange">Aapka Business,</span> <span class="accent-blue">Aapki Pehchaan</span>
             </h1>
             <p class="hero-subtitle" data-i18n="hero_sub">
-              Directly buy fresh groceries, daily essentials, electronics, or book certified local electricians & garage mechanics across all 24 areas of Palanpur.
+              Directly buy fresh groceries, mobile covers, fast chargers, Bluetooth earbuds, daily essentials, or book certified mobile screen repair, electricians & mechanics across Palanpur.
             </p>
             <div class="hero-actions">
               <a href="products.html" class="btn btn-primary btn-lg" style="box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);">
                 <i class="fas fa-shopping-cart"></i> <span data-i18n="btn_start_shopping">Start Shopping</span>
               </a>
-              <a href="shops.html" class="btn btn-outline-white btn-lg">
-                <i class="fas fa-store"></i> <span data-i18n="btn_explore_shops">Explore Local Shops</span>
+              <a href="products.html?category=mobile-accessories" class="btn btn-outline-white btn-lg">
+                <i class="fas fa-mobile-alt"></i> <span>Mobile Accessories</span>
               </a>
+              <a href="shops.html" class="btn btn-ghost btn-sm" style="color: #CBD5E1; text-decoration: none;">
+                <i class="fas fa-store"></i> <span data-i18n="btn_explore_shops">Explore Shops</span> &rarr;
+              </a>
+            </div>
+            <div class="hero-trending-tags" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: var(--space-4);">
+              <span style="font-size: 0.75rem; color: #94A3B8; font-weight: 600;"><i class="fas fa-bolt" style="color: var(--accent-orange);"></i> Trending:</span>
+              <a href="products.html?category=mobile-accessories" style="font-size: 0.75rem; background: rgba(255,255,255,0.12); color: #FFF; padding: 3px 10px; border-radius: 99px; text-decoration: none; border: 1px solid rgba(255,255,255,0.2);">Mobile Covers</a>
+              <a href="products.html?q=charger" style="font-size: 0.75rem; background: rgba(255,255,255,0.12); color: #FFF; padding: 3px 10px; border-radius: 99px; text-decoration: none; border: 1px solid rgba(255,255,255,0.2);">Fast Chargers</a>
+              <a href="products.html?q=tempered" style="font-size: 0.75rem; background: rgba(255,255,255,0.12); color: #FFF; padding: 3px 10px; border-radius: 99px; text-decoration: none; border: 1px solid rgba(255,255,255,0.2);">Tempered Glass</a>
+              <a href="products.html?q=earbuds" style="font-size: 0.75rem; background: rgba(255,255,255,0.12); color: #FFF; padding: 3px 10px; border-radius: 99px; text-decoration: none; border: 1px solid rgba(255,255,255,0.2);">TWS Earbuds</a>
+              <a href="products.html?q=powerbank" style="font-size: 0.75rem; background: rgba(255,255,255,0.12); color: #FFF; padding: 3px 10px; border-radius: 99px; text-decoration: none; border: 1px solid rgba(255,255,255,0.2);">Power Banks</a>
             </div>
             <div class="hero-stats">
               <div>
@@ -769,6 +781,7 @@
           <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
           <li><a href="shops.html"><i class="fas fa-store"></i> Explore Shops</a></li>
           <li><a href="products.html"><i class="fas fa-shopping-basket"></i> Products</a></li>
+          <li><a href="products.html?category=mobile-accessories"><i class="fas fa-mobile-alt"></i> Mobile Accessories</a></li>
           <li><a href="services.html"><i class="fas fa-tools"></i> Local Services</a></li>
           <li><a href="vehicles.html"><i class="fas fa-car"></i> Cars & Bikes</a></li>
           <li><a href="seller-register.html" style="color: var(--accent-orange); font-weight: 700;"><i class="fas fa-plus-circle"></i> Register Your Shop (Free)</a></li>
@@ -864,6 +877,7 @@
             <ul class="footer-links">
               <li><a href="shops.html">All Local Shops</a></li>
               <li><a href="products.html">Grocery & Essentials</a></li>
+              <li><a href="products.html?category=mobile-accessories">Mobile & Accessories</a></li>
               <li><a href="products.html?category=electronics-mobile">Electronics & Mobile</a></li>
               <li><a href="services.html">Electrician & Plumbing</a></li>
               <li><a href="vehicles.html">Used Cars & Bikes</a></li>

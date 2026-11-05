@@ -67,12 +67,20 @@ export async function seedDatabase() {
         order: 1
       },
       {
-        name: 'Electronics & Mobile',
-        slug: 'electronics-mobile',
-        icon: 'fa-mobile-alt',
-        image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80',
+        name: 'Mobile & Accessories',
+        slug: 'mobile-accessories',
+        icon: 'fa-mobile-screen-button',
+        image: 'https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?auto=format&fit=crop&w=600&q=80',
         type: 'product',
         order: 2
+      },
+      {
+        name: 'Electronics & Mobile',
+        slug: 'electronics-mobile',
+        icon: 'fa-laptop',
+        image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80',
+        type: 'product',
+        order: 3
       },
       {
         name: 'Hardware & Machinery',
@@ -80,7 +88,7 @@ export async function seedDatabase() {
         icon: 'fa-tools',
         image: 'https://images.unsplash.com/photo-1581783898377-1c85bf937427?auto=format&fit=crop&w=600&q=80',
         type: 'product',
-        order: 3
+        order: 4
       },
       {
         name: 'Home & Stationery',
@@ -88,7 +96,7 @@ export async function seedDatabase() {
         icon: 'fa-book-open',
         image: 'https://images.unsplash.com/photo-1585776245991-cf89dd7fc73a?auto=format&fit=crop&w=600&q=80',
         type: 'product',
-        order: 4
+        order: 5
       },
       {
         name: 'Repair & Electrician Services',
@@ -96,7 +104,7 @@ export async function seedDatabase() {
         icon: 'fa-bolt',
         image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=600&q=80',
         type: 'service',
-        order: 5
+        order: 6
       },
       {
         name: 'Auto Garage & Bike Services',
@@ -104,7 +112,7 @@ export async function seedDatabase() {
         icon: 'fa-wrench',
         image: 'https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=600&q=80',
         type: 'service',
-        order: 6
+        order: 7
       },
       {
         name: 'Plumbing & Labour Services',
@@ -112,7 +120,7 @@ export async function seedDatabase() {
         icon: 'fa-faucet',
         image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=600&q=80',
         type: 'service',
-        order: 7
+        order: 8
       },
       {
         name: 'Cars & Bikes (Pre-Owned)',
@@ -120,7 +128,7 @@ export async function seedDatabase() {
         icon: 'fa-car',
         image: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=600&q=80',
         type: 'vehicle',
-        order: 8
+        order: 9
       }
     ];
 
@@ -489,7 +497,329 @@ export async function seedDatabase() {
         tags: ['rice', 'basmati', 'chawal', 'grocery']
       },
 
-      // Electronics
+      // Mobile & Accessories
+      {
+        shop: shop2._id,
+        seller: seller2User._id,
+        category: catMap['mobile-accessories']._id,
+        name: '11D Full Glue Edge-to-Edge Tempered Glass (9H HD Clear)',
+        slug: '11d-full-glue-edge-to-edge-tempered-glass',
+        description: 'Oleophobic coating resists oil and smudges. 9H hardness shatterproof Japanese Asahi glass with 99.9% transparency and bubble-free installation.',
+        images: ['https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?auto=format&fit=crop&w=600&q=80'],
+        price: 149,
+        originalPrice: 399,
+        stock: 100,
+        unit: 'piece',
+        rating: 4.8,
+        reviewCount: 42,
+        tags: ['tempered glass', 'screen protector', '9h glass', 'mobile accessory', 'guard', 'mobile']
+      },
+      {
+        shop: shop2._id,
+        seller: seller2User._id,
+        category: catMap['mobile-accessories']._id,
+        name: 'Privacy Anti-Spy 9H Tempered Glass Screen Protector',
+        slug: 'privacy-anti-spy-tempered-glass',
+        description: '2-way privacy filter prevents side-angle peeping in public. Anti-scratch, explosion-proof tempered glass with ultra-smooth touch sensitivity.',
+        images: ['https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?auto=format&fit=crop&w=600&q=80'],
+        price: 249,
+        originalPrice: 499,
+        stock: 60,
+        unit: 'piece',
+        rating: 4.9,
+        reviewCount: 28,
+        tags: ['privacy glass', 'screen protector', 'anti spy', 'mobile accessory', 'tempered glass']
+      },
+      {
+        shop: shop2._id,
+        seller: seller2User._id,
+        category: catMap['mobile-accessories']._id,
+        name: 'Shockproof Rugged Armor Case with Magnetic Ring Kickstand',
+        slug: 'shockproof-armor-magnetic-kickstand-case',
+        description: 'Dual-layer TPU + PC shock-absorbing armor with 360-degree rotating metal ring holder and magnetic car mount plate.',
+        images: ['https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=600&q=80'],
+        price: 299,
+        originalPrice: 699,
+        stock: 45,
+        unit: 'piece',
+        rating: 4.8,
+        reviewCount: 35,
+        tags: ['phone cover', 'back case', 'shockproof', 'mobile cover', 'stand case', 'mobile accessory']
+      },
+      {
+        shop: shop2._id,
+        seller: seller2User._id,
+        category: catMap['mobile-accessories']._id,
+        name: 'Premium Liquid Silicone Soft Back Case with Microfiber Lining',
+        slug: 'premium-liquid-silicone-soft-back-case',
+        description: 'Silky soft-touch matte finish, anti-fingerprint, full body camera protection bumper, and soft inner microfiber scratch guard.',
+        images: ['https://images.unsplash.com/photo-1603313011101-320f26a4f6f6?auto=format&fit=crop&w=600&q=80'],
+        price: 199,
+        originalPrice: 499,
+        stock: 55,
+        unit: 'piece',
+        rating: 4.7,
+        reviewCount: 23,
+        tags: ['silicone case', 'mobile cover', 'matte cover', 'back cover', 'soft case', 'mobile accessory']
+      },
+      {
+        shop: shop2._id,
+        seller: seller2User._id,
+        category: catMap['mobile-accessories']._id,
+        name: 'Clear Hybrid Air-Cushion Shockproof Transparent Case',
+        slug: 'clear-hybrid-air-cushion-transparent-case',
+        description: 'Crystal clear anti-yellowing German Bayer TPU with reinforced corner air-cushions for 6-feet drop protection.',
+        images: ['https://images.unsplash.com/photo-1586105251261-72a756497a11?auto=format&fit=crop&w=600&q=80'],
+        price: 149,
+        originalPrice: 349,
+        stock: 70,
+        unit: 'piece',
+        rating: 4.6,
+        reviewCount: 19,
+        tags: ['transparent cover', 'clear case', 'airbag case', 'mobile cover', 'mobile accessory']
+      },
+      {
+        shop: shop2._id,
+        seller: seller2User._id,
+        category: catMap['mobile-accessories']._id,
+        name: '33W SuperVOOC / Dart USB-C Ultra Fast Wall Charger Adapter',
+        slug: '33w-supervooc-fast-charger-adapter',
+        description: 'Flash charge technology for OnePlus, Realme, Oppo, and Vivo smartphones. Smart IC chip protects against over-voltage and overheating.',
+        images: ['https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=600&q=80'],
+        price: 699,
+        originalPrice: 1299,
+        stock: 35,
+        unit: 'piece',
+        rating: 4.9,
+        reviewCount: 39,
+        tags: ['fast charger', '33w charger', 'type-c adapter', 'mobile charger', 'vooc', 'mobile accessory']
+      },
+      {
+        shop: shop2._id,
+        seller: seller2User._id,
+        category: catMap['mobile-accessories']._id,
+        name: '20W PD Type-C Fast Power Adapter (Quick Charge 3.0)',
+        slug: '20w-pd-type-c-fast-power-adapter',
+        description: 'Compact Power Delivery (PD) fast charging adapter compatible with iPhones and all Type-C Android smartphones.',
+        images: ['https://images.unsplash.com/photo-1622445262464-84b1456045b6?auto=format&fit=crop&w=600&q=80'],
+        price: 499,
+        originalPrice: 999,
+        stock: 40,
+        unit: 'piece',
+        rating: 4.8,
+        reviewCount: 31,
+        tags: ['20w charger', 'pd charger', 'iphone charger', 'type-c', 'mobile adapter', 'mobile accessory']
+      },
+      {
+        shop: shop2._id,
+        seller: seller2User._id,
+        category: catMap['mobile-accessories']._id,
+        name: '65W Heavy-Duty Braided Type-C to Type-C Fast Charging Cable (1.2m)',
+        slug: '65w-braided-type-c-to-type-c-cable',
+        description: 'Nylon braided unbreakable cable with 65W PD fast charging and 480Mbps high-speed data transfer support.',
+        images: ['https://images.unsplash.com/photo-1588508065123-287b28e013da?auto=format&fit=crop&w=600&q=80'],
+        price: 249,
+        originalPrice: 599,
+        stock: 65,
+        unit: 'piece',
+        rating: 4.9,
+        reviewCount: 45,
+        tags: ['type-c cable', 'charging cable', 'braided cable', 'data cable', 'fast charging', 'mobile accessory']
+      },
+      {
+        shop: shop2._id,
+        seller: seller2User._id,
+        category: catMap['mobile-accessories']._id,
+        name: '3-in-1 Multi Fast Charging Nylon Cable (Type-C + Micro-USB + Lightning)',
+        slug: '3-in-1-multi-fast-charging-cable',
+        description: 'Charge up to 3 devices simultaneously with 3.5A total output. High durability aluminum alloy connectors.',
+        images: ['https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80'],
+        price: 299,
+        originalPrice: 699,
+        stock: 50,
+        unit: 'piece',
+        rating: 4.7,
+        reviewCount: 22,
+        tags: ['3 in 1 cable', 'multi charger', 'lightning cable', 'type-c', 'micro usb', 'mobile accessory']
+      },
+      {
+        shop: shop2._id,
+        seller: seller2User._id,
+        category: catMap['mobile-accessories']._id,
+        name: 'boAt Airdopes 141 True Wireless Earbuds (42H Playtime)',
+        slug: 'boat-airdopes-141-tws-earbuds',
+        description: 'ENx environmental noise cancelling tech, 8mm drivers with boAt Signature Sound, Insta Wake N Pair, and IPX4 sweat resistance.',
+        images: ['https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=600&q=80'],
+        price: 1299,
+        originalPrice: 2990,
+        stock: 25,
+        unit: 'piece',
+        rating: 4.9,
+        reviewCount: 57,
+        tags: ['tws', 'boat earbuds', 'bluetooth earphones', 'airdopes', 'wireless audio', 'mobile accessory']
+      },
+      {
+        shop: shop2._id,
+        seller: seller2User._id,
+        category: catMap['mobile-accessories']._id,
+        name: 'Portronics Harmonics 300 Bluetooth 5.0 Wireless Neckband',
+        slug: 'portronics-harmonics-300-neckband',
+        description: 'HD stereo sound with magnetic earbuds, up to 16 hours continuous playtime, Voice Assistant support, and ultra-lightweight collar band.',
+        images: ['https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=600&q=80'],
+        price: 799,
+        originalPrice: 1499,
+        stock: 30,
+        unit: 'piece',
+        rating: 4.7,
+        reviewCount: 26,
+        tags: ['neckband', 'portronics', 'bluetooth', 'earphones', 'wireless neckband', 'mobile accessory']
+      },
+      {
+        shop: shop2._id,
+        seller: seller2User._id,
+        category: catMap['mobile-accessories']._id,
+        name: 'Real Bass In-Ear Wired Earphones with Mic (3.5mm Gold-Plated Jack)',
+        slug: 'real-bass-wired-earphones-with-mic',
+        description: 'Tangle-free flat cable with inline microphone and one-touch multifunction call/music controller. Dynamic 10mm bass drivers.',
+        images: ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80'],
+        price: 179,
+        originalPrice: 399,
+        stock: 80,
+        unit: 'piece',
+        rating: 4.6,
+        reviewCount: 38,
+        tags: ['wired earphones', '3.5mm earphones', 'handsfree', 'bass earphones', 'mobile accessory']
+      },
+      {
+        shop: shop2._id,
+        seller: seller2User._id,
+        category: catMap['mobile-accessories']._id,
+        name: 'All-Metal 360° Rotating Bike & Motorcycle Mobile Holder with USB Charger',
+        slug: 'all-metal-360-bike-mobile-holder-with-charger',
+        description: 'Heavy-duty aluminium alloy handlebar mount with claw clamp lock and integrated 5V 2A USB quick charging port for riders and daily commuters.',
+        images: ['https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?auto=format&fit=crop&w=600&q=80'],
+        price: 449,
+        originalPrice: 899,
+        stock: 30,
+        unit: 'piece',
+        rating: 4.9,
+        reviewCount: 33,
+        tags: ['bike mobile holder', 'motorcycle holder', 'handlebar mount', 'mobile holder', 'mobile accessory']
+      },
+      {
+        shop: shop2._id,
+        seller: seller2User._id,
+        category: catMap['mobile-accessories']._id,
+        name: 'Foldable Aluminum Desktop Mobile & Tablet Stand',
+        slug: 'foldable-aluminum-desktop-mobile-stand',
+        description: 'Multi-angle adjustable desktop phone holder with anti-slip silicone cushions and charging cable cutout. Ideal for video calls and study.',
+        images: ['https://images.unsplash.com/photo-1586105251261-72a756497a11?auto=format&fit=crop&w=600&q=80'],
+        price: 229,
+        originalPrice: 549,
+        stock: 40,
+        unit: 'piece',
+        rating: 4.8,
+        reviewCount: 21,
+        tags: ['mobile stand', 'phone holder', 'desktop stand', 'tablet stand', 'mobile accessory']
+      },
+      {
+        shop: shop2._id,
+        seller: seller2User._id,
+        category: catMap['mobile-accessories']._id,
+        name: '360° Magnetic Car Air Vent & Dashboard Mobile Mount',
+        slug: '360-magnetic-car-mobile-mount',
+        description: 'Strong N52 neodymium magnets hold heavy phones firmly even on bumpy roads. 360-degree ball rotation for GPS navigation.',
+        images: ['https://images.unsplash.com/photo-1616469829941-c7200edec809?auto=format&fit=crop&w=600&q=80'],
+        price: 249,
+        originalPrice: 599,
+        stock: 35,
+        unit: 'piece',
+        rating: 4.7,
+        reviewCount: 18,
+        tags: ['car mobile holder', 'magnetic mount', 'car accessory', 'mobile holder', 'mobile accessory']
+      },
+      {
+        shop: shop2._id,
+        seller: seller2User._id,
+        category: catMap['mobile-accessories']._id,
+        name: 'Ambrane 20000mAh 22.5W Fast Charging Power Bank with Digital Display',
+        slug: 'ambrane-20000mah-fast-charging-power-bank',
+        description: '22.5W Power Delivery & Quick Charge 3.0 output, dual input, triple output, digital percentage battery display, made in India.',
+        images: ['https://images.unsplash.com/photo-1609081219090-a6d81d3085bf?auto=format&fit=crop&w=600&q=80'],
+        price: 1899,
+        originalPrice: 2999,
+        stock: 20,
+        unit: 'piece',
+        rating: 4.9,
+        reviewCount: 34,
+        tags: ['power bank', '20000mah', 'ambrane', 'fast charger', 'battery bank', 'mobile accessory']
+      },
+      {
+        shop: shop2._id,
+        seller: seller2User._id,
+        category: catMap['mobile-accessories']._id,
+        name: 'SanDisk Ultra 64GB MicroSDXC Class 10 Memory Card (Up to 140MB/s)',
+        slug: 'sandisk-ultra-64gb-microsd-card',
+        description: 'A1-rated for faster mobile app loading and Full HD video recording. Shockproof, temperature-proof, waterproof, and X-ray-proof.',
+        images: ['https://images.unsplash.com/photo-1622445262464-84b1456045b6?auto=format&fit=crop&w=600&q=80'],
+        price: 549,
+        originalPrice: 950,
+        stock: 50,
+        unit: 'piece',
+        rating: 4.9,
+        reviewCount: 46,
+        tags: ['memory card', 'sandisk', 'sd card', '64gb', 'storage', 'mobile accessory']
+      },
+      {
+        shop: shop2._id,
+        seller: seller2User._id,
+        category: catMap['mobile-accessories']._id,
+        name: 'Dual OTG Type-C & USB 3.0 High-Speed 64GB Metal Flash Drive',
+        slug: 'dual-otg-type-c-usb-64gb-flash-drive',
+        description: 'Plug and play dual connector metal pen drive to quickly free up storage on your Android smartphone, tablet, and PC.',
+        images: ['https://images.unsplash.com/photo-1588508065123-287b28e013da?auto=format&fit=crop&w=600&q=80'],
+        price: 599,
+        originalPrice: 1199,
+        stock: 35,
+        unit: 'piece',
+        rating: 4.8,
+        reviewCount: 27,
+        tags: ['pen drive', 'otg', 'type-c pendrive', 'usb flash drive', 'storage', 'mobile accessory']
+      },
+      {
+        shop: shop2._id,
+        seller: seller2User._id,
+        category: catMap['mobile-accessories']._id,
+        name: '9H Tempered Glass Camera Lens Protector (Ring Protection Set)',
+        slug: '9h-camera-lens-protector-ring-set',
+        description: 'Ultra-thin titanium alloy metal edge with 9H sapphire-grade glass. Night shooting mode AR anti-reflective light ring.',
+        images: ['https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?auto=format&fit=crop&w=600&q=80'],
+        price: 149,
+        originalPrice: 349,
+        stock: 60,
+        unit: 'set',
+        rating: 4.7,
+        reviewCount: 16,
+        tags: ['camera protector', 'lens guard', 'camera glass', 'mobile accessory']
+      },
+      {
+        shop: shop2._id,
+        seller: seller2User._id,
+        category: catMap['mobile-accessories']._id,
+        name: '7-in-1 Multifunction Electronic Cleaner Kit for Mobile & Earbuds',
+        slug: '7-in-1-multifunction-cleaner-kit',
+        description: 'Foldable cleaning pen, high-density soft brush, flocking sponge, keycap buckle, and screen cleaner spray for phone and gadgets.',
+        images: ['https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?auto=format&fit=crop&w=600&q=80'],
+        price: 199,
+        originalPrice: 499,
+        stock: 45,
+        unit: 'set',
+        rating: 4.8,
+        reviewCount: 24,
+        tags: ['cleaner kit', 'earbuds cleaner', 'screen cleaner', 'cleaning pen', 'mobile accessory']
+      },
+
+      // Electronics & Gadgets
       {
         shop: shop2._id,
         seller: seller2User._id,
@@ -656,6 +986,36 @@ export async function seedDatabase() {
         images: ['https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80'],
         rating: 4.8,
         reviewCount: 22
+      },
+      {
+        provider: seller2User._id,
+        shop: shop2._id,
+        category: catMap['repair-electrician']._id,
+        serviceType: 'Mobile & Device Repair',
+        title: 'Doorstep Mobile Screen, Battery & Charging Port Repair',
+        description: 'Certified technician repairs cracked mobile screens, swollen batteries, loose charging ports, and microphone issues right at your doorstep in Palanpur with warranty.',
+        pricingModel: 'fixed',
+        price: 349,
+        serviceArea: 'All areas of Palanpur (385001)',
+        durationMinutes: 45,
+        images: ['https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?auto=format&fit=crop&w=600&q=80'],
+        rating: 4.9,
+        reviewCount: 41
+      },
+      {
+        provider: seller2User._id,
+        shop: shop2._id,
+        category: catMap['repair-electrician']._id,
+        serviceType: 'Mobile Accessories & Lamination',
+        title: 'Doorstep UV Curved Glass Pasting & Full Body Lamination',
+        description: 'Expert bubble-free UV liquid glue tempered glass application for curved screens and 360-degree transparent scratch-resistant body lamination at your home or shop.',
+        pricingModel: 'fixed',
+        price: 199,
+        serviceArea: 'Palanpur City & GIDC Area',
+        durationMinutes: 30,
+        images: ['https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?auto=format&fit=crop&w=600&q=80'],
+        rating: 4.8,
+        reviewCount: 29
       }
     ];
 
