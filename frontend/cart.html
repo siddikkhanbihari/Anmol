@@ -430,8 +430,9 @@
         const res = await api.get('/products?category=mobile-accessories&limit=50');
         if (res.success && res.data && res.data.products) {
           const prods = res.data.products;
-          // Filter products under ₹199 or with tag 'add-on'
-          const addons = prods.filter(p => p.price <= 199 || (p.tags && p.tags.includes('add-on'))).slice(0, 10);
+          // Filter products under ₹199 or with tag 'add-on', excluding items already in cart
+          const inCartIds = (cart.items || []).map(i => (i.product?._id || i.product || '').toString());
+          const addons = prods.filter(p => !inCartIds.includes(p._id.toString()) && (p.price <= 199 || (p.tags && p.tags.includes('add-on')))).slice(0, 10);
           if (!addons.length) {
             document.getElementById('cart-addons-section').style.display = 'none';
             return;
