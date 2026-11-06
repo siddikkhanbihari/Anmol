@@ -1666,3 +1666,67 @@ body.is-standalone-app {
   border-color: var(--brand-blue);
   box-shadow: 0 3px 10px rgba(37, 99, 235, 0.28);
 }
+
+/* ==========================================================================
+   AUTHENTIC RETAIL CATEGORY THEMES (PROFESSIONAL COLORS)
+   ========================================================================== */
+.section-chip.blue {
+  background: #EFF6FF !important;
+  color: #1D4ED8 !important;
+  border: 1px solid #BFDBFE !important;
+}
+.section-chip.green {
+  background: #ECFDF5 !important;
+  color: #047857 !important;
+  border: 1px solid #A7F3D0 !important;
+}
+.section-chip.amber {
+  background: #FFFBEB !important;
+  color: #B45309 !important;
+  border: 1px solid #FDE68A !important;
+}
+.section-chip.purple {
+  background: #F5F3FF !important;
+  color: #6D28D9 !important;
+  border: 1px solid #DDD6FE !important;
+}
+.section-chip.cyan {
+  background: #F0F9FF !important;
+  color: #0369A1 !important;
+  border: 1px solid #BAE6FD !important;
+}
+.section-chip.orange {
+  background: #FFF7ED !important;
+  color: #C2410C !important;
+  border: 1px solid #FED7AA !important;
+}
+
+/* Category-specific filter pill active colors */
+#kirana-filters .btn-acc-pill.active {
+  background: #10B981 !important;
+  border-color: #10B981 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3) !important;
+}
+
+/* Category cards colorful icon backgrounds in Shop by Category */
+.category-card[data-scroll="#sec-kirana-grocery"] .category-icon-box {
+  background: #ECFDF5 !important;
+  color: #10B981 !important;
+}
+.category-card[data-scroll="#sec-mobile-accessories"] .category-icon-box {
+  background: #EFF6FF !important;
+  color: #2563EB !important;
+}
+.category-card[data-scroll="#sec-hardware-tools"] .category-icon-box {
+  background: #FFFBEB !important;
+  color: #F59E0B !important;
+}
+.category-card[data-scroll="#sec-services"] .category-icon-box {
+  background: #F0F9FF !important;
+  color: #0284C7 !important;
+}
+.category-card[data-scroll="#sec-vehicles"] .category-icon-box {
+  background: #FFF7ED !important;
+  color: #EA580C !important;
+}
