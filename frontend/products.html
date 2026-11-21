@@ -192,7 +192,10 @@
             <div id="products-count-label" style="font-size: var(--font-size-sm); color: var(--color-text-muted);">
               Loading products...
             </div>
-            <div style="display: flex; align-items: center; gap: var(--space-2);">
+            <div style="display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;">
+              <button type="button" id="mobile-filter-toggle" class="btn btn-outline btn-sm mobile-filter-btn" style="display: none; align-items: center; gap: 6px; padding: 0.35rem 0.75rem; font-size: var(--font-size-xs); font-weight: 600;">
+                <i class="fas fa-sliders-h"></i> Filters
+              </button>
               <label for="sort-select" style="font-size: var(--font-size-xs); font-weight: 600;">Sort By:</label>
               <select id="sort-select" class="form-select" style="width: auto; padding: 0.35rem 0.75rem;">
                 <option value="popularity">Popularity</option>
@@ -481,6 +484,13 @@
               e.preventDefault();
               const product = JSON.parse(btn.dataset.product);
               cart.addItem(product, 1);
+              const origHtml = btn.innerHTML;
+              btn.innerHTML = '<i class="fas fa-check"></i> Added';
+              btn.classList.add('added');
+              setTimeout(() => {
+                btn.innerHTML = origHtml;
+                btn.classList.remove('added');
+              }, 1200);
             });
           });
 
@@ -511,6 +521,22 @@
 
     if (initialQuery) {
       document.getElementById('header-search-box').value = initialQuery;
+    }
+
+    // Mobile filter toggle
+    const mobileFilterToggle = document.getElementById('mobile-filter-toggle');
+    const filterSidebar = document.querySelector('.filter-sidebar');
+    if (mobileFilterToggle && filterSidebar) {
+      mobileFilterToggle.addEventListener('click', () => {
+        filterSidebar.classList.toggle('is-open');
+        mobileFilterToggle.classList.toggle('active');
+        if (filterSidebar.classList.contains('is-open')) {
+          mobileFilterToggle.innerHTML = '<i class="fas fa-times"></i> Close';
+          filterSidebar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          mobileFilterToggle.innerHTML = '<i class="fas fa-sliders-h"></i> Filters';
+        }
+      });
     }
 
     // Filter listeners
